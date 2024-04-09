@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Extension</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Simple background color */
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .navbar a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .content {
+            padding: 20px;
+            margin-top: 60px; /* Adjusted to prevent content overlay with the fixed navbar */
+        }
+    </style>
+</head>
+<body>
+
+<ul class="navbar">
+    <li><a href="#who-we-are">Who we are</a></li>
+    <li><a href="#what-we-do">What we do</a></li>
+    <li><a href="#how-to-join">How to Join</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#upcomings">Upcomings</a></li>
+</ul>
+
+<div class="content">
+    <h1>Welcome to Our GitHub Extension</h1>
+    <p>This is a static website with a fixed menu at the top and a simple background color.</p>
+    <!-- Sections for each menu item -->
+    <h2 id="who-we-are">Who we are</h2>
+    <p>This section would contain information about the organization or team behind the GitHub extension.</p>
+    
+    <h2 id="what-we-do">What we do</h2>
+    <p>This section would explain the purpose and functionality of the GitHub extension.</p>
+    
+    <h2 id="how-to-join">How to Join</h2>
+    <p>This section would provide instructions or requirements for joining the organization or contributing to the project.</p>
+    
+    <h2 id="events">Events</h2>
+    <p>This section would list upcoming or past events related to the GitHub extension or the organization.</p>
+    
+    <h2 id="upcomings">Upcomings</h2>
+    <p>This section would highlight any new features, updates, or projects that are in the works.</p>
+</div>
+
+</body>
+</html>
