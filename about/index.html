@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html><head><base href="https://cs721127.github.io//about">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Cen | Cen Sun's Website</title>
+<style>
+  :root {
+    --primary-color: #2196F3;
+    --secondary-color: #000000;
+    --text-color: #333;
+    --background-color: #f0f0f0;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  header h1 {
+    margin: 0;
+  }
+
+  nav {
+    background-color: var(--secondary-color);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  nav ul li {
+    margin: 0 1rem;
+  }
+
+  nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+
+  nav ul li a:hover {
+    color: #FFD700;
+  }
+
+  main {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex-grow: 1;
+  }
+
+  .about-content {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+  }
+
+  .about-image {
+    float: right;
+    margin: 0 0 1rem 1rem;
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .interests-list {
+    columns: 2;
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .interests-list li::before {
+    content: "• ";
+    color: var(--primary-color);
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+  }
+
+  footer {
+    background-color: var(--secondary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: auto;
+  }
+
+  @media (max-width: 600px) {
+    nav ul {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    nav ul li {
+      margin: 0.5rem 0;
+    }
+
+    .about-image {
+      float: none;
+      display: block;
+      margin: 0 auto 1rem;
+    }
+
+    .interests-list {
+      columns: 1;
+    }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>About Me</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="https://cs721127.github.io/">Home</a></li>
+      <li><a href="https://cs721127.github.io/about">About</a></li>
+      <li><a href="https://cs721127.github.io/blog">Blog</a></li><li><a href="https://cs721127.github.io/projects">Projects</a></li><li><a href="https://cs721127.github.io/contact">Contact</a></li>
+      
+      
+      
+    </ul>
+  </nav>
+
+  <main>
+    <div class="about-content" style="opacity: 1; transform: translateY(0px); transition: opacity 0.5s ease-out, transform 0.5s ease-out;">
+      <img src="https://cs721127.github.io/about/censun.jpg" alt="Sam daily pic" class="about-image" width="200" height="200">
+      <h2>Hey there, I'm Cen Sun!</h2>
+      <p>Welcome to my little corner of the internet! I'm a 17-year-old high school student with a passion for learning, creating, and sharing my experiences. This blog is my way of documenting my journey through these exciting and sometimes challenging high school years.</p>
+      
+      <h3>A Bit About Me</h3>
+      <p>I was born in 2007, and I'm currently a senior at Beijing National Day School, where I'm actively involved in various clubs and activities. When I'm not buried in textbooks or working on school projects, you can find me exploring new hobbies, hanging out with friends, or volunteering in my community. Also, I am a big fan of Chinese traditional cultures</p>
+
+         <h3>My Profile</h3>
+     <p><b>Name:</b> Cen Sun<br>
+            <b>Age:</b> 16<br>
+            <b>Ethnicity:</b> Asian, Chinese<br>
+            <b>Location:</b> Beijing, China<br>
+            <b>Interests:</b> Music, Meditation, Writing<br>
+            <b>Academic Interest:</b> Business, Finance, Non-profit<br>
+            <b>High School:</b> Beijing National Day School<br>
+            <b>Ideal:</b> To make a positive impact in the world through doing Economics/Finance, changing the world to be not profit-orienting<br>
+            <b>Future Job Thinking:</b> Financial Analyst, Actuary, Something relates to medicine or AI<br>
+            <b>My Unique Features:</b> Detail-oriented, Leadrship, Problem Solver, critical thinking, real understanding, reliable<br>
+      
+      </p><h3>My Interests</h3>
+      <p>I'm a curious person by nature, and I love diving into new subjects and experiences. Some of my current interests include:</p>
+      <ul class="interests-list">
+        <li>Computer Science/AI</li>
+        <li>Business</li>
+        <li>Non-Profit</li>
+        <li>Photography</li>
+        <li>Finance</li>
+        <li>Basketball</li>
+        <li>Clarinet</li>
+        <li>Maditation</li>
+    <li>Reading</li>
+    <li>Swimming</li>
+      </ul>
+        
+      
+      <h3>Why I Started This Blog</h3>
+      <p>As a high school student, from what I think, I have a lot of fun in my life. But there are too many things to remember all of them. I am a purpose who miss the past memories and will often go through my past times to refresh my mind with those pure, lovely memories; also, the importance of learning from the past. Therefore, this website is a collection of my activities that I think are valuable to memory and look back again, and will always reminds me something important(either lessons or greetings). Hopefully some pieces of my activity will remind you with your past memmories and would be able to feel young, and energetic with the not so greatful world :)</p>
+      
+      <h3>What You'll Find Here</h3>
+      <p>On this blog, you can expect to find:</p>
+      <ul>
+        <li>Study tips and academic thoughts within some specific topics</li>
+        <li>Personal reflections on high school life/class</li>
+        <li>Updates on my projects and extracurricular activities</li>
+        <li>Book reviews and movie recommendations</li>
+        <li>Thoughts on current events and issues relevant to teens</li>
+        <li>And much more!</li>
+      </ul>
+      
+      <h3>Let's Connect!</h3>
+      <p>I love hearing from my readers and fellow high school students. If you have any questions, suggestions, or just want to say hi, feel free to reach out through my <a href="https://websim.ai/sam-highschool-blog/contact">contact page</a> or connect with me on social media.</p>
+      
+      <p>Thanks for stopping by, and I hope you enjoy following along with my high school adventures!</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2023 Sam's High School Journey. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Add a simple fade-in animation to the content
+    document.addEventListener('DOMContentLoaded', () => {
+      const aboutContent = document.querySelector('.about-content');
+      aboutContent.style.opacity = '0';
+      aboutContent.style.transform = 'translateY(20px)';
+      aboutContent.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+      
+      setTimeout(() => {
+        aboutContent.style.opacity = '1';
+        aboutContent.style.transform = 'translateY(0)';
+      }, 100);
+    });
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body></html>
