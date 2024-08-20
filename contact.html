@@ -1,122 +1,195 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #FADADD; /* Light pink background */
-            font-family: Arial, sans-serif;
-        }
-        .nav-container {
-            background: rgba(255, 255, 255, 0.9);
-            overflow: hidden;
-            display: flex;
-            justify-content: space-around;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-        .nav-container a {
-            display: block;
-            padding: 14px 16px;
-            text-decoration: none;
-            color: black;
-            transition: 0.3s;
-        }
-        .nav-container a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-        .blue-bar {
-            background-color: #1685a9; /* Blue color */
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            position: relative;
-            top: 60px; /* Positioned just below the navbar */
-            width: 100%;
-            z-index: 999;
-        }
-        .content-container {
-            display: flex;
-            margin: 80px 0; /* Space for navbar and blue bar */
-            padding: 20px;
-        }
-        .image-container {
-            flex: 1;
-            padding: 0 10px;
-            text-align: center;
-        }
-        .text-container {
-            flex: 2;
-            padding: 0 10px;
-        }
-        .section-title {
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .image {
-            max-width: 100%;
-            height: auto;
-            margin-top: 10px;
-        }
-    </style>
-</head>
+<html><head><base href="https://cs721127.github.io/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Me | Cen Sun's Website</title>
+<style>
+  :root {
+    --primary-color: #2196F3;
+    --secondary-color: #000000;
+    --text-color: #333;
+    --background-color: #f0f0f0;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  nav {
+    background-color: var(--secondary-color);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  nav ul li {
+    margin: 0 1rem;
+  }
+
+  nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+
+  nav ul li a:hover {
+    color: #FFD700;
+  }
+
+  main {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex-grow: 1;
+  }
+
+  .contact-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+  }
+
+  .contact-info {
+    margin-bottom: 2rem;
+  }
+
+  .contact-info p {
+    margin-bottom: 0.5rem;
+  }
+
+  .social-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .social-links a:hover {
+    background-color: #1976D2;
+    transform: scale(1.1);
+  }
+
+  footer {
+    background-color: var(--secondary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: auto;
+  }
+
+  @media (max-width: 600px) {
+    nav ul {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    nav ul li {
+      margin: 0.5rem 0;
+    }
+  }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+<style>
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style></head>
 <body>
+  <header>
+    <h1>Contact Sam</h1>
+  </header>
 
-<ul class="nav-container">
-    <li><a href="/">Sam's Page</a></li>
-    <li><a href="who-am-I.html">Who am I</a></li>
-    <li><a href="what-I-do.html">What I do</a></li>
-    <li><a href="contact.html">Contact</a></li>
-    <li><a href="events.html">Events</a></li>
-    <li><a href="preparations.html">Preparations</a></li>
-</ul>
+  <nav>
+    <ul>
+      <li><a href="https://cs721127.github.io/">Home</a></li>
+      <li><a href="https://cs721127.github.io/about">About</a></li>
+      <li><a href="https://cs721127.github.io/blog">Blog</a></li>
+      <li><a href="https://cs721127.github.io/projects">Projects</a></li>
+      <li><a href="https://cs721127.github.io/contact">Contact</a></li>
+    </ul>
+  </nav>
 
-<div class="blue-bar">
-    <p>Contact</p>
+  <main>
+    <div class="contact-container" style="opacity: 0; animation: 0.5s ease-out 0s 1 normal forwards running fadeIn;">
+      <h2>Get in Touch</h2>
+      <p>Have a question, comment, or just want to say hi? Feel free to reach out using the contact information below or connect with me on social media!</p>
+      
+      <div class="contact-info">
+        <p><strong>Email:</strong> suncen07@gmail.com</p>
+        <p><strong>Phone:</strong> +86 158-0161-9480</p>
+      </div>
+
+      <h3>Connect with me on social media:</h3>
+      <div class="social-links">
+  <a href="https://www.instagram.com/suncen07" target="_blank" rel="noopener noreferrer" title="Instagram" style="text-decoration: none;"><i class="fab fa-instagram"></i></a>
+  <a href="https://github.com/cs721127" target="_blank" rel="noopener noreferrer" title="GitHub" style="text-decoration: none;"><i class="fab fa-github"></i></a>
+  <a href="https://studio.youtube.com/channel/UCUSJ7PvrTxFqvzhzRUg8Utg" target="_blank" rel="noopener noreferrer" title="YouTube" style="text-decoration: none;"><i class="fab fa-youtube"></i></a>
+  <a href="https://www.linkedin.com/in/cen-sun-885ab8281" target="_blank" rel="noopener noreferrer" title="LinkedIn" style="text-decoration: none;"><i class="fab fa-linkedin"></i></a>
+  <a href="https://space.bilibili.com/513927197" target="_blank" rel="noopener noreferrer" title="Bilibili" style="text-decoration: none;"><i class="fab fa-bilibili"></i></a>
 </div>
+    </div>
+  </main>
 
-<div class="content-container">
-    <div class="image-container">
-        <!-- Replace with your image URL -->
-        <img src="https://photos.google.com/photo/AF1QipMH0bDagy_NGjbnOLIci1ZWXY-ZPGB_nDP02EK-" class="image">
-    </div>
-    <div class="text-container">
-        <h2 class="section-title">My Social Media</h2>
-        <p>This is a brief introduction about myself. Feel free to tell me more.</p>
-    </div>
-</div>
+  <footer>
+    <p>© 2024 Cen Sun's Website. All rights reserved.</p>
+  </footer>
 
-<div class="content-container">
-    <div class="image-container">
-        <!-- Replace with your image URL -->
-        <img src="https://photos.google.com/share/AF1QipMWitQ_so2IJ0hdYlNxBsvzmqv4duhTG7sPTNMw1V7YcT9PXPUb8SIePfg21GNOsA?key=Vm9hRndDTlh5LS16NTBNLThYMlNHTndBYWkzZWhn" class="image">
-    </div>
-    <div class="text-container">
-        <h2 class="section-title">My Friends</h2>
-        <p>Here you can describe your achievements, awards, and other accomplishments.</p>
-    </div>
-</div>
+  <script>
+    // Add a simple fade-in animation to the contact container
+    const contactContainer = document.querySelector('.contact-container');
+    contactContainer.style.opacity = '0';
+    contactContainer.style.animation = 'fadeIn 0.5s ease-out forwards';
 
-<div class="content-container">
-    <div class="image-container">
-        <!-- Replace with your image URL -->
-        <img src="https://photos.google.com/photo/AF1QipMAFW5qBw2hiAq7JMJWerRzyFHueF8IQc2x0Arw" class="image">
-    </div>
-    <div class="text-container">
-        <h2 class="section-title">My Email Address</h2>
-        <p>My Email: </p>
-    </div>
-</div>
+    // Define the fadeIn animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
 
-</body>
-</html>
+</body></html>
