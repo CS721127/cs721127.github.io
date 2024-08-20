@@ -1,0 +1,412 @@
+<html><head><base href="https://cs721127.github.io/blog">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog | Cen Sun's Website</title>
+<style>
+  :root {
+    --primary-color: #2196F3;
+    --secondary-color: #000000;
+    --text-color: #333;
+    --background-color: #f0f0f0;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  header h1 {
+    margin: 0;
+  }
+
+  nav {
+    background-color: var(--secondary-color);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  nav ul li {
+    margin: 0 1rem;
+  }
+
+  nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+
+  nav ul li a:hover {
+    color: #FFD700;
+  }
+
+  main {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex-grow: 1;
+  }
+
+  .blog-post {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .blog-post:hover {
+    transform: translateY(-5px);
+  }
+
+  .blog-post img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+  }
+
+  .blog-post-content {
+    padding: 1.5rem;
+  }
+
+  .blog-post h2 {
+    margin-top: 0;
+    color: var(--primary-color);
+  }
+
+  .blog-post-meta {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .blog-post-excerpt {
+    margin-bottom: 1rem;
+  }
+
+  .read-more {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .read-more:hover {
+    background-color: #1976D2;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .pagination a {
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border: 1px solid var(--primary-color);
+    margin: 0 0.25rem;
+    border-radius: 3px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .pagination a:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  footer {
+    background-color: var(--secondary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: auto;
+  }
+
+  .tag {
+    display: inline-block;
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .filter-box {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .filter-box h3 {
+    margin-top: 0;
+  }
+
+  .filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-option {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .filter-option:hover,
+  .filter-option.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  .search-box {
+    display: flex;
+    margin-bottom: 1rem;
+  }
+
+  .search-box input {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 3px 0 0 3px;
+  }
+
+  .search-box button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0 3px 3px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .search-box button:hover {
+    background-color: #1976D2;
+  }
+
+  @media (max-width: 600px) {
+    nav ul {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    nav ul li {
+      margin: 0.5rem 0;
+    }
+  }
+</style>
+<style>
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style></head>
+<body>
+  <header>
+    <h1>Blog</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="https://cs721127.github.io/">Home</a></li>
+      <li><a href="https://cs721127.github.io/about">About</a></li>
+      <li><a href="https://cs721127.github.io/blog">Blog</a></li>
+      <li><a href="https://cs721127.github.io/projects">Projects</a></li>
+      <li><a href="https://cs721127.github.io/contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="filter-box">
+      <h3>Filter Posts</h3>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search posts by keyword...">
+        <button id="search-button">Search</button>
+      </div>
+      <div class="filter-options">
+        <button class="filter-option active" data-tag="all">All</button>
+        <button class="filter-option" data-tag="academic-ideas">Academic Ideas</button>
+        <button class="filter-option" data-tag="daily-activity-share">Daily Activity Share</button>
+        <button class="filter-option" data-tag="book-reviews">Book Reviews</button>
+      </div>
+    </div>
+
+    <article class="blog-post" data-tags="daily-activity-share" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn; display: block;">
+      <img src="https://cs721127.github.io/asset/images/upenn-cover.jpg" alt="Upenn" width="800" height="300">
+      <div class="blog-post-content">
+        <h2>Experience in University of Pennsylvania Pre-Law Summer Program</h2>
+        <div class="blog-post-meta">Posted on July 27, 2024 | Category: Activities</div>
+        <div class="blog-post-excerpt">
+          <p>I have participated in a summer program hold by University of Pennsylvania Carey Law School, and had an accelerated first year law school course. I had fun during the period between July 6th to July 27th. It was a fantastic experience and I made a lot of friends and learned a lot!</p>
+        </div>
+        <div class="tags">
+          <span class="tag">Daily Activity Share</span>
+        </div>
+        <a href="https://cs721127.github.io/blog/upenn-summer" class="read-more">Read More</a>
+      </div>
+    </article>
+
+    <article class="blog-post" data-tags="academic-ideas" style="animation: 0.5s ease-out 0.2s 1 normal forwards running fadeIn; display: block;">
+      <img src="https://cs721127.github.io/asset/images/Reflection.jpg" alt="lit review" width="800" height="300">
+      <div class="blog-post-content">
+        <h2>Reflections on “Post Modernism: What AI Alignment Teaches Us About Education”</h2>
+        <div class="blog-post-meta">Posted on June 26, 2024 | Category: Academics</div>
+        <div class="blog-post-excerpt">
+          <p>A Brief reflection about an online article called "Post Modernism: What AI Alignment Teaches Us About Education," including such inspirations and some innovative ideas that came from the article as a hih school student. This little essay also cooperates with some of my idea from my last essay, which also combined with something new that about how to look at education when there should be a standard measurement and how could we improve it.</p>
+        </div>
+        <div class="tags">
+          <span class="tag">Academic Ideas</span>
+        </div>
+        <a href="https://webofcen.github.io/works/ideas/reflect-AI-postmodernism.html" class="read-more">Read More</a>
+      </div>
+    </article>
+
+    <article class="blog-post" data-tags="academic-ideas" style="animation: 0.5s ease-out 0.2s 1 normal forwards running fadeIn; display: block;">
+      <img src="https://cs721127.github.io/asset/images/Reflection.jpg" alt="lit review" width="800" height="300">
+      <div class="blog-post-content">
+        <h2>Reflections on the Economics of Life: What I learned from my economics class</h2>
+        <div class="blog-post-meta">Posted on June 24, 2024 | Category: Academics</div>
+        <div class="blog-post-excerpt">
+          <p>At the time of year while I finished my study on AP Micro/Macroeconomics courses, I have a lot of reflections on what my teacher taught me during the class. This little essay is my current understanding about economics and how to think like an economist.</p>
+        </div>
+        <div class="tags">
+          <span class="tag">Academic Ideas</span>
+        </div>
+        <a href="https://webofcen.github.io/works/ideas/reflect-economics-learned.html" class="read-more">Read More</a>
+      </div>
+    </article>
+
+  </main>
+
+  <footer>
+    <p>© 2024 Cen Sun's Website. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Add a simple animation to the blog posts
+    const blogPosts = document.querySelectorAll('.blog-post');
+    blogPosts.forEach((post, index) => {
+      post.style.animation = `fadeIn 0.5s ease-out ${index * 0.2}s forwards`;
+    });
+
+    // Define the fadeIn animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Filter functionality
+    const filterOptions = document.querySelectorAll('.filter-option');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const paginationLinks = document.querySelectorAll('.pagination a');
+
+    let currentPage = 1;
+
+    function filterPosts(page = 1) {
+      const activeTag = document.querySelector('.filter-option.active').dataset.tag;
+      const searchTerm = searchInput.value.toLowerCase();
+
+      blogPosts.forEach((post, index) => {
+        const postTags = post.dataset.tags.split(' ');
+        const postContent = post.textContent.toLowerCase();
+        const matchesTag = activeTag === 'all' || postTags.includes(activeTag);
+        const matchesSearch = postContent.includes(searchTerm);
+
+        if (matchesTag && matchesSearch) {
+          post.style.display = 'block';
+        } else {
+          post.style.display = 'none';
+        }
+      });
+
+      // Update pagination links
+      paginationLinks.forEach((link, index) => {
+        link.href = `https://cs721127.github.io/blog?page=${index + 1}`;
+        link.style.display = index === currentPage - 1 ? 'none' : 'inline-block';
+      });
+
+      currentPage = page;
+    }
+
+    filterOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelector('.filter-option.active').classList.remove('active');
+        option.classList.add('active');
+        filterPosts();
+      });
+    });
+
+    searchButton.addEventListener('click', () => {
+      filterPosts();
+    });
+
+    paginationLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const page = parseInt(e.target.textContent);
+        filterPosts(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    // Initial filter
+    filterPosts();
+  </script>
+
+</body></html>
