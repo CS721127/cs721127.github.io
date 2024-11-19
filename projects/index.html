@@ -1,7 +1,7 @@
-<html><head><base href="https://cs721127.github.io/blog">
+<html><head><base href="https://cs721127.github.io/projects">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog | Cen Sun's Website</title>
+<title>Projects | Cen Sun's Website</title>
 <style>
   :root {
     --primary-color: #2196F3;
@@ -250,6 +250,11 @@
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
       }
+    </style><style>
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
     </style></head>
 <body>
   <header>
@@ -270,6 +275,33 @@
     
 
     <article class="blog-post" data-tags="daily-activity-share" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn; display: block;">
+      <img src="https://cs721127.github.io/asset/images/econ-web.jpg" alt="Econ Icon" width="800" height="300">
+      <div class="blog-post-content">
+        <h2>Economic Website: BNDS EconNexus</h2>
+        <div class="blog-post-meta">Posted on Nov 19, 2024 | Category: Economics &amp; Computer Science</div>
+        <div class="blog-post-excerpt">
+          <p>The current official website of the school lacks comprehensive content in the field of economics, specifically in terms of course information, extracurricular resources, and alumni profiles, which prevents students from accessing relevant information directly. The main objectives of this project are to establish an official economic platform similar to a university economics department website to achieve:<br><br>
+
+1. Provide high-quality learning resources for current students, such as in-school economic course materials, extracurricular study materials, and various economic content sharing (e.g., book reviews, interdisciplinary research, economics for fun blogs).<br>
+2. Build a communication bridge between alumni and students, offering opportunities for interaction and career development support.<br>
+3. Provide alumni with a convenient channel to stay updated on school news and access resources within the alumni network.<br>
+4. Address the current issues of outdated information and disorganized resource management on the school's website.
+<br><br>
+I am still working on this project with my classmates, and will notice more details later.
+</p>
+        </div>
+        <div class="tags">
+          <span class="tag">Economics</span>
+        <span class="tag">Computer Science</span></div>
+        <a href="https://cs721127.github.io/projects/" class="read-more">In Progress...</a>
+      </div>
+    </article>
+
+    
+
+    
+
+  <article class="blog-post" data-tags="daily-activity-share" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn; display: block;">
       <img src="https://cs721127.github.io/asset/images/pioneer-aus.jpg" alt="Upenn" width="800" height="300">
       <div class="blog-post-content">
         <h2>Pioneer Research: Economic Growth study in Australia </h2>
@@ -289,13 +321,7 @@ economic development (the factors of TFP).</p>
         </div>
         <a href="https://cs721127.github.io/projects/pioneer-aus" class="read-more">Read More</a>
       </div>
-    </article>
-
-    
-
-    
-
-  <article class="blog-post" data-tags="daily-activity-share" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn; display: block;">
+    </article><article class="blog-post" data-tags="daily-activity-share" style="animation: 0.5s ease-out 0.2s 1 normal forwards running fadeIn; display: block;">
       <img src="https://cs721127.github.io/asset/images/csa-vocab.jpg" alt="CSA Vocab" width="800" height="300">
       <div class="blog-post-content">
         <h2>Computer Science Project: Java Program For Vocabulary Collection and Memorization</h2>
@@ -369,7 +395,7 @@ economic development (the factors of TFP).</p>
 
       // Update pagination links
       paginationLinks.forEach((link, index) => {
-        link.href = `https://cs721127.github.io/blog?page=${index + 1}`;
+        link.href = `https://cs721127.github.io/projects?page=${index + 1}`;
         link.style.display = index === currentPage - 1 ? 'none' : 'inline-block';
       });
 
@@ -400,6 +426,7 @@ economic development (the factors of TFP).</p>
     // Initial filter
     filterPosts();
   </script>
+
 
 
 
