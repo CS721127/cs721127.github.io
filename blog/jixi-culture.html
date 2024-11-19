@@ -1,0 +1,386 @@
+<html><head><base href="https://cs721127.github.io/blog/jixi-culture"><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog - Jixi Culture and its Cuisine</title>
+<style>
+  :root {
+    --primary-color: #2196F3;
+    --secondary-color: #000000;
+    --text-color: #333;
+    --background-color: #f0f0f0;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  nav {
+    background-color: var(--secondary-color);
+    padding: 1rem;
+  }
+
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .blog-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .blog-meta {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .blog-tags {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .tag {
+    background: #e0e0e0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+
+  .blog-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .blog-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 2rem auto;
+    display: block;
+    border-radius: 8px;
+  }
+
+  .image-caption {
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--primary-color);
+    margin: 2rem 0;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #555;
+  }
+
+  .navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+  }
+
+  .nav-button {
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  .nav-button:hover {
+    background-color: #1976D2;
+  }
+
+  footer {
+    background-color: var(--secondary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+  }
+    .recommended-posts {
+    margin: 3rem auto;
+    max-width: 700px;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+  }
+
+  .recommended-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .recommended-post {
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: var(--text-color);
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .recommended-post:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+  }
+
+  .recommended-post h3 {
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+  }
+
+  .recommended-post p {
+    font-size: 0.9rem;
+    margin: 0;
+    color: #666;
+    line-height: 1.4;
+  }
+      .share-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #eee;
+    text-align: center;
+  }
+
+  .share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .share-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .share-button:hover {
+    opacity: 0.9;
+  }
+
+  .twitter-share {
+    background-color: #1DA1F2;
+  }
+
+  .facebook-share {
+    background-color: #1877F2;
+  }
+
+  .linkedin-share {
+    background-color: #0A66C2;
+  }
+
+  .facebook {
+    background-color: #1877F2;
+  }
+
+  .twitter {
+    background-color: #1DA1F2;
+  }
+
+  .linkedin {
+    background-color: #0A66C2;
+  }
+
+  @media (max-width: 1400px) {
+    .right-sidebar {
+      display: none;
+    }
+    .main-content {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Blog - My Hometown: Jixi Culture and Cuisine</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="https://cs721127.github.io/">Home</a></li>
+      <li><a href="https://cs721127.github.io/about">About</a></li>
+      <li><a href="https://cs721127.github.io/blog">Blog</a></li>
+      <li><a href="https://cs721127.github.io/projects">Projects</a></li>
+      <li><a href="https://cs721127.github.io/contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <article>
+      <div class="blog-header">
+        <h1>Jixi: A Culinary Journey Through Time and Culture</h1>
+        <div class="blog-meta">
+          <span>Published on Oct 30, 2024</span>
+          <span> • </span>
+          <span>By Cen</span>
+        </div>
+        <div class="blog-tags">
+          
+          <span class="tag">Culture Share</span>
+        </div>
+      </div>
+
+      <div class="blog-content">
+        <img src="https://cs721127.github.io/asset/images/201road.jpg" alt="201国道" class="blog-image">
+        <p class="image-caption">The Snow Scene of 201 Road, Jixi</p>
+    
+
+        <p>Jixi, located on the banks of Xingkai (Khanka) Lake and the Wusuli (Usuri) River in Heilongjiang Province, China, is one of the eastern border cities. Its jurisdictional area is somewhat equivalent to (NYC + Ville de Paris + London + 서울＋とうきょう) multiplied by five. </p>
+<img src="https://cs721127.github.io/asset/images/jixi-po.jpg" alt="坡" class="blog-image">
+        <p class="image-caption">The Slope of Jixi's Main Road</p><p>
+Jixi is a mountainous city, but unlike Chongqing, which truly builds its city on the mountains, Jixi is mainly built on slopes. Unlike Chongqing's visually stunning and magical effects, Jixi simply sits amidst the undulations.</p>
+<p>
+As the site of the famous Sino-Soviet Border War, Jixi was where it took place and has played a significant role in the border frictions between China and the Soviet Union since ancient times.</p>
+<img src="https://cs721127.github.io/asset/images/shidi.jpg" alt="东方红湿地" class="blog-image">
+        <p class="image-caption">The Dongfanghong Nunja</p><p>
+
+Moreover, Jixi is a forgotten resource city, known as the "Coal City" and the "Graphite City," which played an important role in the early stages of China's heavy industry construction and is now gradually transforming into a modern new city, shedding its heavy industrial facade. </p>
+<img src="https://cs721127.github.io/asset/images/bingdiao.jpg" alt="冰雪大世界" class="blog-image">
+        <p class="image-caption">The Snow World Held in Shuangya Mountain</p><p>
+
+            Every winter, Jixi begins its famous Ice and Snow World, where ice is used to create a variety of different sculptures, full of life and vigor. Although it doesn't receive as much attention as Harbin, which has recently gained popularity and is just an hour's drive away from Jixi, the quality of the ice sculptures in Jixi's Ice and Snow World has not diminished. In the hands of ice sculpture artists, they bring to life dragons, tigers, castles, and various other shapes.
+</p><p>
+
+Jixi is also a little-known but vibrant food city. In Mishan, one of the county-level cities under the jurisdiction of Jixi, there is the largest border lake in Asia - Xingkai (Khanka) Lake, which borders Russia across the sea. The Xingkai Lake White Fish Banquet, featuring the original white fish of Xingkai Lake, is a celebration of the region's natural resources. These dishes focus on health and nutrition, making them a unique culinary experience. </p>
+    <img src="https://cs721127.github.io/asset/images/xingkai.jpg" alt="The Xingkai Lake" class="blog-image">
+        <p class="image-caption">The Xingkai Lake</p>
+
+<p>Another county-level city, Hulin (Tiger Forest), has the Wusuli (Ussuri) River, which also serves as a border dividing line between China and Russia. The"Wusuli Boat Song," adapted from the Hezhen folk tune, has become widely known throughout the country. At the same time, the Wusuli River is abundant in Damaha fish (type of salmon), which can be fried or pickled to be delicious.</p><blockquote>(Chinese) <br>乌苏里江来长又长 <br>
+蓝蓝的江水起波浪<br>
+赫哲人撒开千张网<br>
+船儿满江鱼满仓 <br>
+The Ussuri River is long and vast, <br>
+With blue waves rolling wide and fast.<br>
+The Hezhen people cast a thousand nets,<br>
+Boats fill the river, fish fill the nets – Wusuli Boat Song</blockquote>
+
+        <p>
+
+Jixi's culinary culture is like a melting pot, where the flavors of the Manchu, Korean, Shandong, Russian, and Northeast China interweave to create a unique culinary experience. The city's cuisine is a testament to its historical and cultural diversity, reflecting its rich past and present.
+</p><p>
+Jixi spicy dishes, although similar in appearance to Korean kimchi, have a very special taste: fragrant but not spicy. Dried chili oil mixed with unique braised beef, chrysanthemum vegetables, tofu puffs, and accompanied by onions and cilantro, a plate of dishes can eat several bowls of rice. At the same time, this is also one of my favorite foods.
+</p>
+<img src="https://cs721127.github.io/asset/images/lacai.jpg" alt="Jixi Lacai" class="blog-image">
+        <p class="image-caption">The Jixi's Spicy Dishes called "Lacai"</p><p>
+As a city close to Russia, the rich Russian cuisine has also blown here. Sauerkraut stew and other dishes are our demand for food in the long and cold winter. Borscht, black bread, etc., have also become our daily dishes. Winter, the coldest season, is full of rich and comfortable food from Northeast China. Jixi's stew is the staple food for these months, including various meats and vegetables, slowly cooked to perfection.
+</p><p>
+Due to historical factors, many Shandong people came to the Northeast in the 19th and 20th centuries to "venture into the pass," and many people settled in Jixi, bringing the unique Shandong cuisine, the first of China's eight major cuisines. Among them, classic dishes such as Shandong buns and scallion-braised sea cucumber have also begun to spread in Jixi. At the same time, there is also one of the famous foods in Jixi, "Shanxi knife-shaved noodles." Yes, you heard it right, it comes from Shanxi. The first Shanxi knife-shaved noodle restaurant opened in Jixi was originally just a roadside stall in the morning and evening market. The operator took advantage of the characteristic of Jixi people's love for spicy taste, and changed the original soup of Shanxi knife-shaved noodles to a "spicy soup" stewed with chili, Sichuan pepper, and beef, forming another local snack in Jixi. Let's talk about this "spicy soup". As Sichuan people and Hunan people are widely spread for eating spicy, Jixi people can also eat spicy and love spicy food. This may be due to the popular eating method of Jixi cold noodles (also known as "spicy dishes").
+</p>
+<img src="https://cs721127.github.io/asset/images/haishen.jpg" alt="Haishen" class="blog-image">
+        <p class="image-caption">The Scallion-Braised Sea Cucumber</p><p>
+Jixi's culinary tradition is also reflected in its signature dishes. Jixi cold noodles are a fusion of Chinese and Korean culinary traditions. The most popular dish in Jixi, "Jixi cold noodles," is modified from the Korean cold noodles. These noodles are made from buckwheat or wheat noodles, with a taste that is heavier on sour, sweet, and salty flavors, different from the sweet and spicy flavors of Korea. From vegetarian choices such as tofu and seaweed to healthier meat and seafood options, they are essential side dishes for cold noodles and are loved by both locals and tourists. Gradually spreading from Jixi, even in Beijing, the city where I now live and study, you can also see their presence. They are served with a rich meat broth and are usually accompanied by various side dishes known as spicy dishes.
+</p>
+    <img src="https://cs721127.github.io/asset/images/lengmian.jpg" alt="鸡西大冷面" class="blog-image">
+        <p class="image-caption">The Jixi Famous Cold Noodle</p>
+    <p>
+At the same time, as a part of the three northeastern provinces, Jixi has also absorbed the unique dietary culture of the Northeast. Dishes such as sweet and sour pork, sauerkraut stewed blood sausage, and chicken stewed with mushrooms all reflect the simplicity and naturalness of Northeastern farmhouse cuisine, providing a healthy experience and enjoyment. At the same time, as a region that enjoys a very precious and diverse forest area, Jixi has not only contributed delicious food to people but also added bricks and tiles to the ecology of the Northeast region. Its Dongfanghong Wetland also provides living space for thousands of species.
+</p>
+<p>
+Jixi's architectural landscape, like its cuisine, is a fusion of traditional and modern influences. The city's architecture, with its unique characteristics, serves as the backdrop for its vibrant culinary scene. Traditional Manchu-style architecture emphasizes symmetry and harmony, coexisting with more modern buildings, reflecting the city's evolution while preserving its roots.
+</p><p>
+Jixi has a rich culinary heritage and a diverse range of foods, making it a city that truly embraces the flavors of the past and present. There, food is not only a necessity but also a celebration of culture and history, leaving a deep impression on all visitors.
+</p><p>
+If you have the opportunity, I would highly recommend you to visit there, and I guarantee you will gain a different experience!
+</p><p>
+PS. If you are interested in visit, you are also very welcome to contact me!</p>
+
+      </div>
+<div class="recommended-posts">
+        <h2>Recommended Reading</h2>
+        <div class="recommended-grid">
+          <a href="https://cs721127.github.io/blog/daffodil-review" class="recommended-post">
+            <h3>Daffodils: Analyzing Wordsworth's Poem and His Nature Enjoyment</h3>
+            <p>A brief book review about Wordsworth's notion of nature in his poem "I wandered lonely as a cloud..."</p>
+          </a>
+          <a href="https://webofcen.github.io/works/ideas/reflect-economics-learned.html" class="recommended-post">
+            <h3>Reflections on the Economics of Life: What I learned from my economics class</h3>
+            <p>Reflections on what my post-AP Economic learning...
+</p>
+          </a>
+        </div>
+      </div>
+    <div class="share-buttons">
+        <button class="share-button twitter-share" onclick="window.open('https://twitter.com/intent/tweet?text=Check out this review of The Tempest&amp;url=' + window.location.href)">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5 0-.28-.03-.56-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+          Twitter
+        </button>
+        <button class="share-button facebook-share" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href)">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          Facebook
+        </button>
+        <button class="share-button linkedin-share" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&amp;url=' + window.location.href)">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          LinkedIn
+        </button>
+      </div>
+      <div class="navigation-buttons">
+        <a href="https://cs721127.github.io/blog" class="nav-button">← Back to Blog</a>
+        
+      </div>
+    </article>
+  </div>
+
+  <footer>
+    <p>© 2024 Cen Sun's Website. All rights reserved.</p>
+  </footer>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</body></html>
