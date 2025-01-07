@@ -1,0 +1,357 @@
+<html><head><base href="https://cs721127.github.io/blog/tcm-diet-intro"><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traditional Chinese Medicine - Intro to Food and Diet</title>
+<style>
+  :root {
+    --primary-color: #2196F3;
+    --secondary-color: #000000;
+    --text-color: #333;
+    --background-color: #f0f0f0;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  nav {
+    background-color: var(--secondary-color);
+    padding: 1rem;
+  }
+
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .blog-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .blog-meta {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .blog-tags {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .tag {
+    background: #e0e0e0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+
+  .blog-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .blog-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 2rem auto;
+    display: block;
+    border-radius: 8px;
+  }
+
+  .image-caption {
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--primary-color);
+    margin: 2rem 0;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #555;
+  }
+
+  .navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+  }
+
+  .nav-button {
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+
+  .nav-button:hover {
+    background-color: #1976D2;
+  }
+
+  footer {
+    background-color: var(--secondary-color);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+  }
+    .recommended-posts {
+    margin: 3rem auto;
+    max-width: 700px;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+  }
+
+  .recommended-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .recommended-post {
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: var(--text-color);
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .recommended-post:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+  }
+
+  .recommended-post h3 {
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+  }
+
+  .recommended-post p {
+    font-size: 0.9rem;
+    margin: 0;
+    color: #666;
+    line-height: 1.4;
+  }
+      .share-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #eee;
+    text-align: center;
+  }
+
+  .share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .share-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .share-button:hover {
+    opacity: 0.9;
+  }
+
+  .twitter-share {
+    background-color: #1DA1F2;
+  }
+
+  .facebook-share {
+    background-color: #1877F2;
+  }
+
+  .linkedin-share {
+    background-color: #0A66C2;
+  }
+
+  .facebook {
+    background-color: #1877F2;
+  }
+
+  .twitter {
+    background-color: #1DA1F2;
+  }
+
+  .linkedin {
+    background-color: #0A66C2;
+  }
+
+  @media (max-width: 1400px) {
+    .right-sidebar {
+      display: none;
+    }
+    .main-content {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Blog - Traditional Chinese Medicine - Intro to Food and Diet</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="https://cs721127.github.io/">Home</a></li>
+      <li><a href="https://cs721127.github.io/about">About</a></li>
+      <li><a href="https://cs721127.github.io/blog">Blog</a></li>
+      <li><a href="https://cs721127.github.io/projects">Projects</a></li>
+      <li><a href="https://cs721127.github.io/contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <article>
+      <div class="blog-header">
+        <h1>Traditional Chinese Medicine: Introduction to What it Suggests about Food and Diet</h1>
+        <div class="blog-meta">
+          <span>Published on Jan 7, 2024</span>
+          <span> • </span>
+          <span>By Cen</span>
+        </div>
+        <div class="blog-tags">
+          
+          <span class="tag">Culture Share</span>
+        </div>
+      </div>
+
+      <div class="blog-content">
+        <img src="https://cs721127.github.io/asset/images/shiyao.jpg" alt="药食同源" class="blog-image">
+        <p class="image-caption">Yao Shi Tong Yuan</p>
+    
+
+        <p>Traditional Chinese Medicine (TCM) is a holistic system of health and wellness that has been practiced in China for thousands of years. TCM has a significant emphasis on the role of food and die. It is based on the concept of Qi (气 pronounced "chee"), which is the vital energy that flows through the body and the balance of Yin and Yang inside human body, aiming to maintain or restore it and harmony in the body by ensuring the smooth flow of Qi.</p>
+<img src="https://cs721127.github.io/asset/images/hanre.jpg" alt="Yin Yang" class="blog-image">
+        <p class="image-caption">The Cold 寒 and Warm 热 </p><p>In TCM, food is considered a natural form of medicine, called 药食同源. Each food item has its own unique properties that can influence the body in different ways. For example, ginger is known for its warming effects, which can help dispel cold and improve blood circulation, making it suitable for those with a cold constitution or during the early stages of a cold. On the other hand, mung beans have cooling and detoxifying properties, making them ideal for summer consumption to alleviate internal heat and toxins. This concept of "food as medicine" transforms eating into more than just satisfying hunger; it becomes a way to regulate body functions, prevent, and treat diseases.</p>
+    <img src="https://cs721127.github.io/asset/images/yinyang.jpg" alt="Yin Yang" class="blog-image">
+        <p class="image-caption">Yin and Yang and Five Elements</p>
+<p>Yin and Yang are central concepts in TCM, and foods are categorized based on their Yin or Yang attributes. Yin foods typically have cooling, moistening, and astringent characteristics, which are usually associated with cold 寒, such as fruits like pears, apples, and bananas, as well as vegetables and seafood like tofu and kelp. These foods are suitable for hot seasons or individuals with internal heat (well not exactly, still depends, will talk more in later posts), helping to lower body temperature, moisten the body, and alleviate symptoms of dryness. </p><p>Yang foods, with their warming, invigorating, and dispersing properties, include meats like beef, chicken, and lamb, as well as spices like ginger, garlic, and chili. These foods are ideal for cold seasons or individuals with a Yang deficiency, as they can warm the body, enhance Yang energy, and protect against cold. By properly combining Yin and Yang foods, one can achieve a balanced state of health, and that is the goal of eating healthy by the definition in TCM</p>
+<img src="https://cs721127.github.io/asset/images/wuxing.jpg" alt="五行" class="blog-image">
+        <p class="image-caption">The Five Fundamental Elements in TCM</p><p>TCM correlates the Five Elements (wood, fire, earth, metal, and water) with the Five Flavors (sour, bitter, sweet, pungent, and salty) and associates them with the body's Five Organs (liver, heart, spleen, lungs, and kidneys). Sour flavors, which enter the liver, have astringent and consolidating effects. Foods like hawthorn and dried plums can help the liver's function of free flow, regulate emotions, and alleviate fatigue. Bitter flavors, which enter the heart, have heat-clearing, damp-drying, and purgative effects. Foods like bitter melon and buckwheat are suitable for symptoms of excessive heart fire, insomnia, and mouth sores. </p><p>Sweet flavors, which enter the spleen, have nourishing and harmonizing effects. Foods like dates, honey, and pumpkin can strengthen the spleen and stomach, replenish energy, and boost immunity. Pungent flavors, which enter the lungs, have dispersing, qi-moving, and blood-activating effects. Foods like onions, ginger, and garlic can help the lungs' function of dispersing and descending, relieve coughs, and prevent colds. Salty flavors, which enter the kidneys, have softening, moistening downward, and purgative effects. Foods like kelp and nori are suitable for symptoms of kidney deficiency, back pain, and edema. </p><p>In this case, the healthy diet system can be built by following the matches. (Also, note that the color of the food also matters, will take about it more in later blogs:) )</p>
+<img src="https://cs721127.github.io/asset/images/heyi.jpg" alt="天人合一" class="blog-image">
+        <p class="image-caption">The Unity of Heaven and Man (Tian Ren He Yi)</p><p>TCM emphasizes the concept of "unity of heaven and man(天人合一)," suggesting that the human body is closely connected to nature, and diet should align with the changing seasons. </p><p>In spring, as temperatures rise and liver energy becomes more active, it is advisable to consume foods that promote growth and liver function, such as green leafy vegetables, bean sprouts, and strawberries. These foods help the liver's free flow and boost metabolism. During the hot summer, the body tends to sweat more, leading to the loss of qi and body fluids. It is important to eat cooling and thirst-quenching foods like watermelon, cucumber, and mung bean soup, while also ensuring adequate hydration and electrolyte replenishment. In the dry autumn, the body is prone to symptoms like lung dryness and cough, and skin dryness. Foods like pears, apples, sesame seeds, and honey, which have moistening and nourishing effects, can help alleviate these symptoms. In the cold winter, when the body's yang energy is conserved and metabolism slows down, it is beneficial to consume warm and nourishing foods like beef, chicken, black beans, and walnuts to enhance yang energy and keep the body warm. </p><p> These are something foundamental to notice when studying TCM, that is always adapt the nature, not against it. 
+</p>
+    <img src="https://cs721127.github.io/asset/images/jiezhi.jpg" alt="节制饮食" class="blog-image">
+        <p class="image-caption">Moderate Diet</p>
+
+<p>TCM advocates for "moderation in diet（饮食节制）," emphasizing that excessive or insufficient eating can have adverse effects on health. Overeating can burden the spleen and stomach, leading to indigestion, accumulation of food, obesity, and the production of dampness and heat, which can affect overall health. On the other hand, insufficient eating can lead to a lack of necessary nutrients, resulting in symptoms of qi and blood deficiency and general weakness. Therefore, it is recommended to eat until about 70% full, which satisfies the body's nutritional needs without overburdening the digestive system. Additionally, maintaining regular meal times and avoiding binge eating helps establish good dietary habits, supporting the body's normal functions and health.</p>
+
+        
+
+        <p>TCM also focuses on individualized treatment, recognizing that each person's constitution, age, gender, and living environment are different. Therefore, diet should be tailored to individual needs. For example, individuals with a qi deficiency should consume foods that have invigorating effects, such as astragalus, ginseng, and yam, to boost energy and immunity. Those with a damp-heat constitution should eat foods with heat-clearing and dampness-reducing effects, like mung beans, winter melon, and bitter melon, to alleviate damp-heat symptoms and regulate the body. For the elderly, whose spleen and stomach functions may be weaker, it is advisable to choose easily digestible and nutrient-rich foods, such as porridge, steamed eggs, and soups, to reduce the burden on the digestive system and ensure adequate nutrition. For children, who are in a critical period of growth and development, a balanced diet rich in proteins, calcium, iron, and other nutrients, such as milk, eggs, lean meat, and vegetables, is essential for healthy growth.
+</p>
+
+        
+    
+        
+    
+<p>These are my brief introduction to what Traditional Chinese Medicine suggests about our daily diet and food selection. I hope this can help you to have a healthy life. Thank you for your reading! 
+</p><p>
+PS. I will be writing a series of blogs regarding TCM from the very basic point to the advanced level, covering topics like acupuncture针灸, moxibustion艾灸, and the use of medicine (which I will introduce some books recommended to read). If you are interested in hearing more about TCM or have any topics related that you want to see, you are very welcome to contact me at the "Contact" section of this website! </p>
+
+      </div>
+<div class="recommended-posts">
+        <h2>Recommended Reading</h2>
+        <div class="recommended-grid">
+          <a href="https://cs721127.github.io/blog/jixi-culture" class="recommended-post">
+            <h3>Introduction to My Hometown: Jixi Culture and Cuisine</h3>
+            <p>The first introduction to my hometwon Jixi (鸡西) with its great culture and food...</p>
+          </a>
+          <a href="https://webofcen.github.io/works/ideas/reflect-economics-learned.html" class="recommended-post">
+            <h3>Reflections on the Economics of Life: What I learned from my economics class</h3>
+            <p>Reflections on what my post-AP Economic learning...
+</p>
+          </a>
+        </div>
+      </div>
+    <div class="share-buttons">
+        <button class="share-button twitter-share" onclick="window.open('https://twitter.com/intent/tweet?text=Check out this review of The Tempest&amp;url=' + window.location.href)">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5 0-.28-.03-.56-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+          Twitter
+        </button>
+        <button class="share-button facebook-share" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href)">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          Facebook
+        </button>
+        <button class="share-button linkedin-share" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&amp;url=' + window.location.href)">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          LinkedIn
+        </button>
+      </div>
+      <div class="navigation-buttons">
+        <a href="https://cs721127.github.io/blog" class="nav-button">← Back to Blog</a>
+        
+      </div>
+    </article>
+  </div>
+
+  <footer>
+    <p>© 2024 Cen Sun's Website. All rights reserved.</p>
+  </footer>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+<iframe id="XwUVz5Qi" frameborder="0" src="chrome-extension://ekhagklcjbdpajgpjgmbionohlpdbjgc/translateSandbox/translateSandbox.html" style="width: 0px; height: 0px; display: none;"></iframe><iframe id="juEScE4V" frameborder="0" src="chrome-extension://ekhagklcjbdpajgpjgmbionohlpdbjgc/translateSandbox/translateSandbox.html" style="width: 0px; height: 0px; display: none;"></iframe></body></html>
