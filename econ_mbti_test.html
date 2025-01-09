@@ -1,0 +1,149 @@
+<html lang="en" class=""><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Economics Personality Test</title>
+    <style>body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+h2 {
+    color: #555;
+    margin-top: 20px;
+}
+
+p {
+    margin: 10px 0;
+}
+
+.question {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin: 5px 0;
+}
+
+button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    display: none;
+}</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Economics Personality Test</h1>
+        <p>Answer the following questions to determine your economic personality traits.</p>
+        <form id="testForm">
+            <!-- Rationality Test -->
+            <h2>Rationality Test</h2>
+            <div class="question">
+                <p>1. In making decisions, what do you rely on the most?</p>
+                <label><input type="radio" name="q1" value="4"> A. Facts and logical analysis</label><br>
+                <label><input type="radio" name="q1" value="2"> B. Feelings and intuition</label><br>
+                <label><input type="radio" name="q1" value="1"> C. Others' opinions and suggestions</label><br>
+                <label><input type="radio" name="q1" value="3"> D. Past experiences and habits</label>
+            </div>
+            <div class="question">
+                <p>2. How far in advance do you usually start planning your financial goals?</p>
+                <label><input type="radio" name="q2" value="4"> A. More than a year</label><br>
+                <label><input type="radio" name="q2" value="3"> B. 3-6 months</label><br>
+                <label><input type="radio" name="q2" value="2"> C. 1-3 months</label><br>
+                <label><input type="radio" name="q2" value="1"> D. Almost never</label>
+            </div>
+
+            <!-- Risk Preference Test -->
+            <h2>Risk Preference Test</h2>
+            <div class="question">
+                <p>3. Which investment option do you prefer?</p>
+                <label><input type="radio" name="q3" value="4"> A. High-risk, high-reward stocks</label><br>
+                <label><input type="radio" name="q3" value="3"> B. Medium-risk, medium-reward funds</label><br>
+                <label><input type="radio" name="q3" value="2"> C. Low-risk, low-reward bonds</label><br>
+                <label><input type="radio" name="q3" value="1"> D. No investment, keep money in the bank</label>
+            </div>
+            <div class="question">
+                <p>4. How do you react when facing an uncertain decision?</p>
+                <label><input type="radio" name="q4" value="4"> A. Actively explore possibilities and look for opportunities</label><br>
+                <label><input type="radio" name="q4" value="2"> B. Carefully assess risks and try to avoid making a decision</label><br>
+                <label><input type="radio" name="q4" value="1"> C. Rely on others' opinions to make a decision</label><br>
+                <label><input type="radio" name="q4" value="3"> D. Feel anxious and have difficulty making a decision</label>
+            </div>
+
+            <button type="button" onclick="submitTest()">Submit</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+    <script>function submitTest() {
+    // Get form values
+    const q1 = document.querySelector('input[name="q1"]:checked').value;
+    const q2 = document.querySelector('input[name="q2"]:checked').value;
+    const q3 = document.querySelector('input[name="q3"]:checked').value;
+    const q4 = document.querySelector('input[name="q4"]:checked').value;
+
+    // Calculate scores
+    const rationalityScore = parseInt(q1) + parseInt(q2);
+    const riskPreferenceScore = parseInt(q3) + parseInt(q4);
+
+    // Determine results
+    let rationalityResult = '';
+    let riskPreferenceResult = '';
+
+    if (rationalityScore >= 6) {
+        rationalityResult = 'High rationality: You make decisions based on facts and logical analysis, and have strong planning and self-control abilities.';
+    } else if (rationalityScore >= 4) {
+        rationalityResult = 'Moderate rationality: You balance facts and feelings in your decision-making process.';
+    } else {
+        rationalityResult = 'Low rationality: You often rely on feelings and others\' opinions to make decisions.';
+    }
+
+    if (riskPreferenceScore >= 6) {
+        riskPreferenceResult = 'High risk preference: You are willing to take risks to achieve higher rewards and have a strong spirit of adventure and innovation.';
+    } else if (riskPreferenceScore >= 4) {
+        riskPreferenceResult = 'Moderate risk preference: You carefully assess risks and opportunities before making decisions.';
+    } else {
+        riskPreferenceResult = 'Low risk preference: You prefer to avoid risks and stick to safe and stable options.';
+    }
+
+    // Display results
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `
+        <h2>Test Results</h2>
+        <p><strong>Rationality:</strong> ${rationalityResult}</p>
+        <p><strong>Risk Preference:</strong> ${riskPreferenceResult}</p>
+    `;
+    resultDiv.style.display = 'block';
+}</script>
+
+</body></html>
