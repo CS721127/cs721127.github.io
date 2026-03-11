@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw: How a Self-Hosted AI Assistant Actually Works — Cen Sun</title>
+  <meta name="description"
+    content="A plain-language deep dive into OpenClaw's architecture: Gateway, sessions, tools, channels, and the ReAct loop.">
+  <link rel="stylesheet" href="../asset/css/theme.css">
+  <link rel="stylesheet" href="../asset/css/article.css">
+  <style>
+    /* ─── QUOTE BLOCK ─── */
+    .quote-block {
+      margin: 2rem 0;
+      padding: 1.3rem 1.5rem 1.3rem 1.8rem;
+      background-color: var(--surface-warm, rgba(255,255,255,0.03));
+      border-left: 4px solid var(--ocean-mid);
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 1.02rem;
+      line-height: 1.7;
+      border-radius: 0 4px 4px 0;
+      position: relative;
+    }
+    .quote-block::before {
+      content: '"';
+      position: absolute;
+      top: 0.3rem;
+      left: 0.9rem;
+      font-size: 3rem;
+      font-family: 'Lora', serif;
+      color: var(--ocean-mid);
+      opacity: 0.2;
+      line-height: 1;
+    }
+
+    /* ─── CALLOUT ─── */
+    .callout {
+      margin: 1.8rem 0;
+      padding: 1.1rem 1.4rem;
+      border-radius: 4px;
+      border-left: 4px solid;
+      font-size: 0.93rem;
+      line-height: 1.65;
+    }
+    .callout.tip    { background: rgba(61,138,61,0.1);    border-color: #3d8a3d; color: #508650; }
+    .callout.warning{ background: rgba(200,146,10,0.1);   border-color: var(--gold); color: #e0d0a0; }
+    .callout.danger { background: rgba(181,69,27,0.1);    border-color: #b5451b; color: #eca890; }
+    .callout-label {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+      opacity: 0.9;
+      font-style: normal;
+    }
+
+    /* ─── CODE ─── */
+    pre {
+      background: #1e1b16;
+      color: #e5ddd0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.79rem;
+      line-height: 1.75;
+      padding: 1.4rem 1.5rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 1.6rem 0;
+      border-left: 3px solid var(--ocean-mid);
+      position: relative;
+      white-space: pre;
+    }
+    pre .cm  { color: #889279; font-style: italic; }
+    pre .kw  { color: #ff8080; }
+    pre .str { color: #a5dca5; }
+    pre .fn  { color: #a4cff9; }
+    pre .tp  { color: #f5c472; }
+    pre .num { color: #dfc5f0; }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.83em;
+      background: rgba(255,255,255,0.05);
+      color: #4471ac;
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* ─── DATA TABLE ─── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.6rem 0;
+      font-size: 0.88rem;
+    }
+    .data-table th {
+      font-family: 'Fira Code', ui-monospace, 'PingFang SC', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.03);
+      padding: 0.65rem 1rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border-light);
+    }
+    
+    .data-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ─── FLOW / DIAGRAM ─── */
+    .flow-diagram {
+      background: #1e1b16;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.76rem;
+      line-height: 1.85;
+      color: #a3bfa3;
+      padding: 1.5rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 1.6rem 0;
+      border-left: 3px solid var(--gold);
+      position: relative;
+      white-space: pre;
+    }
+    .flow-diagram::before {
+      content: 'SYSTEM DIAGRAM';
+      position: absolute;
+      top: 0.5rem;
+      right: 0.9rem;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      opacity: 0.5;
+    }
+    .flow-diagram .nd { color: #a4cff9; }
+    .flow-diagram .ar { color: #c8a840; }
+    .flow-diagram .lb { color: #c09060; }
+    .flow-diagram .dm { color: #7a8282; }
+
+    /* ─── TIMELINE ─── */
+    .timeline { list-style: none; margin: 1.8rem 0; padding: 0; }
+    .timeline li {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 0 1rem;
+      margin-bottom: 0.9rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      padding-bottom: 0.9rem;
+      border-bottom: 1px dashed var(--border-light);
+    }
+    .timeline li:last-child { border-bottom: none; }
+    .timeline .ts {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: var(--ocean-mid);
+      padding-top: 0.15rem;
+      font-weight: 500;
+    }
+
+    /* ─── DIVIDER ─── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0;
+    }
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-light);
+    }
+    .section-divider span {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* Copy button */
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #e5ddd0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.65rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s, background 0.2s;
+    }
+    pre:hover .copy-btn { opacity: 1; }
+    .copy-btn:hover { background: rgba(255,255,255,0.2); }
+    .copy-btn.copied { background: var(--gold); color: #1e1b16; border-color: var(--gold); }
+
+    /* Bilingual spans */
+    .zh { display: none; }
+    body.zh-mode .en { display: none; }
+    body.zh-mode .zh { display: inline; }
+
+    p.zh, li.zh, h2.zh, h3.zh, span.zh, div.zh { display: none; }
+    body.zh-mode p.zh,
+    body.zh-mode li.zh,
+    body.zh-mode h2.zh,
+    body.zh-mode h3.zh,
+    body.zh-mode span.zh,
+    body.zh-mode div.zh { display: block; }
+    body.zh-mode p.en,
+    body.zh-mode li.en,
+    body.zh-mode h2.en,
+    body.zh-mode h3.en,
+    body.zh-mode span.en,
+    body.zh-mode div.en { display: none; }
+
+    /* pre.flow-diagram in zh-mode still show */
+    pre.flow-diagram { display: block !important; }
+
+    /* Language toggle bar */
+    .lang-toggle-bar {
+      text-align: right;
+      margin: -0.5rem 0 1.5rem;
+    }
+    .lang-toggle-bar button {
+      background: none;
+      border: 1px solid var(--border-mid);
+      color: var(--ocean-mid);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin-left: 0.4rem;
+    }
+    .lang-toggle-bar button:hover,
+    .lang-toggle-bar button.active {
+      background: var(--ocean);
+      color: var(--warm-white);
+      border-color: var(--ocean);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Cen Sun &nbsp;·&nbsp; Blog</h1>
+    <p class="sub">Systems design, AI, and applied technology</p>
+  </header>
+
+  <nav id="main-nav">
+    <ul>
+      <li><a href="https://cs721127.github.io/">Home</a></li>
+      <li><a href="https://cs721127.github.io/about">About</a></li>
+      <li><a href="https://cs721127.github.io/blog" class="active">Blog</a></li>
+      <li><a href="https://cs721127.github.io/projects">Projects</a></li>
+      <li><a href="https://cs721127.github.io/contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <article>
+
+      <!-- ARTICLE HEADER -->
+      <div class="article-header">
+        <h1 class="en">OpenClaw:<br><em>How a Self-Hosted AI Assistant Actually Works</em></h1>
+        <h1 class="zh">OpenClaw:<br><em>通俗技术解读</em></h1>
+        <p class="subtitle en">From token prediction to real conversations — and how to run it all on your own machine</p>
+        <p class="subtitle zh">用大白话，把每一行代码背后的逻辑讲清楚</p>
+        <div class="article-meta">
+          <span>Posted Mar 11, 2026</span>
+          <span class="sep">·</span>
+          <span>By Cen</span>
+          <span class="sep">·</span>
+          <span class="tag">Systems Design</span>
+          <span class="tag">AI Infrastructure</span>
+          <span class="tag">Node.js</span>
+        </div>
+      </div>
+
+      <!-- ARTICLE CONTENT -->
+      <div class="article-content">
+
+        <!-- Language toggle -->
+        <div class="lang-toggle-bar">
+          <button id="lang-en" class="active" onclick="setLang('en')">EN</button>
+          <button id="lang-zh" onclick="setLang('zh')">中文</button>
+        </div>
+
+        <!-- Hero image -->
+        <div class="image-pair">
+          <img src="../asset/images/openclaw.jpg" alt="OpenClaw — AI Gateway" style="object-fit:cover;">
+          <img src="https://placehold.co/600x400/1e1b16/c8a840?text=Self-Hosted+AI" alt="OpenClaw — Self-Hosted AI" style="object-fit:cover;">
+        </div>
+
+        <!-- ── PREFACE ── -->
+        <h2 class="en">Preface — Why I Wrote This</h2>
+        <h2 class="zh">前言——为什么要写这篇文章</h2>
+
+        <div class="quote-block en">
+          "The most powerful person in the world is the storyteller. The storyteller sets the vision, values, and agenda of an entire generation that is to come."<br>
+          — Steve Jobs
+        </div>
+        <div class="quote-block zh">
+          "最有力量的人是讲故事的人。讲故事的人为下一整代人设定了视野、价值观和议题。"<br>
+          — 史蒂夫·乔布斯
+        </div>
+
+        <p class="en">Every time I say "I built an AI assistant that lives on my own machine," someone asks the same question: <em>but how does it actually work?</em> Not "what does it do" — but what happens, technically, from the moment you send a message until a reply appears on your screen.</p>
+        <p class="zh">每次我说"我在自己的机器上搭建了一个 AI 助手"，都会有人问同一个问题：<em>但它到底是怎么工作的？</em>不是"它能做什么"——而是从你发出一条消息到屏幕上出现回复，技术层面究竟发生了什么。</p>
+
+        <p class="en">I wrote this post because I couldn't find a complete answer anywhere. Most documentation covers installation and usage; almost nothing explains the internal architecture in plain language. This is the post I wish had existed when I started.</p>
+        <p class="zh">我写这篇文章，是因为我找不到一个完整的答案。大多数文档只讲安装和使用，几乎没有用通俗语言解释内部架构的内容。这正是我在刚开始研究时希望能读到的那篇文章。</p>
+
+        <p class="en">OpenClaw runs on your hardware, connects to every chat platform you already use, and routes your messages through any AI model you choose — without your conversation ever touching a third-party server beyond the AI API itself. Let me show you how every layer of that system actually works.</p>
+        <p class="zh">OpenClaw 跑在你自己的硬件上，连接你已经在用的每个聊天平台，并将你的消息路由到你选择的任意 AI 模型——你的对话除了 AI API 本身，不会经过任何第三方服务器。让我带你看看这个系统的每一层究竟是怎么运作的。</p>
+
+        <!-- ── WHAT IS IT ── -->
+        <div class="section-divider"><span>chapter 1 — what is openclaw</span></div>
+
+        <h2 class="en">What Is OpenClaw, Exactly?</h2>
+        <h2 class="zh">第一章：它到底是个什么东西？</h2>
+
+        <p class="en">The one-sentence answer: <strong>OpenClaw is a self-hosted AI agent gateway that runs on your own computer</strong>. When you use ChatGPT, your message travels to OpenAI's servers and back — your conversation runs on someone else's machine. OpenClaw reverses that: the control plane lives on your machine, but you communicate through the chat apps you already have — Telegram, Slack, WhatsApp.</p>
+        <p class="zh">先说最重要的一句话：<strong>OpenClaw 是一个跑在你自己电脑上的 AI 助手调度系统</strong>。</p>
+        <p class="zh">这话听起来还是有点绕，我们对比一下就明白了。你平时用 ChatGPT，你发一条消息，它跑到 OpenAI 的服务器上兜一圈再回来——你的对话全程走的是别人的机器。OpenClaw 的思路反过来：让这个调度系统住在你自己的电脑或服务器上，但你不需要专门打开一个 App 跟它说话，用你已经装了的 Telegram、Slack、WhatsApp 就行。</p>
+
+        <p class="en">In architectural terms, it is a <strong>self-hosted, multi-modal AI Agent gateway</strong>. Unpacking that:</p>
+        <p class="zh">在架构术语里，这叫 <strong>自托管多模态 AI Agent 网关</strong>。拆开说：</p>
+
+        <p class="en"><strong>Self-hosted</strong> means the control plane runs on your own machine — no third-party servers in the middle. <strong>Multi-modal</strong> means it handles text, images, audio, and video. <strong>AI Agent</strong> means the AI doesn't just reply — it can call tools, observe results, and reason in a loop. <strong>Gateway</strong> means all traffic flows through one central point.</p>
+        <ul class="zh">
+          <li><strong>自托管</strong>：跑在你自己机器上，不依赖第三方平台</li>
+          <li><strong>多模态</strong>：能处理文字、图片、音频、视频</li>
+          <li><strong>AI Agent</strong>：不只是聊天，还能主动调用工具做事</li>
+          <li><strong>网关</strong>：所有流量的统一入口和出口</li>
+        </ul>
+
+        <p class="en">The entire project is written in <strong>TypeScript</strong>, runs on <strong>Node.js 22+</strong>, and its monorepo is managed with <code>pnpm workspaces</code>.</p>
+        <p class="zh">整个项目用 <strong>TypeScript</strong> 写的，跑在 <strong>Node.js 22+</strong> 上，代码仓库用 <code>pnpm workspaces</code> 管理（这是一种把多个子项目放在同一个代码仓库里的方式，叫 monorepo）。</p>
+
+        <p class="en">The complete data path through the system:</p>
+        <p class="zh">消息在系统里的完整旅程是这样的：</p>
+
+        <pre class="flow-diagram">外部聊天平台（Telegram / WhatsApp / Slack / Discord / Signal / iMessage…）
+        │  webhook 或长连接
+        ▼
+   Channel Adapter（平台适配器）
+        │  把消息标准化为统一格式 InboundMessage
+        ▼
+   Gateway Event Bus（内部消息总线）
+        │  路由决策
+        ▼
+   Session Manager（会话管理器）──► SQLite 数据库
+        │  组装对话历史 + 上下文
+        ▼
+   Pi Agent Runtime（AI 的运行时）
+        │  构建 LLM 请求
+        ▼
+   Model Provider Layer（模型提供商层）──► OpenAI / Anthropic / 其他
+        │  流式响应
+        ▼
+   Tool Executor（工具执行器）
+        │  执行工具，结果回注给 LLM
+        ▼
+   Channel Adapter──► 把回复发回平台</pre>
+
+        <!-- ── GATEWAY ── -->
+        <div class="section-divider"><span>chapter 2 — the gateway</span></div>
+
+        <h2 class="en">The Gateway: Your Machine's Always-On Switchboard</h2>
+        <h2 class="zh">第二章：Gateway——整个系统的神经中枢</h2>
+
+        <p class="en">When you run <code>openclaw gateway --port 18789</code>, a single long-lived process starts up and becomes the control plane of the whole system. Everything — every chat platform, every AI model, every device — communicates through it. It boots at system startup, restarts on crash, and runs silently as a daemon (managed by <code>launchd</code> on macOS, <code>systemd</code> on Linux).</p>
+        <p class="zh">Gateway 是你装好 OpenClaw 之后一直在后台跑的那个进程，它是整套系统的"总调度员"。你可以把它想象成一个永远开着的服务台，所有来自外部的消息都先到它这里，它来决定交给谁处理，处理完了再通过它把回复发出去。</p>
+
+        <p class="en">The first thing Gateway does is open a <strong>WebSocket server</strong> listening on <code>127.0.0.1:18789</code> by default. WebSocket differs from HTTP in a fundamental way: HTTP is "you ask, I answer, conversation over" — each request is independent. WebSocket is "we open a phone line and keep talking" — the connection stays open. Gateway uses WebSocket to maintain persistent connections with all clients (your phone app, CLI tool, web console, and the AI itself).</p>
+        <p class="zh">在技术上，Gateway 做的第一件事是在你电脑上开一个 <strong>WebSocket 服务器</strong>，默认监听本机的 <code>127.0.0.1:18789</code>。</p>
+        <p class="zh">WebSocket 是什么？它是一种网络通信协议，和你平时浏览网页用的 HTTP 最大的区别是：HTTP 是"你问我答，说完拉倒"，每次请求都是独立的；WebSocket 是"我们建立一条电话线路，之后想说什么随时说"，连接一直保持。Gateway 用 WebSocket 和所有客户端（你的手机 App、命令行工具、Web 控制台、AI 助手本体）保持长连接。</p>
+
+        <p class="en">The protocol it exposes is <strong>JSON-RPC over WebSocket</strong> — a permanent bidirectional pipe. Unlike HTTP where each request is its own conversation, Gateway can push events to clients the moment something happens — most importantly, pushing individual words of an AI reply as they're generated.</p>
+        <p class="zh">Gateway 暴露的通信协议叫 <strong>JSON-RPC over WebSocket</strong>——用 JSON 格式打包的远程过程调用协议。简单说，就是你通过 WebSocket 发一段 JSON，告诉 Gateway 你要调用什么方法、参数是什么，Gateway 处理完给你回一段 JSON。</p>
+
+        <p class="en">When a client connects, it sends a handshake first:</p>
+        <p class="zh">连接建立时客户端要先打个招呼：</p>
+
+        <pre><span class="kw">const</span> ws = <span class="kw">new</span> <span class="tp">WebSocket</span>(<span class="str">'ws://127.0.0.1:18789'</span>);
+
+ws.<span class="fn">on</span>(<span class="str">'open'</span>, () => {
+  ws.<span class="fn">send</span>(<span class="tp">JSON</span>.<span class="fn">stringify</span>({
+    method: <span class="str">'client.hello'</span>,
+    params: { type: <span class="str">'cli'</span>, version: <span class="str">'2025.3.10'</span> }
+  }));
+});
+
+ws.<span class="fn">on</span>(<span class="str">'message'</span>, (data) => {
+  <span class="kw">const</span> msg = <span class="tp">JSON</span>.<span class="fn">parse</span>(data);
+  <span class="cm">// msg.method — event type (what happened)</span>
+  <span class="cm">// msg.params — event data (the actual content)</span>
+  <span class="cm">// msg.id     — request ID, used to match requests to replies</span>
+});</pre>
+
+        <p class="en">The full vocabulary of the Gateway protocol:</p>
+        <p class="zh">Gateway 支持的主要 RPC 方法如下，这张表几乎就是 Gateway 功能的完整目录：</p>
+
+        <table class="data-table">
+          <thead>
+            <tr class="en">
+              <th>Method</th><th>Direction</th><th>What it does</th>
+            </tr>
+            <tr class="zh">
+              <th>方法名</th><th>谁发给谁</th><th>干什么</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>sessions.list</code></td>
+              <td><span class="en">Client → GW</span><span class="zh">客户端 → Gateway</span></td>
+              <td><span class="en">List all active conversations</span><span class="zh">列出所有对话</span></td>
+            </tr>
+            <tr>
+              <td><code>sessions.patch</code></td>
+              <td><span class="en">Client → GW</span><span class="zh">客户端 → Gateway</span></td>
+              <td><span class="en">Update session settings (model, thinking level, elevated mode…)</span><span class="zh">修改对话设置（换模型、调思考深度等）</span></td>
+            </tr>
+            <tr>
+              <td><code>sessions.history</code></td>
+              <td><span class="en">Client → GW</span><span class="zh">客户端 → Gateway</span></td>
+              <td><span class="en">Pull conversation message history from SQLite</span><span class="zh">拉取对话历史记录</span></td>
+            </tr>
+            <tr>
+              <td><code>agent.send</code></td>
+              <td><span class="en">Client → GW</span><span class="zh">客户端 → Gateway</span></td>
+              <td><span class="en">Inject a message into a session's Agent</span><span class="zh">向某个对话的 AI 发消息</span></td>
+            </tr>
+            <tr>
+              <td><code>node.list</code></td>
+              <td><span class="en">Device → GW</span><span class="zh">设备节点 → Gateway</span></td>
+              <td><span class="en">Device registers its capabilities on connect</span><span class="zh">设备注册自己的能力清单</span></td>
+            </tr>
+            <tr>
+              <td><code>node.invoke</code></td>
+              <td><span class="en">GW → Device</span><span class="zh">Gateway → 设备节点</span></td>
+              <td><span class="en">Ask a device node to run a local action</span><span class="zh">让设备执行某个本地操作</span></td>
+            </tr>
+            <tr>
+              <td><code>stream.chunk</code></td>
+              <td><span class="en">GW → Client</span><span class="zh">Gateway → 客户端</span></td>
+              <td><span class="en">One fragment of the AI's streaming reply (typing effect)</span><span class="zh">AI 正在输出的文字片段（打字效果）</span></td>
+            </tr>
+            <tr>
+              <td><code>stream.done</code></td>
+              <td><span class="en">GW → Client</span><span class="zh">Gateway → 客户端</span></td>
+              <td><span class="en">Signals the reply is complete</span><span class="zh">AI 输出结束</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="en">The Internal Broadcast Station — Event Bus</h3>
+        <h3 class="zh">Gateway 内部的"广播站"——Event Bus</h3>
+
+        <p class="en">Inside, modules communicate through a Pub/Sub <strong>Event Bus</strong>. A Channel Adapter publishes an <code>inbound_message</code> event; the Session Manager subscribes, decides routing; the Agent publishes <code>stream.chunk</code> events; the Gateway forwards them over WebSocket. No module needs to know the internals of any other — that's the point of decoupling.</p>
+        <p class="zh">Gateway 内部有一个<strong>发布-订阅（Pub/Sub）事件总线</strong>，就像广播电台一样：任何模块可以向总线"发布"一个事件，其他任何模块可以"订阅"并监听这个事件。</p>
+        <p class="zh">这个设计的好处是让各模块彼此不需要直接认识：WhatsApp 适配器只管"我收到消息了，向总线广播一下"；Session 管理器只管"监听消息事件，路由给对应对话"；它们之间完全不知道对方存在。这叫做<strong>解耦</strong>，改一个模块不会牵连其他模块。</p>
+
+        <h3 class="en">How Gateway Auto-starts on Boot</h3>
+        <h3 class="zh">Gateway 怎么做到开机自启？</h3>
+
+        <p class="en">Gateway is a <strong>daemon process</strong>, managed by the OS service manager. On macOS it uses <code>launchd</code> with a <code>.plist</code> config file. The key fields are <code>RunAtLoad</code> (start on login) and <code>KeepAlive</code> (restart automatically if it crashes):</p>
+        <p class="zh">Gateway 是一个<strong>守护进程（Daemon）</strong>，由操作系统的服务管理器托管，机器重启后自动拉起。macOS 上使用 <code>launchd</code>，通过一个 <code>.plist</code> 配置文件描述如何启动进程：</p>
+
+        <pre><span class="cm">&lt;!-- ~/Library/LaunchAgents/ai.openclaw.gateway.plist --&gt;</span>
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+  &lt;key&gt;Label&lt;/key&gt;
+  &lt;string&gt;ai.openclaw.gateway&lt;/string&gt;
+  &lt;key&gt;ProgramArguments&lt;/key&gt;
+  &lt;array&gt;
+    &lt;string&gt;/usr/local/bin/node&lt;/string&gt;
+    &lt;string&gt;/path/to/openclaw/dist/gateway.js&lt;/string&gt;
+    &lt;string&gt;--port&lt;/string&gt;
+    &lt;string&gt;18789&lt;/string&gt;
+  &lt;/array&gt;
+  &lt;key&gt;RunAtLoad&lt;/key&gt;&lt;true/&gt;   <span class="cm">&lt;!-- 登录时自动启动 / Start on login --&gt;</span>
+  &lt;key&gt;KeepAlive&lt;/key&gt;&lt;true/&gt;   <span class="cm">&lt;!-- 崩溃后自动重启 / Restart on crash --&gt;</span>
+  &lt;key&gt;StandardOutPath&lt;/key&gt;
+  &lt;string&gt;~/.openclaw/logs/gateway.log&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;</pre>
+
+        <p class="en">On Linux, <code>systemd</code> works on the same principle: define the process path, startup arguments, and crash-restart policy.</p>
+        <p class="zh">Linux 上用 <code>systemd</code>，原理完全相同：定义进程路径、启动参数、崩溃重启策略。<code>KeepAlive: true</code> 是关键——它告诉 launchd，如果进程意外挂掉，马上重启。</p>
+
+        <!-- ── 10-STEP BOOT ── -->
+        <div class="section-divider"><span>chapter 3 — boot sequence</span></div>
+
+        <h2 class="en">The 10-Step Boot Sequence</h2>
+        <h2 class="zh">第三章：装好之后，Gateway 启动的这10步</h2>
+
+        <p class="en">Gateway startup is strictly ordered — each step depends on the previous one completing cleanly. Running <code>openclaw gateway --port 18789 --verbose</code> initialises 10 subsystems in sequence:</p>
+        <p class="zh">运行 <code>openclaw gateway --port 18789 --verbose</code> 之后，Gateway 不是直接开干的，它按照固定顺序依次初始化10个子系统。这个顺序很重要，因为后面的子系统依赖前面的，乱了就会出错：</p>
+
+        <pre class="flow-diagram">第1步：读配置文件
+   └─ 找 ~/.openclaw/config.yaml（或环境变量 OPENCLAW_CONFIG 指向的路径）
+   └─ 把命令行参数（--port 18789 --verbose）和配置文件合并
+   └─ 用 JSON Schema 验证配置格式是否合法
+
+第2步：初始化数据库
+   └─ 默认用 SQLite（一个单文件数据库，不需要单独安装）
+   └─ 运行"数据库迁移"——检查数据库结构是否是最新版本，不是就升级
+
+第3步：启动 Event Bus（内部消息总线）
+   └─ 内存中的发布-订阅系统，承载模块间所有通信
+
+第4步：初始化 Session Manager（会话管理器）
+   └─ 从数据库把之前的对话状态恢复到内存
+   └─ 注册对总线事件的监听
+
+第5步：初始化 Pi Agent Runtime（AI 助手的运行时）
+   └─ 加载所有已安装的技能（Skills），把工具注册进来
+   └─ 初始化每个对话用哪个 AI 模型
+
+第6步：同时启动所有 Channel 适配器
+   └─ WhatsApp：Baileys 库连接（首次需要扫码，之后自动恢复）
+   └─ Telegram：grammY 库开始轮询或 Webhook
+   └─ Discord：discord.js 连接 Discord 的 WebSocket
+   └─ 其他平台各自独立初始化，互不影响
+
+第7步：启动 WebSocket 服务器
+   └─ 监听 127.0.0.1:18789
+   └─ 注册所有 RPC 方法的处理函数
+
+第8步：启动 HTTP 服务器
+   └─ 提供 Web 控制台（Control UI）
+   └─ /webchat 路径提供网页版聊天界面
+   └─ /webhook/{token} 路径接受外部触发
+
+第9步：启动 Cron 调度器
+   └─ 从数据库恢复之前设定的定时任务
+   └─ 把它们注册回 node-cron 调度器
+
+第10步：健康检查端点就绪
+    └─ GET /health 返回 {"status":"ok","version":"..."} 表示一切正常</pre>
+
+        <div class="callout tip">
+          <span class="callout-label">💡 <span class="en">Why order matters</span><span class="zh">为什么顺序很重要</span></span>
+          <span class="en">If the Event Bus started before the Session Manager, messages arriving during boot could be published with no subscriber yet — silently dropped. The fixed sequence prevents this entire class of race condition.</span>
+          <span class="zh">如果 Event Bus 在 Session Manager 之前启动，启动期间到达的消息会被发布到总线，但还没有订阅者——消息就会悄悄丢失。固定顺序可以防止这整类竞态条件。</span>
+        </div>
+
+        <p class="en"><code>config.yaml</code> is the master configuration file that controls all of this:</p>
+        <p class="zh"><code>config.yaml</code> 是控制所有这些行为的主配置文件：</p>
+
+        <pre>gateway:
+  bind: loopback            <span class="cm"># loopback=只有本机能访问 | all=局域网也能访问</span>
+  port: 18789
+  auth:
+    mode: password          <span class="cm"># none=不验证 | password=密码 | tailscale=用Tailscale身份</span>
+    password: <span class="str">"your-secret"</span>
+  tailscale:
+    mode: serve             <span class="cm"># off=关闭 | serve=内网访问 | funnel=公网访问</span>
+
+workspace:
+  name: personal
+  model: gpt-4o             <span class="cm"># 全局默认模型 / global default model</span>
+
+channels:
+  telegram:
+    token: <span class="str">"BOT_TOKEN"</span>
+    dmPolicy: pairing       <span class="cm"># pairing=陌生人需要配对 | open=任何人都能发</span>
+    allowFrom: [<span class="str">"123456789"</span>]
+
+models:
+  profiles:
+    - name: primary
+      provider: openai
+      model: gpt-4o
+      apiKey: <span class="str">"sk-..."</span>
+    - name: fallback
+      provider: anthropic
+      model: claude-3-5-sonnet
+      apiKey: <span class="str">"sk-ant-..."</span>
+  failover: [primary, fallback]   <span class="cm"># 主模型挂了自动切备用 / auto-failover</span></pre>
+
+        <!-- ── INSTALLATION ── -->
+        <div class="section-divider"><span>chapter 4 — installation</span></div>
+
+        <h2 class="en">Installation: From GitHub to Running on Your Machine</h2>
+        <h2 class="zh">第四章：安装——代码是怎么从 GitHub 变成跑在你电脑上的程序的？</h2>
+
+        <h3 class="en">Quickest way (direct use)</h3>
+        <h3 class="zh">最简单的方式（直接用）</h3>
+
+        <pre>npm install -g openclaw@latest
+openclaw onboard --install-daemon</pre>
+
+        <p class="en"><code>npm install -g</code> is like the App Store — it downloads the <code>openclaw</code> program to your computer; <code>-g</code> means "global install" so you can type <code>openclaw</code> from any terminal directory. <code>onboard</code> is an interactive wizard that walks you through connecting platforms, choosing an AI model, and optionally installing the daemon.</p>
+        <p class="zh"><code>npm install -g</code> 就像 App Store 一样，把 openclaw 这个程序下载到你电脑上，<code>-g</code> 表示"全局安装"，装完之后你在终端任何地方都能直接输 <code>openclaw</code> 来用它。<code>onboard</code> 是个交互式向导，会一步步问你要连接哪些平台、用哪个 AI 模型、要不要装守护进程等。</p>
+
+        <h3 class="en">Building from source (for developers)</h3>
+        <h3 class="zh">从源码构建（适合开发者）</h3>
+
+        <pre>git clone https://github.com/openclaw/openclaw.git
+cd openclaw
+pnpm install        <span class="cm"># 安装所有依赖包 / install all dependencies</span>
+pnpm ui:build       <span class="cm"># 编译前端控制台（React → 静态文件）/ compile frontend</span>
+pnpm build          <span class="cm"># TypeScript → JavaScript，放进 dist/ / compile TS to JS</span>
+
+<span class="cm"># 开发时用这个——改了代码自动重启 / dev mode: auto-restart on change</span>
+pnpm gateway:watch</pre>
+
+        <p class="en">OpenClaw is written in TypeScript, but Node.js cannot run TypeScript directly — it must be compiled to JavaScript first. During development, <code>tsx</code> runs <code>.ts</code> files directly (fast iteration, no compile step). In production, <code>tsc</code> compiles optimised <code>.js</code> into <code>dist/</code>:</p>
+        <p class="zh">这里有个值得说清楚的细节：OpenClaw 的代码是 <strong>TypeScript</strong> 写的，但 Node.js 不能直接跑 TypeScript，需要先"编译"成 JavaScript。开发时用的工具叫 <code>tsx</code>，它可以直接跑 <code>.ts</code> 文件，跳过编译步骤，启动更快。生产时用 <code>tsc</code>（TypeScript 官方编译器）把代码编译成优化过的 <code>.js</code> 放进 <code>dist/</code> 目录：</p>
+
+        <pre><span class="cm"># 开发模式：tsx 直接执行 TypeScript（快速迭代）/ dev mode</span>
+pnpm openclaw gateway   <span class="cm"># internally: tsx src/gateway/index.ts</span>
+
+<span class="cm"># 生产模式：先编译再执行（性能最好）/ production mode</span>
+pnpm build              <span class="cm"># tsc → dist/gateway/index.js</span>
+node dist/gateway/index.js</pre>
+
+        <p class="en">The monorepo structure — one git repo, multiple sub-packages managed by <code>pnpm workspaces</code>:</p>
+        <p class="zh">代码仓库是 monorepo 结构——一个 git 仓库里装了多个子项目，用 <code>pnpm workspaces</code> 统一管理依赖：</p>
+
+        <pre class="flow-diagram">openclaw/
+├── packages/
+│   ├── core/       <span class="cm"># 核心库：Session 管理、Agent 运行时、工具执行器</span>
+│   ├── gateway/    <span class="cm"># Gateway 服务主体（对外暴露 WS 和 HTTP）</span>
+│   ├── channels/   <span class="cm"># 各平台适配器（每个平台一个子包）</span>
+│   │   ├── whatsapp/
+│   │   ├── telegram/
+│   │   ├── discord/
+│   │   └── ...
+│   ├── cli/        <span class="cm"># 命令行界面（openclaw 命令）</span>
+│   ├── nodes/      <span class="cm"># 设备节点功能（摄像头、屏幕录制等）</span>
+│   └── ui/         <span class="cm"># 前端控制台（React + Vite）</span>
+└── dist/           <span class="cm"># 编译后的 JavaScript 输出目录</span></pre>
+
+        <h3 class="en">Why Node.js 22 is required</h3>
+        <h3 class="zh">为什么必须 Node.js 22？</h3>
+
+        <p class="en">Node 22 is the current LTS (Long-Term Support) release and brings several key features OpenClaw relies on: built-in stable <code>fetch</code> API (no more <code>node-fetch</code> package), native <code>WebSocket</code> client, more stable <code>--experimental-vm-modules</code> (used for sandboxed skill execution), and modern cryptography support in the <code>crypto</code> module.</p>
+        <p class="zh">Node 22 是目前的 LTS（长期支持）版本，带来了几个关键特性：<code>fetch</code> API 正式内置稳定了（之前要装额外的 <code>node-fetch</code> 包）；<code>WebSocket</code> 客户端内置；<code>--experimental-vm-modules</code> 更稳定了（OpenClaw 用这个在沙箱里安全执行技能代码）；<code>crypto</code> 模块支持了更多现代加密算法。</p>
+
+        <!-- ── MESSAGE JOURNEY ── -->
+        <div class="section-divider"><span>chapter 5 — message lifecycle</span></div>
+
+        <h2 class="en">A Message's Complete Journey — 2,100 ms End to End</h2>
+        <h2 class="zh">第五章：一条消息的完整旅程——从你发出去到回复出现</h2>
+
+        <p class="en">Let's trace one message in real time. You send <em>"Check today's weather in Beijing"</em> on Telegram. Here's what happens, millisecond by millisecond:</p>
+        <p class="zh">我们用一个具体例子走完整个流程：<strong>你在 Telegram 发了一条消息"帮我查今天北京的天气"</strong>。</p>
+
+        <div class="en">
+          <ul class="timeline">
+            <li><span class="ts">[0 ms]</span> <span>You tap Send in Telegram.</span></li>
+            <li><span class="ts">[10 ms]</span> <span>Telegram's servers push the event to grammY's long-polling loop. The <code>message</code> handler fires.</span></li>
+            <li><span class="ts">[12 ms]</span> <span>Channel Adapter converts the raw Telegram object into a typed <code>InboundMessage</code> and publishes it to the Event Bus.</span></li>
+            <li><span class="ts">[15 ms]</span> <span>Security Layer queries <code>channel_allowlist</code> in SQLite — your ID is there. Allowed.</span></li>
+            <li><span class="ts">[16 ms]</span> <span>Router resolves the session key: <code>"telegram:123456789"</code>. Private message → this Session.</span></li>
+            <li><span class="ts">[18 ms]</span> <span>Session Manager reads the last 50 messages from SQLite into memory.</span></li>
+            <li><span class="ts">[20 ms]</span> <span>Gateway calls <code>bot.api.sendChatAction(chatId, 'typing')</code> — you see the typing indicator appear.</span></li>
+            <li><span class="ts">[25 ms]</span> <span>Pi Agent assembles the full Chat Completions payload: history + new message + tool list + system prompt.</span></li>
+            <li><span class="ts">[30 ms]</span> <span>HTTP POST to OpenAI with <code>stream: true</code>.</span></li>
+            <li><span class="ts">[800 ms]</span> <span>First SSE chunk arrives: <code>{"delta":{"content":"Sure"}}</code>. Gateway pushes <code>stream.chunk</code> to all clients.</span></li>
+            <li><span class="ts">[850 ms]</span> <span>Model emits <code>tool_calls</code> — it wants to call <code>weather_get</code>. Text output stops.</span></li>
+            <li><span class="ts">[855 ms]</span> <span>Agent executes <code>weather_get({ city: "Beijing", units: "metric" })</code> via HTTP.</span></li>
+            <li><span class="ts">[1200 ms]</span><span>Weather API returns <code>{ temp: 22, condition: "Sunny", humidity: 45 }</code>. Appended to history.</span></li>
+            <li><span class="ts">[1205 ms]</span><span>Second LLM call begins — now with the tool result as a <code>role: "tool"</code> message.</span></li>
+            <li><span class="ts">[1800 ms]</span><span>Final reply streams: "Beijing today — sunny, 22°C, humidity 45%. Good day to go out."</span></li>
+            <li><span class="ts">[2000 ms]</span><span><code>stream.done</code> event emitted. Session Manager writes the full exchange to SQLite.</span></li>
+            <li><span class="ts">[2015 ms]</span><span>Channel Adapter sends the reply to Telegram via Bot API.</span></li>
+            <li><span class="ts">[2100 ms]</span><span>Your phone displays the reply. Total: <strong>2.1 seconds</strong>, one tool call included.</span></li>
+          </ul>
+        </div>
+
+        <div class="zh">
+          <h3>第一站：Telegram 适配器接收消息</h3>
+          <p>OpenClaw 连接 Telegram 用的是 <strong>grammY</strong> 这个库。Telegram 提供了机器人 API，有两种接收消息的方式：</p>
+          <p><strong>长轮询（Long Polling）</strong>：你的程序主动问 Telegram "有没有新消息？"，Telegram 要么立刻回"有，这条"，要么等最多1秒才回"没有"。不需要公网 IP，但理论上最多有1秒延迟。</p>
+          <p><strong>Webhook</strong>：反过来，Telegram 主动把新消息 POST 到你指定的 HTTPS 地址。实时，延迟几乎为零，但你的服务器必须有公网 IP 和合法 HTTPS 证书。</p>
+          <p>收到消息后，grammY 把 Telegram 的原始数据格式转换成 OpenClaw 内部统一的消息格式 <code>InboundMessage</code>：</p>
+
+          <pre><span class="kw">interface</span> <span class="tp">InboundMessage</span> {
+  id: <span class="tp">string</span>;        <span class="cm">// Telegram 的消息 ID</span>
+  channel: <span class="tp">string</span>;   <span class="cm">// 'telegram'</span>
+  peerId: <span class="tp">string</span>;    <span class="cm">// 发送者的 Telegram 用户 ID</span>
+  groupId?: <span class="tp">string</span>;  <span class="cm">// 如果是群消息，群组 ID 在这里</span>
+  text?: <span class="tp">string</span>;     <span class="cm">// "帮我查今天北京的天气"</span>
+  media?: <span class="tp">MediaRef</span>[];<span class="cm">// 如果有图片/文件，媒体引用在这里</span>
+  replyTo?: <span class="tp">string</span>;  <span class="cm">// 如果是回复某条消息，原消息 ID 在这里</span>
+  timestamp: <span class="tp">number</span>; <span class="cm">// 消息时间戳（Unix 毫秒）</span>
+  raw: <span class="tp">unknown</span>;      <span class="cm">// Telegram 原始数据，调试用</span>
+}</pre>
+
+          <h3>第二站：安全检查——这个人有资格说话吗？</h3>
+          <p>Gateway 做的第一件事不是让 AI 回答，而是查"白名单"。白名单存在 SQLite 里：</p>
+
+          <pre><span class="kw">CREATE TABLE</span> channel_allowlist (
+  channel   <span class="tp">TEXT NOT NULL</span>,   <span class="cm">-- 'telegram'</span>
+  peer_id   <span class="tp">TEXT NOT NULL</span>,   <span class="cm">-- 对方的用户 ID</span>
+  approved_at <span class="tp">INTEGER</span>,       <span class="cm">-- 什么时候被批准的（Unix 时间戳）</span>
+  label     <span class="tp">TEXT</span>,            <span class="cm">-- 可选备注，比如"老婆"、"公司群"</span>
+  <span class="kw">PRIMARY KEY</span> (channel, peer_id)
+);
+
+<span class="kw">CREATE TABLE</span> pairing_codes (
+  channel   <span class="tp">TEXT NOT NULL</span>,
+  peer_id   <span class="tp">TEXT NOT NULL</span>,
+  code      <span class="tp">TEXT NOT NULL</span>,   <span class="cm">-- 6位随机字母数字，比如 "XK7P2Q"</span>
+  expires_at <span class="tp">INTEGER</span>,        <span class="cm">-- 15分钟后过期</span>
+  <span class="kw">PRIMARY KEY</span> (channel, peer_id)
+);</pre>
+
+          <p>如果这个用户的 ID 在 <code>channel_allowlist</code> 里，放行。否则生成6位随机配对码，回复对方配对码后等待管理员批准：</p>
+          <pre>openclaw pairing approve telegram XK7P2Q</pre>
+
+          <h3>第三站：路由——这条消息发给哪个"对话"？</h3>
+          <p>Gateway 要判断这条消息应该归属到哪个 Session（对话容器）：</p>
+          <pre><span class="kw">function</span> <span class="fn">routeMessage</span>(msg: <span class="tp">InboundMessage</span>): <span class="tp">SessionId</span> {
+  <span class="cm">// 群组消息：每个群有自己独立的 Session</span>
+  <span class="kw">if</span> (msg.isGroup) {
+    <span class="kw">return</span> <span class="str">`${msg.channel}:${msg.groupId}`</span>;
+  }
+  <span class="cm">// 私聊：默认路由到 "main" Session</span>
+  <span class="kw">const</span> agentConfig = <span class="fn">findAgentConfig</span>(msg.channel, msg.peerId);
+  <span class="kw">return</span> agentConfig?.sessionId ?? <span class="str">'main'</span>;
+}</pre>
+
+          <h3>第四站：Pi Agent——构建发给 AI 的请求</h3>
+          <p>Agent 从数据库读出这个 Session 的历史消息，加上当前新消息，加上所有可用工具的说明，打包成一个标准的 <strong>Chat Completions 请求</strong>。注意 <code>"stream": true</code>——这是告诉 AI "别等全部想好了再回复，生成一个字就给我发一个字"。</p>
+
+          <h3>第五站：ReAct 循环——AI 如何"边想边做"</h3>
+          <p>AI 的流式输出使用 <strong>SSE（Server-Sent Events）</strong> 格式，每生成一点内容就发一行 <code>data:</code> 打头的数据。Agent 收到每一个小片段（chunk），立刻通过 Gateway WebSocket 转发给你的客户端（<code>stream.chunk</code> 事件）。这就是为什么你在聊天界面看到的是"字一个一个出现"。</p>
+
+          <h3>第六站：回复发出去</h3>
+          <p>工具执行完，LLM 生成最终文字回复，Agent 把它交回给 Gateway，Gateway 通过 Telegram 适配器发出。如果回复太长，Gateway 会自动分段发送——Telegram 单条消息上限大约 4096 字符，Discord 是 2000 字符，超过就自动切割。</p>
+
+          <p>一次含工具调用的完整问答，<strong>大约2秒</strong>。</p>
+        </div>
+
+        <!-- ── CHANNELS ── -->
+        <div class="section-divider"><span>chapter 6 — channel adapters</span></div>
+
+        <h2 class="en">Channel Adapters: One Interface, Twenty Platforms</h2>
+        <h2 class="zh">第六章：Channel 适配器——怎么对接20多个聊天平台？</h2>
+
+        <p class="en">Every platform speaks a different language. WhatsApp uses a proprietary binary protocol. Telegram has a clean REST API. Discord maintains its own WebSocket gateway. Signal requires a Java CLI daemon. iMessage is locked behind Apple's ecosystem entirely.</p>
+        <p class="zh">OpenClaw 支持20多个平台，每个平台的接入方式差异很大，但它们对外暴露的接口完全一样。这用到了一个设计原则叫<strong>面向接口编程</strong>：Gateway 只和统一接口说话，具体是 WhatsApp 还是 Discord，它完全不关心。</p>
+
+        <p class="en">OpenClaw wraps all of them behind a single TypeScript interface:</p>
+        <p class="zh">每个 Channel 适配器都要实现这个接口（TypeScript 写法）：</p>
+
+        <pre><span class="kw">interface</span> <span class="tp">ChannelAdapter</span> {
+  <span class="fn">connect</span>(): <span class="tp">Promise</span>&lt;<span class="kw">void</span>&gt;;
+  <span class="fn">disconnect</span>(): <span class="tp">Promise</span>&lt;<span class="kw">void</span>&gt;;
+
+  <span class="fn">on</span>(event: <span class="str">'message'</span>, handler: (msg: <span class="tp">InboundMessage</span>) => <span class="kw">void</span>): <span class="kw">void</span>;
+  <span class="fn">on</span>(event: <span class="str">'status'</span>,  handler: (s: <span class="tp">ChannelStatus</span>)  => <span class="kw">void</span>): <span class="kw">void</span>;
+
+  <span class="fn">send</span>(peerId: <span class="tp">string</span>, content: <span class="tp">OutboundContent</span>): <span class="tp">Promise</span>&lt;<span class="kw">void</span>&gt;;
+  <span class="fn">sendTyping</span>(peerId: <span class="tp">string</span>, duration?: <span class="tp">number</span>): <span class="tp">Promise</span>&lt;<span class="kw">void</span>&gt;;
+  <span class="fn">sendMedia</span>(peerId: <span class="tp">string</span>, media: <span class="tp">MediaContent</span>): <span class="tp">Promise</span>&lt;<span class="kw">void</span>&gt;;
+  <span class="fn">downloadMedia</span>(messageId: <span class="tp">string</span>): <span class="tp">Promise</span>&lt;<span class="tp">Buffer</span>&gt;;
+}</pre>
+
+        <div class="en">
+          <table class="data-table">
+            <thead>
+              <tr><th>Platform</th><th>Library</th><th>Connection</th><th>Key detail</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>WhatsApp</td><td>Baileys</td><td>Reverse-engineered Web protocol</td>
+                <td>Curve25519 Noise handshake + Signal E2E encryption; QR once, then credential resume</td>
+              </tr>
+              <tr>
+                <td>Telegram</td><td>grammY</td><td>Long polling <em>or</em> Webhook</td>
+                <td>Polling: no public IP needed. Webhook: real-time, needs HTTPS endpoint</td>
+              </tr>
+              <tr>
+                <td>Discord</td><td>discord.js</td><td>Discord's own WebSocket Gateway</td>
+                <td>Must enable <em>Message Content Intent</em> in the Developer Portal</td>
+              </tr>
+              <tr>
+                <td>Signal</td><td>signal-cli</td><td>Java subprocess via stdio / DBus</td>
+                <td>No official bot API — signal-cli is the only option</td>
+              </tr>
+              <tr>
+                <td>iMessage</td><td>BlueBubbles</td><td>REST API + WS from a Mac server</td>
+                <td>Mac must stay on; BlueBubbles re-exposes iMessage as an API</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="zh">
+          <p>各个平台接入的技术机制差异很大：</p>
+          <p><strong>WhatsApp（Baileys 库）：</strong> 这是逆向工程的方案。Baileys 模拟了 WhatsApp Web 客户端的行为，通过 WebSocket 连接 <code>web.whatsapp.com</code>，实现了 WhatsApp 的私有协议，包括基于 Curve25519 的 Noise 握手，以及 Signal 协议的端对端加密。第一次需要扫码；之后凭证保存到 <code>~/.openclaw/sessions/whatsapp/</code>，重启自动恢复。</p>
+          <p><strong>Telegram（grammY 库）：</strong> 官方提供机器人 API，有<strong>长轮询</strong>（不需要公网 IP，最多1秒延迟）和 <strong>Webhook</strong>（实时，但需要公网 HTTPS 地址）两种接收方式。</p>
+          <p><strong>Discord（discord.js）：</strong> Discord 官方维护一个 Gateway WebSocket，机器人连上去之后所有事件实时推送。需要在 Discord 开发者平台开启 <strong>Message Content Intent</strong>，否则收不到消息内容。</p>
+          <p><strong>Signal（signal-cli）：</strong> Signal 没有官方机器人 API，OpenClaw 用的是社区维护的 <code>signal-cli</code>，一个 Java 写的 Signal 命令行客户端，通过子进程的标准输入输出（stdio）或 DBus 接口通信。</p>
+          <p><strong>iMessage（BlueBubbles）：</strong> iMessage 是苹果封闭生态，正规接入只能通过 Mac。BlueBubbles 是一个跑在 Mac 上的服务端，把 iMessage 包装成 REST API + WebSocket 暴露出来。你需要一台 Mac 一直开着。</p>
+        </div>
+
+        <!-- ── SESSIONS ── -->
+        <div class="section-divider"><span>chapter 7 — sessions &amp; memory</span></div>
+
+        <h2 class="en">Sessions: How the AI Remembers</h2>
+        <h2 class="zh">第七章：Session——AI 怎么存储和管理对话？</h2>
+
+        <p class="en">A Session is the persistent container for one conversation. It lives in <strong>SQLite</strong> — a single-file embedded database requiring no server. Every message, setting, and tool result is stored here and survives Gateway restarts.</p>
+        <p class="zh">Session（会话）是一个对话的持久化容器，存在 SQLite 数据库里。SQLite 是个嵌入式数据库，整个数据库就是一个文件，不需要单独安装数据库服务。</p>
+
+        <pre><span class="cm">-- 每个对话是 sessions 表里的一行 / Each conversation is one row</span>
+<span class="kw">CREATE TABLE</span> sessions (
+  id             <span class="tp">TEXT PRIMARY KEY</span>,   <span class="cm">-- "main" 或 "telegram:123456789"</span>
+  channel        <span class="tp">TEXT</span>,               <span class="cm">-- 'telegram'、'discord' 等</span>
+  peer_id        <span class="tp">TEXT</span>,               <span class="cm">-- 对话对象的平台 ID</span>
+  group_id       <span class="tp">TEXT</span>,               <span class="cm">-- 群组 ID（私聊没有）</span>
+  model          <span class="tp">TEXT</span>,               <span class="cm">-- 这个对话用什么模型（覆盖全局默认）</span>
+  thinking_level <span class="tp">TEXT</span> <span class="kw">DEFAULT</span> <span class="str">'off'</span>, <span class="cm">-- AI 思考深度</span>
+  elevated       <span class="tp">INTEGER</span> <span class="kw">DEFAULT</span> <span class="num">0</span>,  <span class="cm">-- /elevated on|off</span>
+  created_at     <span class="tp">INTEGER</span>
+);
+
+<span class="cm">-- 每条消息存在 messages 表里 / Every message, tool call, and result</span>
+<span class="kw">CREATE TABLE</span> messages (
+  id           <span class="tp">TEXT PRIMARY KEY</span>,
+  session_id   <span class="tp">TEXT</span> <span class="kw">REFERENCES</span> sessions(id),
+  role         <span class="tp">TEXT</span>,              <span class="cm">-- 'user' | 'assistant' | 'tool'</span>
+  content      <span class="tp">TEXT</span>,
+  tool_calls   <span class="tp">TEXT</span>,              <span class="cm">-- JSON，AI 决定调什么工具（assistant role 用）</span>
+  tool_call_id <span class="tp">TEXT</span>,              <span class="cm">-- 哪次工具调用的结果（tool role 用）</span>
+  token_count  <span class="tp">INTEGER</span>,           <span class="cm">-- 缓存的 token 数，避免重复计算</span>
+  created_at   <span class="tp">INTEGER</span>,
+  <span class="kw">INDEX</span> idx_session_time (session_id, created_at)
+);</pre>
+
+        <h3 class="en">Context Window Management</h3>
+        <h3 class="zh">AI 的"记忆上限"——上下文窗口管理</h3>
+
+        <p class="en">LLMs have hard token limits — GPT-4o tops out at 128K tokens; Claude allows 200K. OpenClaw monitors usage continuously and applies two strategies when you approach the limit:</p>
+        <p class="zh">AI 模型有个硬性限制叫<strong>上下文窗口</strong>，就是它每次能"看到"的文字总量上限。GPT-4o 是 128K tokens，Claude 是 200K tokens（1个 token 大约等于半个英文单词，或1个汉字）。对话历史越来越长，总有撑满的一天，这时 OpenClaw 有两种处理策略：</p>
+
+        <p class="en"><strong>Auto-trim</strong> silently drops the oldest messages until total usage falls below 80% of the model's window. Fast, but lossy. <strong><code>/compact</code></strong> sends the oldest 70% of history to the LLM, asks for a concise summary, replaces those messages with the summary, and keeps the most recent 30% verbatim. More expensive but preserves far more information:</p>
+        <div class="zh">
+          <p><strong>自动裁剪</strong>：悄悄把最早的消息丢掉，保留最近的，让总量低于阈值（比如 80% 的窗口上限）。快但会丢失早期信息。</p>
+          <p><strong><code>/compact</code> 摘要压缩</strong>：把早期历史发给 AI，让它生成一段摘要，然后用这段摘要替换掉早期的原始消息。信息损失更少，但多花一次 API 调用：</p>
+        </div>
+
+        <pre><span class="kw">async function</span> <span class="fn">compactSession</span>(sessionId: <span class="tp">string</span>) {
+  <span class="kw">const</span> messages  = <span class="kw">await</span> db.<span class="fn">getMessages</span>(sessionId);
+  <span class="kw">const</span> keepCount = Math.<span class="fn">floor</span>(messages.length * <span class="num">0.3</span>);
+  <span class="kw">const</span> toSummarize = messages.<span class="fn">slice</span>(<span class="num">0</span>, messages.length - keepCount);
+  <span class="kw">const</span> toKeep      = messages.<span class="fn">slice</span>(-keepCount);
+
+  <span class="kw">const</span> summary = <span class="kw">await</span> llm.<span class="fn">complete</span>({
+    messages: [
+      { role: <span class="str">'system'</span>, content: <span class="str">'请用简洁的中文总结以下对话的关键信息：'</span> },
+      ...toSummarize
+    ]
+  });
+
+  <span class="kw">await</span> db.<span class="fn">replaceMessages</span>(sessionId, [
+    { role: <span class="str">'system'</span>, content: <span class="str">`[以下是之前对话的摘要]\n${summary}\n[摘要结束]`</span> },
+    ...toKeep
+  ]);
+}</pre>
+
+        <div class="zh">
+          <h3><code>thinkingLevel</code> 是什么？</h3>
+          <p>这对应 AI 模型的"推理预算"。OpenAI 的 o1/o3 系列和 Anthropic 的 extended thinking 模式，允许模型在给出答案之前先花一些 token "在脑子里想"：</p>
+          <pre class="flow-diagram">off      → 不启用推理模式（普通聊天）
+minimal  → 约 1K tokens 的思考
+low      → 约 5K tokens 的思考
+medium   → 约 10K tokens 的思考
+high     → 约 20K tokens 的思考
+xhigh    → 32K+ tokens 的思考（最慢、最贵、最准）</pre>
+          <p>OpenClaw 把这个级别映射到各个模型的实际参数：对 OpenAI 是 <code>reasoning_effort</code>，对 Anthropic 是 <code>budget_tokens</code>。</p>
+        </div>
+
+        <!-- ── REACT LOOP ── -->
+        <div class="section-divider"><span>chapter 8 — the react loop</span></div>
+
+        <h2 class="en">The ReAct Loop: How the AI Decides to Do Things</h2>
+        <h2 class="zh">第八章：ReAct 循环——AI 如何"边想边做"</h2>
+
+        <p class="en">OpenClaw's Agent runtime runs a <strong>ReAct loop</strong> (Reasoning + Acting). Rather than returning one answer, the LLM is allowed to call tools, observe results, and reason further — as many times as needed — before producing a final text reply.</p>
+        <p class="zh">这是整个系统最核心的逻辑，叫做 <strong>ReAct Loop</strong>（推理-行动循环）。AI 不是一次就能给出完整答案的，它需要反复"想 → 做 → 看结果 → 再想 → 再做"：</p>
+
+        <pre class="flow-diagram">┌────────────────────────────────────────────────────┐
+│                   ReAct Loop                        │
+│                                                     │
+│  ① 把完整对话历史 + 工具列表发给 LLM               │
+│              │                                      │
+│              ▼                                      │
+│  ② 接收 LLM 的流式响应                             │
+│              │                                      │
+│              ▼                                      │
+│  ③ 判断 LLM 在干什么？                             │
+│     ├─ 直接回答了（纯文字）→ 循环结束，输出结果    │
+│     └─ 要调用工具（tool_calls 字段不为空）→         │
+│              │                                      │
+│              ▼                                      │
+│  ④ 并行执行所有工具调用                            │
+│     ├─ weather_get({ city: "Beijing" })             │
+│     └─ 其他工具（如果同时调多个）                   │
+│              │                                      │
+│              ▼                                      │
+│  ⑤ 把工具执行结果追加进对话历史                    │
+│              │                                      │
+│              └──────────────────────────────────────┘
+│                       （回到第①步）
+└────────────────────────────────────────────────────┘</pre>
+
+        <p class="en">OpenAI uses <strong>SSE (Server-Sent Events)</strong> format — one <code>data:</code> line per generated token:</p>
+        <p class="zh">OpenAI 用的是 <strong>SSE（Server-Sent Events）</strong> 格式，每生成一点内容就发一行 <code>data:</code> 打头的数据：</p>
+
+        <pre>data: {"choices":[{"delta":{"content":"北"},"index":0}]}
+data: {"choices":[{"delta":{"content":"京"},"index":0}]}
+data: {"choices":[{"delta":{"content":"今"},"index":0}]}
+data: {"choices":[{"delta":{"content":"天"},"index":0}]}
+<span class="cm">... (continues until model emits tool_calls or finishes)</span>
+data: [DONE]</pre>
+
+        <p class="en">The Gateway relays each chunk immediately as a <code>stream.chunk</code> WebSocket event. That's why replies appear character by character — not because the AI is slow, but because it's designed to start talking before it finishes thinking.</p>
+        <p class="zh">Agent 收到每一个小片段（叫 chunk），立刻通过 Gateway WebSocket 转发给你的客户端（<code>stream.chunk</code> 事件）。这就是为什么你在聊天界面看到的是"字一个一个出现"，而不是等很久突然全部弹出来。</p>
+
+        <p class="en">When the AI decides to call a tool, the response looks like this:</p>
+        <p class="zh">如果 AI 决定调工具，返回的数据长这样：</p>
+
+        <pre>{
+  <span class="str">"choices"</span>: [{
+    <span class="str">"delta"</span>: {
+      <span class="str">"tool_calls"</span>: [{
+        <span class="str">"id"</span>: <span class="str">"call_abc123"</span>,
+        <span class="str">"function"</span>: {
+          <span class="str">"name"</span>: <span class="str">"weather_get"</span>,
+          <span class="str">"arguments"</span>: <span class="str">"{\"city\":\"Beijing\",\"units\":\"metric\"}"</span>
+        }
+      }]
+    }
+  }]
+}</pre>
+
+        <p class="en">The Agent sees this and knows: pause text output, execute the tool first.</p>
+        <p class="zh">Agent 看到这个就知道：先别发文字，去执行这个工具。</p>
+
+        <!-- ── TOOLS & SKILLS ── -->
+        <div class="section-divider"><span>chapter 9 — tools &amp; skills</span></div>
+
+        <h2 class="en">Tools and Skills: The AI's Extended Reach</h2>
+        <h2 class="zh">第九章：工具与技能——给 AI 装上可以操作真实世界的插件</h2>
+
+        <p class="en">A <strong>Tool</strong> is a single callable capability — a function the LLM invokes by emitting a <code>tool_calls</code> JSON block. A <strong>Skill</strong> is a YAML package that bundles multiple tools with system-prompt text that teaches the AI when and how to use them.</p>
+        <p class="zh">AI 模型本身只能输出文字，但 OpenClaw 给它配备了工具，让它可以操作真实世界。工具的工作原理是：AI 在回复里描述"我要调用什么工具、参数是什么"，Agent 负责真正去执行，把结果反馈给 AI，AI 再根据结果给出答案。</p>
+
+        <pre><span class="kw">interface</span> <span class="tp">ToolDefinition</span> {
+  name: <span class="tp">string</span>;
+  description: <span class="tp">string</span>;      <span class="cm">// 这段描述给 LLM 看，非常重要——写得好不好直接影响 AI 会不会用这个工具</span>
+  parameters: <span class="tp">JSONSchema</span>;   <span class="cm">// 工具接受什么参数，用 JSON Schema 描述</span>
+  <span class="fn">execute</span>(params: <span class="tp">unknown</span>, context: <span class="tp">ToolContext</span>): <span class="tp">Promise</span>&lt;<span class="tp">ToolResult</span>&gt;;
+}
+
+<span class="cm">// 举个例子：浏览器截图工具 / example: browser snapshot tool</span>
+<span class="kw">const</span> browserSnapshotTool: <span class="tp">ToolDefinition</span> = {
+  name: <span class="str">'browser_snapshot'</span>,
+  description: <span class="str">'对当前浏览器页面截图，返回图片供分析。当需要查看网页内容时使用。'</span>,
+  parameters: {
+    type: <span class="str">'object'</span>,
+    properties: {
+      selector: { type: <span class="str">'string'</span>, description: <span class="str">'CSS选择器，只截取页面特定元素（留空则截全页）'</span> }
+    }
+  },
+  <span class="kw">async</span> <span class="fn">execute</span>({ selector }, ctx) {
+    <span class="kw">const</span> page = <span class="kw">await</span> ctx.browser.<span class="fn">getCurrentPage</span>();
+    <span class="kw">const</span> screenshot = <span class="kw">await</span> page.<span class="fn">screenshot</span>({ type: <span class="str">'png'</span> });
+    <span class="kw">return</span> { type: <span class="str">'image'</span>, data: screenshot.<span class="fn">toString</span>(<span class="str">'base64'</span>), mediaType: <span class="str">'image/png'</span> };
+  }
+};</pre>
+
+        <h3 class="en">Browser Control via CDP</h3>
+        <h3 class="zh">浏览器控制是怎么实现的？</h3>
+
+        <p class="en">OpenClaw launches a dedicated Chrome instance with <code>--remote-debugging-port=9222</code> and speaks the <strong>Chrome DevTools Protocol</strong> WebSocket directly. The same protocol your browser uses internally when you open DevTools:</p>
+        <p class="zh">OpenClaw 启动一个专用的 Chrome 实例，加上 <code>--remote-debugging-port=9222</code> 参数让它暴露调试接口，然后通过 <strong>CDP（Chrome DevTools Protocol）</strong> 来控制它——就是你平时按 F12 打开开发者工具时，浏览器后台运行的那套协议：</p>
+
+        <pre class="flow-diagram">OpenClaw Agent
+      │  CDP over WebSocket（ws://127.0.0.1:9222）
+      ▼
+Chrome/Chromium（调试模式）
+      ├─ Page 模块 → 导航、截图、打印 PDF
+      ├─ Runtime 模块 → 执行 JavaScript 代码
+      ├─ Input 模块 → 模拟鼠标点击、键盘输入
+      └─ DOM 模块 → 查找元素、读取属性</pre>
+
+        <pre><span class="cm">// 打开一个网页 / Navigate to a URL</span>
+<span class="kw">await</span> cdp.<span class="fn">send</span>(<span class="str">'Page.navigate'</span>, { url: <span class="str">'https://example.com'</span> });
+
+<span class="cm">// 截图 / Screenshot</span>
+<span class="kw">const</span> { data } = <span class="kw">await</span> cdp.<span class="fn">send</span>(<span class="str">'Page.captureScreenshot'</span>, { format: <span class="str">'png'</span> });
+
+<span class="cm">// 点击一个按钮 / Click a button by CSS selector</span>
+<span class="kw">const</span> { nodeId } = <span class="kw">await</span> cdp.<span class="fn">send</span>(<span class="str">'DOM.querySelector'</span>, { selector: <span class="str">'#submit-btn'</span> });
+<span class="kw">const</span> { model } = <span class="kw">await</span> cdp.<span class="fn">send</span>(<span class="str">'DOM.getBoxModel'</span>, { nodeId });
+<span class="kw">const</span> [x, y] = model.content;
+<span class="kw">await</span> cdp.<span class="fn">send</span>(<span class="str">'Input.dispatchMouseEvent'</span>, {
+  type: <span class="str">'mousePressed'</span>, x, y, button: <span class="str">'left'</span>, clickCount: <span class="num">1</span>
+});</pre>
+
+        <h3 class="en">Scheduled Tasks (Cron)</h3>
+        <h3 class="zh">定时任务（Cron）是怎么工作的？</h3>
+
+        <p class="en">The AI can set scheduled tasks through tools — for example, "remind me about the morning meeting every day at 8am". Under the hood, <code>node-cron</code> is used. Cron expression is a compact format describing "when to execute":</p>
+        <p class="zh">AI 可以通过工具给自己设定定时任务，比如"每天早上8点提醒我开早会"。底层用 <code>node-cron</code> 库，Cron 表达式是一种描述"什么时候执行"的紧凑格式：</p>
+
+        <pre><span class="cm">// Cron 表达式：分 时 日 月 周</span>
+<span class="cm">// "0 8 * * 1-5" → 每周一到五 08:00 / weekdays at 8am</span>
+<span class="cm">// "*/30 * * * *" → 每30分钟 / every 30 minutes</span>
+
+<span class="kw">interface</span> <span class="tp">CronJob</span> {
+  id: <span class="tp">string</span>;
+  sessionId: <span class="tp">string</span>;
+  expression: <span class="tp">string</span>;   <span class="cm">// Cron 表达式</span>
+  message: <span class="tp">string</span>;      <span class="cm">// 到点了发给 AI 的消息</span>
+  enabled: <span class="tp">boolean</span>;
+  nextRun: <span class="tp">number</span>;      <span class="cm">// 预计下次触发的 Unix 时间戳</span>
+}
+
+<span class="kw">async function</span> <span class="fn">scheduleCronJob</span>(params, ctx: <span class="tp">ToolContext</span>) {
+  <span class="kw">const</span> job: <span class="tp">CronJob</span> = { id: <span class="fn">generateId</span>(), sessionId: ctx.sessionId, ...params };
+  <span class="kw">await</span> db.<span class="fn">saveCronJob</span>(job);   <span class="cm">// 先持久化，重启 Gateway 也不丢失</span>
+  
+  cron.<span class="fn">schedule</span>(params.expression, <span class="kw">async</span> () => {
+    <span class="kw">await</span> gateway.<span class="fn">sendToSession</span>(job.sessionId, job.message);
+  });
+}</pre>
+
+        <h3 class="en">Skill YAML — Packaging Tools for the AI</h3>
+        <h3 class="zh">用 YAML 给 AI 装技能</h3>
+
+        <p class="en">A Skill is a YAML file bundling tools and system-prompt text. Gateway scans and loads Skills on startup, hot-reloading new ones without restart:</p>
+        <p class="zh">技能（Skill）就是 AI 的插件，由一个 YAML 文件描述，包含<strong>提示词（systemPrompt）</strong>和<strong>工具定义</strong>两部分。Gateway 启动时扫描加载，支持热重载：</p>
+
+        <pre><span class="cm"># ~/.openclaw/skills/weather/skill.yaml</span>
+name: my-weather-skill
+version: <span class="num">1.0.0</span>
+description: 查询天气信息的技能
+
+systemPrompt: |
+  你现在具备查询世界各地实时天气的能力。
+  当用户问天气时，先确认城市名称，再调用 weather_get 工具。
+  温度默认用摄氏度，除非用户明确要求华氏度。
+
+tools:
+  - name: weather_get
+    description: 查询指定城市的当前天气
+    parameters:
+      type: object
+      properties:
+        city:  { type: string, description: <span class="str">"城市名称，请用英文（如 Beijing、Shanghai）"</span> }
+        units: { type: string, enum: [metric, imperial], default: metric }
+      required: [city]
+    <span class="cm"># 工具怎么执行？有三种方式：</span>
+    handler:
+      type: http                                    <span class="cm"># 方式1：调外部 API</span>
+      url: https://api.weatherapi.com/v1/current.json
+      method: GET
+      queryParams:
+        key: <span class="str">"${WEATHER_API_KEY}"</span>
+        q:   <span class="str">"${params.city}"</span>
+
+requires:
+  env: [WEATHER_API_KEY]  <span class="cm"># 技能不满足此条件则跳过 / skip if env var missing</span></pre>
+
+        <p class="en">Tools support three execution modes:</p>
+        <p class="zh">工具的三种执行方式：</p>
+
+        <pre><span class="cm"># 方式1：HTTP 调外部 API（最常用）/ HTTP — call external API</span>
+handler:
+  type: http
+  url: https://api.example.com/data
+  method: POST
+  headers:
+    Authorization: <span class="str">"Bearer ${API_KEY}"</span>
+
+<span class="cm"># 方式2：exec 运行本地程序 / exec — run local program</span>
+handler:
+  type: exec
+  command: python3
+  args: [<span class="str">"/home/user/scripts/my_tool.py"</span>, <span class="str">"${params.input}"</span>]
+  timeout: <span class="num">30000</span>   <span class="cm"># 毫秒，超时就报错 / ms, error on timeout</span>
+
+<span class="cm"># 方式3：module 调用 Node.js 模块（性能最好）/ module — call Node.js module</span>
+handler:
+  type: module
+  module: <span class="str">"./handlers/my-handler.js"</span>
+  function: handleRequest</pre>
+
+        <h3 class="en">ClawHub — The App Store for Skills</h3>
+        <h3 class="zh">ClawHub——技能的应用商店</h3>
+
+        <p class="en">ClawHub is OpenClaw's official skill registry — like npm for Skills. The AI can autonomously search and install Skills from ClawHub when it needs a capability it doesn't have:</p>
+        <p class="zh">ClawHub 是 OpenClaw 官方的技能注册中心，工作原理类似 npm registry。AI 助手在需要某种能力时，可以自主搜索 ClawHub、下载安装：</p>
+
+        <pre class="flow-diagram">① AI 调用 clawhub_search 工具
+   → GET https://clawhub.com/api/search?q=weather
+
+② ClawHub 返回匹配的技能列表
+
+③ AI 选择合适的技能
+   → openclaw skills install weather-skill
+
+④ 下载 skill.yaml，注册工具，热重载（不需要重启 Gateway）
+
+⑤ AI 在同一个对话里就能立刻用上新工具</pre>
+
+        <!-- ── NODE SYSTEM ── -->
+        <div class="section-divider"><span>chapter 10 — device nodes</span></div>
+
+        <h2 class="en">Device Nodes: How the AI Controls Your Phone and Computer</h2>
+        <h2 class="zh">第十章：节点系统——AI 怎么控制你的手机和电脑？</h2>
+
+        <p class="en">A Node is an abstraction for "a device connected to the Gateway." Your Mac, iPhone, or Android phone — once it has the OpenClaw app installed — can register itself as a Node, expose its local capabilities to the Gateway, and have them remotely invoked by the AI.</p>
+        <p class="zh">节点（Node）是对"接入 Gateway 的设备"的统一抽象。你的 Mac、iPhone、Android 手机，只要装了对应的 OpenClaw App，就能注册成一个节点，把自己的本地能力暴露给 Gateway，让 AI 远程调用。</p>
+
+        <pre><span class="cm">// 设备 App 启动后，连接 Gateway</span>
+<span class="kw">const</span> ws = <span class="kw">new</span> <span class="tp">WebSocket</span>(<span class="str">'ws://127.0.0.1:18789'</span>);
+
+<span class="cm">// 发 node.hello，把自己介绍给 Gateway</span>
+ws.<span class="fn">send</span>(<span class="tp">JSON</span>.<span class="fn">stringify</span>({
+  method: <span class="str">'node.hello'</span>,
+  id: <span class="str">'req-001'</span>,
+  params: {
+    nodeId: <span class="str">'macbook-pro-m3'</span>,
+    platform: <span class="str">'macos'</span>,
+    version: <span class="str">'2025.3.10'</span>,
+    capabilities: [
+      {
+        name: <span class="str">'system.run'</span>,
+        requiresPermission: <span class="kw">false</span>,
+        description: <span class="str">'在设备上运行 shell 命令'</span>
+      },
+      {
+        name: <span class="str">'screen.record'</span>,
+        requiresPermission: <span class="kw">true</span>,
+        permission: <span class="str">'com.apple.screencapturekit.shareable-content'</span>,
+        permissionStatus: <span class="str">'granted'</span>,
+        description: <span class="str">'录制屏幕内容'</span>
+      },
+      {
+        name: <span class="str">'location.get'</span>,
+        requiresPermission: <span class="kw">true</span>,
+        permission: <span class="str">'com.apple.locationd'</span>,
+        permissionStatus: <span class="str">'denied'</span>,    <span class="cm">// 没有这个权限，调用会返回 PERMISSION_MISSING</span>
+        description: <span class="str">'获取当前地理位置'</span>
+      }
+    ]
+  }
+}));</pre>
+
+        <div class="callout warning">
+          <span class="callout-label">🔐 <span class="en">system.run — 5 Safety Layers</span><span class="zh">system.run 有多危险？有多少层保护？</span></span>
+          <span class="en"><code>system.run</code> lets the AI execute shell commands on your machine. Five protections apply: (1) only allowlisted senders can trigger tool calls; (2) runs as the current user, never root; (3) elevated mode requires explicit <code>/elevated on</code> per session; (4) hard timeout kills hung processes; (5) stdout/stderr is capped to prevent memory exhaustion.</span>
+          <span class="zh"><code>system.run</code> 让 AI 可以在你的电脑上执行任意 shell 命令，威力极大。OpenClaw 用了5层防护：(1) 只有白名单里的用户发的消息才能触发工具调用；(2) 默认以当前用户（非 root）权限运行；(3) 高权限（elevated）模式需要显式开启 <code>/elevated on</code>，每个对话独立；(4) 命令有超时限制；(5) 输出大小有上限，防止打印无限内容撑爆内存。</span>
+        </div>
+
+        <p class="en">Android nodes expose even more capabilities:</p>
+        <p class="zh">Android 节点能做的事比 macOS 还多：</p>
+
+        <pre><span class="kw">const</span> androidCapabilities = [
+  <span class="str">'notifications.send'</span>,   <span class="cm">// 发系统推送 / send push notifications</span>
+  <span class="str">'sms.send'</span>,             <span class="cm">// 发短信 / send SMS</span>
+  <span class="str">'contacts.read'</span>,        <span class="cm">// 读取联系人 / read contacts</span>
+  <span class="str">'calendar.read'</span>,        <span class="cm">// 读日历 / read calendar</span>
+  <span class="str">'calendar.write'</span>,       <span class="cm">// 写日历（新建事件）/ create calendar events</span>
+  <span class="str">'photos.read'</span>,          <span class="cm">// 读取相册 / read photo library</span>
+  <span class="str">'location.get'</span>,         <span class="cm">// 获取 GPS 位置 / get GPS location</span>
+  <span class="str">'motion.read'</span>,          <span class="cm">// 读加速度计、陀螺仪传感器 / read accelerometer/gyro</span>
+  <span class="str">'app.update'</span>,           <span class="cm">// 通过 Play Store 更新 App</span>
+];</pre>
+
+        <!-- ── REMOTE ACCESS ── -->
+        <div class="section-divider"><span>chapter 11 — remote access</span></div>
+
+        <h2 class="en">Remote Access: Safely Exposing the Gateway to the Outside World</h2>
+        <h2 class="zh">第十一章：远程访问——Gateway 怎么安全地暴露给外网？</h2>
+
+        <p class="en">Gateway listens only on <code>127.0.0.1</code> by default — only programs on the same machine can reach it. To access it from your phone, another computer, or the public internet requires additional configuration.</p>
+        <p class="zh">Gateway 默认只监听 <code>127.0.0.1</code>（loopback，即本机回环地址），意味着只有本机上的程序能访问它。想从手机、其他电脑、或者公网访问，需要额外配置。</p>
+
+        <h3 class="en">Option 1: Tailscale</h3>
+        <h3 class="zh">方案一：Tailscale</h3>
+
+        <p class="en">Tailscale is a mesh VPN based on the WireGuard protocol. You add all your devices to the same Tailscale network (tailnet) and they behave as if they're on the same LAN, with encrypted tunnels between them.</p>
+        <p class="zh">Tailscale 是基于 WireGuard 协议的 mesh VPN。你把所有设备（电脑、手机）都加入同一个 Tailscale 网络（tailnet），它们之间就像在同一个局域网里，但数据经过加密隧道传输。</p>
+
+        <pre><span class="cm"># Serve 模式：只有 tailnet 内的设备可以访问 / internal access only</span>
+tailscale serve --bg https+insecure://localhost:18789
+<span class="cm"># 结果：https://your-machine.tailXXXX.ts.net → 转发到本地 18789</span>
+
+<span class="cm"># Funnel 模式：公网所有人都可以访问（必须开密码保护）/ public access, needs password</span>
+tailscale funnel --bg https+insecure://localhost:18789
+
+<span class="cm"># 关闭时撤销（如果配了 resetOnExit: true）</span>
+tailscale serve reset</pre>
+
+        <h3 class="en">Option 2: SSH Port Forwarding</h3>
+        <h3 class="zh">方案二：SSH 端口转发</h3>
+
+        <p class="en">If Gateway runs on a remote server, use an SSH tunnel to securely map the remote port to local:</p>
+        <p class="zh">如果 Gateway 跑在远程服务器上，用 SSH 隧道把远端端口安全地映射到本地：</p>
+
+        <pre><span class="cm"># 把远程服务器的 18789 端口，加密后转发到本地 18789</span>
+ssh -Nf -L 18789:localhost:18789 user@your-server.com
+<span class="cm"># -N：不执行命令，只做端口转发 / no command, just port forward</span>
+<span class="cm"># -f：后台运行 / run in background</span>
+
+<span class="cm"># 之后本地访问 ws://127.0.0.1:18789，等价于访问远程 Gateway</span></pre>
+
+        <h3 class="en">Running on Linux server with systemd</h3>
+        <h3 class="zh">在 Linux 服务器上用 systemd 长期运行</h3>
+
+        <pre>[Unit]
+Description=OpenClaw Gateway
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/user/.npm-global/bin/openclaw gateway --port 18789
+Restart=on-failure    <span class="cm"># 崩溃就重启 / restart on crash</span>
+RestartSec=5s         <span class="cm"># 等5秒再重启 / wait 5s before restart</span>
+StandardOutput=append:/home/user/.openclaw/logs/gateway.log
+StandardError=append:/home/user/.openclaw/logs/gateway.err
+MemoryMax=1G          <span class="cm"># 最多用1G内存 / max 1GB memory</span>
+CPUQuota=50%          <span class="cm"># 最多占用50% CPU</span>
+
+[Install]
+WantedBy=default.target</pre>
+
+        <pre>systemctl --user enable openclaw-gateway   <span class="cm"># 开机自启 / start on boot</span>
+systemctl --user start openclaw-gateway    <span class="cm"># 现在就启动 / start now</span>
+systemctl --user status openclaw-gateway   <span class="cm"># 查看状态 / check status</span></pre>
+
+        <!-- ── VOICE ── -->
+        <div class="section-divider"><span>chapter 12 — voice &amp; media</span></div>
+
+        <h2 class="en">Voice: How the AI Listens and Speaks</h2>
+        <h2 class="zh">第十二章：语音——AI 怎么听懂你说的话，怎么开口回答？</h2>
+
+        <h3 class="en">Voice Wake Detection</h3>
+        <h3 class="zh">语音唤醒（Voice Wake）是怎么实现的？</h3>
+
+        <p class="en">On macOS and iOS, the OpenClaw App uses Apple's native <strong>Speech Recognition Framework</strong> to continuously listen to the microphone, transcribe speech in real time, and detect whether it contains the wake word:</p>
+        <p class="zh">macOS 和 iOS 上，OpenClaw App 用苹果原生的 <strong>Speech Recognition Framework</strong> 持续监听麦克风，实时识别语音转文字，检测是否包含唤醒词：</p>
+
+        <pre><span class="cm">// macOS/iOS 端（Swift）</span>
+<span class="kw">import</span> Speech
+
+<span class="kw">class</span> <span class="tp">VoiceWakeDetector</span> {
+    <span class="kw">let</span> recognizer = <span class="tp">SFSpeechRecognizer</span>(locale: <span class="tp">Locale</span>(identifier: <span class="str">"en-US"</span>))!
+    <span class="kw">let</span> audioEngine = <span class="tp">AVAudioEngine</span>()
+
+    <span class="kw">func</span> <span class="fn">startListening</span>(wakeWord: <span class="tp">String</span>) {
+        <span class="kw">let</span> request = <span class="tp">SFSpeechAudioBufferRecognitionRequest</span>()
+        request.shouldReportPartialResults = <span class="kw">true</span>   <span class="cm">// 边说边识别，不等说完</span>
+
+        <span class="kw">let</span> inputNode = audioEngine.inputNode
+        inputNode.<span class="fn">installTap</span>(onBus: <span class="num">0</span>, bufferSize: <span class="num">1024</span>,
+                             format: inputNode.<span class="fn">outputFormat</span>(forBus: <span class="num">0</span>)) { buffer, _ <span class="kw">in</span>
+            request.<span class="fn">append</span>(buffer)
+        }
+
+        recognizer.<span class="fn">recognitionTask</span>(with: request) { result, _ <span class="kw">in</span>
+            <span class="kw">guard let</span> result = result <span class="kw">else</span> { <span class="kw">return</span> }
+            <span class="kw">let</span> text = result.bestTranscription.formattedString.<span class="fn">lowercased</span>()
+            <span class="kw">if</span> text.<span class="fn">contains</span>(wakeWord.<span class="fn">lowercased</span>()) {
+                <span class="kw">self</span>.<span class="fn">onWakeWordDetected</span>()
+            }
+        }
+        <span class="kw">try</span>? audioEngine.<span class="fn">start</span>()
+    }
+}</pre>
+
+        <h3 class="en">Continuous Talk Mode — Full Audio Pipeline</h3>
+        <h3 class="zh">连续对话模式（Talk Mode）的完整音频处理管道</h3>
+
+        <pre class="flow-diagram">麦克风 → PCM 原始音频流（16kHz 采样率，16bit 位深，单声道）
+     │
+     ▼
+VAD（Voice Activity Detection，语音活动检测）
+     │  判断什么时候开始说话、什么时候停止说话
+     │  停止后切出一个"发音片段（utterance）"
+     ▼
+ASR（Automatic Speech Recognition，自动语音识别）
+     ├─ 优先：苹果 Speech Framework（本地运行，快，离线可用）
+     └─ 备选：OpenAI Whisper API（联网，更准，支持多语言）
+     │  输出：转录好的文字
+     ▼
+发给 Pi Agent 处理（走正常对话流程）
+     │  AI 生成文字回复
+     ▼
+TTS（Text-to-Speech，文字转语音）
+     ├─ 优先：ElevenLabs API（高质量，声音自然）
+     └─ 兜底：AVSpeechSynthesizer（苹果系统内置，无需联网）
+     │  输出：音频数据
+     ▼
+扬声器播放</pre>
+
+        <h3 class="en">Inbound Image Processing</h3>
+        <h3 class="zh">图片传过来之后，OpenClaw 怎么处理？</h3>
+
+        <p class="en">Images arriving from chat platforms may vary wildly in format and size. OpenClaw uses <code>sharp</code> (a high-performance Node.js image processing library) to normalise them before passing to the LLM:</p>
+        <p class="zh">聊天平台发来的图片可能格式各异、尺寸超大。OpenClaw 用 <code>sharp</code>（一个高性能 Node.js 图片处理库）进行标准化处理：</p>
+
+        <pre><span class="kw">async function</span> <span class="fn">handleInboundMedia</span>(media: <span class="tp">RawMedia</span>): <span class="tp">Promise</span>&lt;<span class="tp">ProcessedMedia</span>&gt; {
+  <span class="kw">if</span> (media.size > MAX_IMAGE_SIZE_BYTES) <span class="kw">throw new</span> <span class="tp">Error</span>(<span class="str">'IMAGE_TOO_LARGE'</span>);
+
+  <span class="kw">const</span> buffer = media.isUrl
+    ? <span class="kw">await</span> <span class="fn">downloadFromUrl</span>(media.url)
+    : media.buffer;
+
+  <span class="cm">// 用 sharp 调整大小并统一转成 JPEG / resize and convert to JPEG</span>
+  <span class="kw">const</span> normalized = <span class="kw">await</span> <span class="fn">sharp</span>(buffer)
+    .<span class="fn">resize</span>({ width: <span class="num">1920</span>, withoutEnlargement: <span class="kw">true</span> })
+    .<span class="fn">jpeg</span>({ quality: <span class="num">85</span> })
+    .<span class="fn">toBuffer</span>();
+
+  <span class="kw">const</span> tmpPath = <span class="kw">await</span> <span class="fn">saveTempFile</span>(normalized, { prefix: <span class="str">'media-'</span>, suffix: <span class="str">'.jpg'</span>, ttl: <span class="num">3600</span> });
+
+  <span class="cm">// Base64 编码，才能塞进 LLM 的请求体 / base64 for LLM vision input</span>
+  <span class="kw">return</span> { type: <span class="str">'image'</span>, path: tmpPath, base64: normalized.<span class="fn">toString</span>(<span class="str">'base64'</span>), mediaType: <span class="str">'image/jpeg'</span> };
+}</pre>
+
+        <!-- ── CHAT COMMANDS ── -->
+        <div class="section-divider"><span>chapter 13 — chat commands</span></div>
+
+        <h2 class="en">Chat Commands: Controlling the Gateway from Your Chat Window</h2>
+        <h2 class="zh">第十三章：聊天命令——Gateway 的"控制台入口"</h2>
+
+        <p class="en">You don't need to open a terminal. Send these commands directly in the chat window to control the Gateway:</p>
+        <p class="zh">你不需要打开终端，直接在聊天窗口发这些命令就能控制 Gateway：</p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="en">Command</span><span class="zh">命令</span></th>
+              <th><span class="en">What it does</span><span class="zh">做什么</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>/status</code></td>
+              <td><span class="en">Show current model, token usage, estimated cost, uptime</span><span class="zh">显示当前对话的模型、token 用量、估算费用、运行时长</span></td>
+            </tr>
+            <tr>
+              <td><code>/new</code> or <code>/reset</code></td>
+              <td><span class="en">Clear conversation history, start fresh</span><span class="zh">清空对话历史，重新开始</span></td>
+            </tr>
+            <tr>
+              <td><code>/compact</code></td>
+              <td><span class="en">Compress history to free up context space</span><span class="zh">压缩历史对话，腾出上下文空间</span></td>
+            </tr>
+            <tr>
+              <td><code>/think &lt;level&gt;</code></td>
+              <td><span class="en">Adjust thinking depth (off / minimal / low / medium / high / xhigh)</span><span class="zh">调整思考深度（off / minimal / low / medium / high / xhigh）</span></td>
+            </tr>
+            <tr>
+              <td><code>/verbose on|off</code></td>
+              <td><span class="en">Toggle verbose output mode</span><span class="zh">开关详细输出模式</span></td>
+            </tr>
+            <tr>
+              <td><code>/usage off|tokens|full</code></td>
+              <td><span class="en">Set whether to show token usage after each reply</span><span class="zh">设置每次回复是否显示 token 用量</span></td>
+            </tr>
+            <tr>
+              <td><code>/restart</code></td>
+              <td><span class="en">Restart the Gateway (group admins only)</span><span class="zh">重启 Gateway（仅群组管理员可用）</span></td>
+            </tr>
+            <tr>
+              <td><code>/activation mention|always</code></td>
+              <td><span class="en">In groups: respond only when @-mentioned vs always</span><span class="zh">群组里：被艾特才响应 vs 始终响应</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="en">Before processing any message, Gateway does a command check — if it starts with <code>/</code>, it goes through the command handler, bypassing the AI entirely:</p>
+        <p class="zh">Gateway 处理每条消息之前，先做一次命令检测——如果以 <code>/</code> 开头，走命令处理流程，否则才送给 AI：</p>
+
+        <pre><span class="kw">function</span> <span class="fn">parseCommand</span>(text: <span class="tp">string</span>): <span class="tp">ParsedCommand</span> | <span class="kw">null</span> {
+  <span class="kw">if</span> (!text.<span class="fn">startsWith</span>(<span class="str">'/'</span>)) <span class="kw">return null</span>;
+
+  <span class="kw">const</span> [rawCmd, ...args] = text.<span class="fn">slice</span>(<span class="num">1</span>).<span class="fn">split</span>(<span class="str">/\s+/</span>);
+
+  <span class="kw">const</span> commandMap: <span class="tp">Record</span>&lt;<span class="tp">string</span>, <span class="tp">CommandHandler</span>&gt; = {
+    <span class="str">'status'</span>:     handleStatus,
+    <span class="str">'new'</span>:        handleReset,
+    <span class="str">'reset'</span>:      handleReset,
+    <span class="str">'compact'</span>:    handleCompact,
+    <span class="str">'think'</span>:      handleThink,
+    <span class="str">'verbose'</span>:    handleVerbose,
+    <span class="str">'usage'</span>:      handleUsage,
+    <span class="str">'restart'</span>:    handleRestart,
+    <span class="str">'activation'</span>: handleActivation,
+    <span class="str">'elevated'</span>:   handleElevated,
+  };
+
+  <span class="kw">const</span> handler = commandMap[rawCmd.<span class="fn">toLowerCase</span>()];
+  <span class="kw">if</span> (!handler) <span class="kw">return null</span>;  <span class="cm">// 不认识的命令，当普通消息送给 AI</span>
+
+  <span class="kw">return</span> { handler, args, raw: text };
+}</pre>
+
+        <p class="en">Commands completely bypass the AI and operate directly on the database and Gateway state — so even if the AI misbehaves, control commands remain available.</p>
+        <p class="zh">命令处理完全绕过 AI，直接操作数据库和 Gateway 状态，这样就算 AI 出了问题，控制命令依然可用。</p>
+
+        <!-- ── SECURITY ── -->
+        <div class="section-divider"><span>chapter 14 — security</span></div>
+
+        <h2 class="en">Security: Three Layers of Defense</h2>
+        <h2 class="zh">第十四章：安全机制——三层防线保护你的助手</h2>
+
+        <p class="en">OpenClaw connects directly to real messaging surfaces. A misconfigured assistant is a remote execution vulnerability. The defaults are deliberately conservative.</p>
+        <p class="zh">将你的机器人连向全网是一个巨大风险，尤其是你赋予了机器人读写日历、执行系统命令等高级权限时。因此 OpenClaw 默认提供非常保守的安全防护。</p>
+
+        <h3 class="en">Layer 1: Message Allowlist (DM Pairing)</h3>
+        <h3 class="zh">第一层：消息来源白名单（DM 配对）</h3>
+
+        <p class="en">Every inbound message is checked against a SQLite allowlist before any processing begins. Strangers receive a time-limited pairing code (expires in 15 minutes). You approve them with <code>openclaw pairing approve telegram XK7P2Q</code>. Only then does their ID enter the allowlist.</p>
+        <p class="zh">每一条收到的消息最先接受校验，陌生人会被分发一次性的配对码并阻挡，需要你在控制台运行 <code>openclaw pairing approve</code> 命令批准。</p>
+
+        <p class="en"><code>openclaw doctor</code> checks your config for security issues:</p>
+        <p class="zh"><code>openclaw doctor</code> 会检查你的配置有没有安全漏洞：</p>
+
+        <pre><span class="kw">const</span> securityChecks = [
+  {
+    name: <span class="str">'DM Policy'</span>,
+    <span class="fn">check</span>: (config) => {
+      <span class="kw">for</span> (<span class="kw">const</span> [ch, cfg] <span class="kw">of</span> <span class="tp">Object</span>.<span class="fn">entries</span>(config.channels)) {
+        <span class="kw">if</span> (cfg.dmPolicy === <span class="str">'open'</span> &amp;&amp; cfg.allowFrom?.includes(<span class="str">'*'</span>)) {
+          <span class="kw">return</span> { status: <span class="str">'WARN'</span>, message: <span class="str">`${ch}: 完全开放，任何人都能直接控制你的助手`</span> };
+        }
+      }
+      <span class="kw">return</span> { status: <span class="str">'OK'</span> };
+    }
+  },
+  {
+    name: <span class="str">'Funnel 认证'</span>,
+    <span class="fn">check</span>: (config) => {
+      <span class="kw">if</span> (config.gateway?.tailscale?.mode === <span class="str">'funnel'</span>) {
+        <span class="kw">if</span> (config.gateway?.auth?.mode !== <span class="str">'password'</span>) {
+          <span class="kw">return</span> { status: <span class="str">'ERROR'</span>, message: <span class="str">'Funnel 已开启但没有密码保护！'</span> };
+        }
+      }
+      <span class="kw">return</span> { status: <span class="str">'OK'</span> };
+    }
+  }
+];</pre>
+
+        <h3 class="en">Layer 2: Prompt Injection Defense</h3>
+        <h3 class="zh">第二层：提示注入防御</h3>
+
+        <div class="callout danger">
+          <span class="callout-label">⚠️ Prompt Injection Defense</span>
+          <span class="en">User messages are always placed in the <code>user</code> role — never concatenated into the <code>system</code> prompt. This role boundary is the primary defense against prompt injection attacks where a malicious sender tries to override system instructions through message content.</span>
+          <span class="zh">"提示注入"是指有人在发给 AI 的消息里藏了特殊指令，试图操控 AI 做它不该做的事。防御的核心是严格的角色隔离——用户消息永远只能是 <code>user</code> role，绝不能混入 <code>system</code> role：</span>
+        </div>
+
+        <pre><span class="cm">// ❌ 危险：把用户输入直接拼进 system prompt / DANGEROUS</span>
+<span class="kw">const</span> systemPrompt = <span class="str">`你是助手。${userMessage}`</span>;
+
+<span class="cm">// ✅ 正确：严格分离 / CORRECT: strict separation</span>
+<span class="kw">const</span> messages = [
+  { role: <span class="str">'system'</span>, content: SYSTEM_PROMPT },     <span class="cm">// 你信任的内容 / trusted content</span>
+  { role: <span class="str">'user'</span>,   content: userMessage }         <span class="cm">// 不信任的外部输入 / untrusted input</span>
+];</pre>
+
+        <h3 class="en">Layer 3: Message Queue Serialisation</h3>
+        <h3 class="zh">第三层：消息队列串行化（防止资源耗尽）</h3>
+
+        <p class="en">Each Session has an independent message queue. Only one message is processed at a time per conversation, preventing users from flooding the API quota:</p>
+        <p class="zh">每个 Session 有一个独立的消息队列，保证同一个对话同一时间只处理一条消息，防止用户疯狂发消息把 API 配额打爆：</p>
+
+        <pre><span class="kw">class</span> <span class="tp">SessionQueue</span> {
+  <span class="kw">private</span> queue: <span class="tp">Message</span>[] = [];
+  <span class="kw">private</span> processing = <span class="kw">false</span>;
+
+  <span class="fn">enqueue</span>(msg: <span class="tp">Message</span>) {
+    <span class="kw">this</span>.queue.<span class="fn">push</span>(msg);
+    <span class="kw">this</span>.<span class="fn">processNext</span>();
+  }
+
+  <span class="kw">private async</span> <span class="fn">processNext</span>() {
+    <span class="kw">if</span> (<span class="kw">this</span>.processing || <span class="kw">this</span>.queue.length === <span class="num">0</span>) <span class="kw">return</span>;
+    <span class="kw">this</span>.processing = <span class="kw">true</span>;
+    <span class="kw">const</span> msg = <span class="kw">this</span>.queue.<span class="fn">shift</span>()!;
+    <span class="kw">try</span> {
+      <span class="kw">await</span> <span class="fn">processMessage</span>(msg);
+    } <span class="kw">finally</span> {
+      <span class="kw">this</span>.processing = <span class="kw">false</span>;
+      <span class="kw">this</span>.<span class="fn">processNext</span>();
+    }
+  }
+}</pre>
+
+        <!-- ── VERSIONING ── -->
+        <div class="section-divider"><span>chapter 15 — versioning &amp; migrations</span></div>
+
+        <h2 class="en">Versioning, Updates, and Database Migrations</h2>
+        <h2 class="zh">第十五章：版本管理——怎么发版、怎么升级、数据库怎么迁移？</h2>
+
+        <h3 class="en">Calendar Versioning (CalVer)</h3>
+        <h3 class="zh">版本号用日历格式（CalVer）</h3>
+
+        <p class="en">OpenClaw uses <code>vYYYY.M.D</code> format version numbers — e.g. <code>v2025.3.10</code>. Unlike semantic versioning like <code>1.2.3</code>, date-based versioning shows at a glance how recent a version is. Pre-releases add a suffix: <code>v2025.3.10-beta.2</code>.</p>
+        <p class="zh">OpenClaw 用 <code>vYYYY.M.D</code> 格式的版本号，比如 <code>v2025.3.10</code>。比起 <code>1.2.3</code> 这种语义化版本号，日期格式的好处是一眼就看出"这个版本多新"。预发布版加后缀：<code>v2025.3.10-beta.2</code>。</p>
+
+        <h3 class="en">Three Release Channels</h3>
+        <h3 class="zh">三个发布通道</h3>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="en">Channel</span><span class="zh">通道</span></th>
+              <th><span class="en">Content</span><span class="zh">内容</span></th>
+              <th><span class="en">npm tag</span><span class="zh">npm 标签</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>stable</td>
+              <td><span class="en">Official stable release, for daily use</span><span class="zh">正式稳定版，适合日常使用</span></td>
+              <td><code>latest</code></td>
+            </tr>
+            <tr>
+              <td>beta</td>
+              <td><span class="en">Pre-release testing, early feature access</span><span class="zh">预发布测试版，功能抢先体验</span></td>
+              <td><code>beta</code></td>
+            </tr>
+            <tr>
+              <td>dev</td>
+              <td><span class="en">Latest main branch commit, may have bugs</span><span class="zh">main 分支最新提交，可能有 bug</span></td>
+              <td><code>dev</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <pre>openclaw update --channel beta     <span class="cm"># 切换到测试通道 / switch to beta</span>
+openclaw update --channel stable   <span class="cm"># 回到稳定版 / back to stable</span></pre>
+
+        <h3 class="en">Database Migrations — Handling Schema Changes on Upgrade</h3>
+        <h3 class="zh">数据库迁移（Migrations）——升级时数据怎么处理？</h3>
+
+        <p class="en">Each version upgrade may change the database schema. OpenClaw uses incremental migration scripts to manage these changes, ensuring historical data is never lost:</p>
+        <p class="zh">每次版本升级可能会改变数据库的表结构（加字段、加表等）。OpenClaw 用<strong>增量迁移脚本</strong>来管理这些变化，保证历史数据不丢失：</p>
+
+        <pre><span class="cm">// 迁移脚本按版本号编号，只会跑一次 / migration scripts run exactly once</span>
+<span class="kw">const</span> migrations = [
+  {
+    version: <span class="num">1</span>,
+    <span class="fn">up</span>: <span class="kw">async</span> (db) => {
+      <span class="kw">await</span> db.<span class="fn">exec</span>(<span class="str">`
+        CREATE TABLE sessions (...);
+        CREATE TABLE messages (...);
+      `</span>);
+    }
+  },
+  {
+    version: <span class="num">2</span>,
+    <span class="fn">up</span>: <span class="kw">async</span> (db) => {
+      <span class="kw">await</span> db.<span class="fn">exec</span>(<span class="str">`CREATE TABLE cron_jobs (...);`</span>);
+    }
+  },
+  {
+    version: <span class="num">3</span>,
+    <span class="fn">up</span>: <span class="kw">async</span> (db) => {
+      <span class="kw">await</span> db.<span class="fn">exec</span>(<span class="str">`ALTER TABLE sessions ADD COLUMN elevated INTEGER DEFAULT 0;`</span>);
+    }
+  }
+];
+
+<span class="cm">// Gateway 每次启动都检查一遍，把没跑过的迁移跑掉</span>
+<span class="kw">async function</span> <span class="fn">runMigrations</span>(db: <span class="tp">Database</span>) {
+  <span class="kw">const</span> currentVersion = <span class="kw">await</span> db.<span class="fn">getUserVersion</span>();
+  <span class="kw">const</span> pending = migrations.<span class="fn">filter</span>(m => m.version > currentVersion);
+  <span class="kw">for</span> (<span class="kw">const</span> migration <span class="kw">of</span> pending) {
+    <span class="kw">await</span> migration.<span class="fn">up</span>(db);
+    <span class="kw">await</span> db.<span class="fn">setUserVersion</span>(migration.version);
+    console.<span class="fn">log</span>(<span class="str">`✅ 数据库迁移 v${migration.version} 完成`</span>);
+  }
+}</pre>
+
+        <!-- ── MODEL LAYER ── -->
+        <div class="section-divider"><span>chapter 16 — model provider layer</span></div>
+
+        <h2 class="en">Model Provider Layer: Pluggable AI Backends with Failover</h2>
+        <h2 class="zh">第十六章：AI 模型配置——怎么连接不同的 AI？怎么做到"一个挂了换另一个"？</h2>
+
+        <p class="en">OpenClaw doesn't include any AI itself — it's a framework, and AI capability comes from external model services. To make them transparent and swappable, OpenClaw defines a unified model interface:</p>
+        <p class="zh">OpenClaw 本身不包含 AI，它是个框架，AI 能力来自外接的模型服务。为了做到对上层透明、随时可替换，OpenClaw 定义了一个统一的模型接口：</p>
+
+        <pre><span class="kw">interface</span> <span class="tp">ModelProvider</span> {
+  name: <span class="tp">string</span>;
+
+  <span class="fn">complete</span>(request: <span class="tp">CompletionRequest</span>): <span class="tp">Promise</span>&lt;<span class="tp">CompletionResponse</span>&gt;;
+  <span class="fn">stream</span>(request: <span class="tp">CompletionRequest</span>): <span class="tp">AsyncIterable</span>&lt;<span class="tp">CompletionChunk</span>&gt;;
+
+  supportsTools:    <span class="tp">boolean</span>;
+  supportsVision:   <span class="tp">boolean</span>;
+  supportsThinking: <span class="tp">boolean</span>;
+
+  <span class="fn">countTokens</span>(messages: <span class="tp">Message</span>[]): <span class="tp">Promise</span>&lt;<span class="tp">number</span>&gt;;
+  maxContextTokens: <span class="tp">number</span>;
+  maxOutputTokens:  <span class="tp">number</span>;
+}</pre>
+
+        <p class="en">The OpenAI provider translates the unified format into an OpenAI API call, then translates the OpenAI SSE stream back into unified chunk format:</p>
+        <p class="zh">OpenAI 的实现：把统一格式的请求，翻译成 OpenAI 的 API 调用，然后把 OpenAI 的 SSE 流翻译成统一的 chunk 格式往外推：</p>
+
+        <pre><span class="kw">class</span> <span class="tp">OpenAIProvider</span> <span class="kw">implements</span> <span class="tp">ModelProvider</span> {
+  <span class="kw">constructor</span>(<span class="kw">private</span> apiKey: <span class="tp">string</span>, <span class="kw">private</span> model: <span class="tp">string</span>) {}
+
+  <span class="kw">async</span> *<span class="fn">stream</span>(request: <span class="tp">CompletionRequest</span>) {
+    <span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://api.openai.com/v1/chat/completions'</span>, {
+      method: <span class="str">'POST'</span>,
+      headers: { <span class="str">'Authorization'</span>: <span class="str">`Bearer ${this.apiKey}`</span>, <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+      body: <span class="tp">JSON</span>.<span class="fn">stringify</span>({
+        model: <span class="kw">this</span>.model,
+        messages: request.messages,
+        tools: request.tools,
+        stream: <span class="kw">true</span>,
+        ...(request.thinkingLevel !== <span class="str">'off'</span> &amp;&amp; {
+          reasoning_effort: <span class="kw">this</span>.<span class="fn">mapThinkingLevel</span>(request.thinkingLevel)
+          <span class="cm">// 'minimal'/'low' → 'low', 'medium' → 'medium', 'high'/'xhigh' → 'high'</span>
+        })
+      })
+    });
+
+    <span class="kw">for await</span> (<span class="kw">const</span> line <span class="kw">of</span> <span class="fn">parseSSE</span>(response.body!)) {
+      <span class="kw">if</span> (line === <span class="str">'[DONE]'</span>) <span class="kw">break</span>;
+      <span class="kw">yield this</span>.<span class="fn">normalizeChunk</span>(<span class="tp">JSON</span>.<span class="fn">parse</span>(line));
+    }
+  }
+}</pre>
+
+        <h3 class="en">Failover: Auto-switching When the Primary Model Goes Down</h3>
+        <h3 class="zh">故障转移：主模型挂了自动换备用</h3>
+
+        <p class="en"><code>FailoverModelProvider</code> wraps multiple Providers in priority order. On retryable errors (429 rate limit, 503 service unavailable, network timeout), it switches to the next one:</p>
+        <p class="zh"><code>FailoverModelProvider</code> 包装了多个 Provider，按优先级排列。遇到可重试的错误（429 速率限制、503 服务不可用、网络超时），就切换到下一个：</p>
+
+        <pre><span class="kw">class</span> <span class="tp">FailoverModelProvider</span> <span class="kw">implements</span> <span class="tp">ModelProvider</span> {
+  <span class="kw">private</span> providers: <span class="tp">ModelProvider</span>[];
+  <span class="kw">private</span> currentIndex = <span class="num">0</span>;
+
+  <span class="kw">async</span> *<span class="fn">stream</span>(request: <span class="tp">CompletionRequest</span>) {
+    <span class="kw">let</span> lastError: <span class="tp">Error</span> | <span class="kw">null</span> = <span class="kw">null</span>;
+
+    <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="kw">this</span>.providers.length; i++) {
+      <span class="kw">const</span> provider = <span class="kw">this</span>.providers[<span class="kw">this</span>.currentIndex % <span class="kw">this</span>.providers.length];
+      <span class="kw">try</span> {
+        <span class="kw">yield</span>* provider.<span class="fn">stream</span>(request);
+        <span class="kw">return</span>;
+      } <span class="kw">catch</span> (err) {
+        lastError = err <span class="kw">as</span> <span class="tp">Error</span>;
+        <span class="kw">if</span> (<span class="fn">isRetryableError</span>(err)) {
+          console.<span class="fn">warn</span>(<span class="str">`${provider.name} 失败（${err.status}），切换到下一个…`</span>);
+          <span class="kw">this</span>.currentIndex++;
+          <span class="kw">continue</span>;
+        }
+        <span class="kw">throw</span> err;
+      }
+    }
+    <span class="kw">throw</span> lastError ?? <span class="kw">new</span> <span class="tp">Error</span>(<span class="str">'所有模型提供商均失败'</span>);
+  }
+}
+
+<span class="kw">function</span> <span class="fn">isRetryableError</span>(err: <span class="tp">unknown</span>): <span class="tp">boolean</span> {
+  <span class="kw">if</span> (err <span class="kw">instanceof</span> <span class="tp">APIError</span>)
+    <span class="kw">return</span> [<span class="num">429</span>, <span class="num">500</span>, <span class="num">502</span>, <span class="num">503</span>, <span class="num">504</span>].<span class="fn">includes</span>(err.status);
+  <span class="kw">return</span> err <span class="kw">instanceof</span> <span class="tp">NetworkError</span>;
+}</pre>
+
+        <h3 class="en">API Key Rotation (Preventing Rate Limit Exhaustion)</h3>
+        <h3 class="zh">API Key 轮换（防止单个 Key 触发速率限制）</h3>
+
+        <p class="en">If you have multiple API Keys, you can configure them to rotate. A built-in circuit breaker takes a Key offline temporarily if its error rate exceeds 50%:</p>
+        <p class="zh">如果你有多个 API Key，可以配置轮询使用。内置熔断机制：某个 Key 错误率超过50%就临时下线1分钟：</p>
+
+        <pre><span class="kw">class</span> <span class="tp">RotatingKeyProvider</span> {
+  <span class="kw">private</span> keys: <span class="tp">string</span>[];
+  <span class="kw">private</span> index = <span class="num">0</span>;
+  <span class="kw">private</span> keyStats = <span class="kw">new</span> <span class="tp">Map</span>&lt;<span class="tp">string</span>, { requests: <span class="tp">number</span>; errors: <span class="tp">number</span> }&gt;();
+
+  <span class="fn">nextKey</span>(): <span class="tp">string</span> {
+    <span class="kw">const</span> key = <span class="kw">this</span>.keys[<span class="kw">this</span>.index % <span class="kw">this</span>.keys.length];
+    <span class="kw">this</span>.index++;
+    <span class="kw">return</span> key;
+  }
+
+  <span class="fn">markError</span>(key: <span class="tp">string</span>) {
+    <span class="kw">const</span> stats = <span class="kw">this</span>.keyStats.<span class="fn">get</span>(key) ?? { requests: <span class="num">0</span>, errors: <span class="num">0</span> };
+    stats.errors++;
+    <span class="kw">this</span>.keyStats.<span class="fn">set</span>(key, stats);
+    <span class="cm">// 错误率超过50%，临时把这个 Key 从轮询里踢出去</span>
+    <span class="kw">if</span> (stats.errors / (stats.requests || <span class="num">1</span>) > <span class="num">0.5</span>) {
+      <span class="kw">this</span>.keys = <span class="kw">this</span>.keys.<span class="fn">filter</span>(k => k !== key);
+      <span class="fn">setTimeout</span>(() => <span class="kw">this</span>.keys.<span class="fn">push</span>(key), <span class="num">60_000</span>);  <span class="cm">// 1分钟后回来 / back after 1 minute</span>
+    }
+  }
+}</pre>
+
+        <!-- ── CLOSING ── -->
+        <div class="section-divider"><span>summary</span></div>
+
+        <h2 class="en">Summary: The Whole System in One Paragraph</h2>
+        <h2 class="zh">总结：用一段话串起所有内容</h2>
+
+        <div class="quote-block">
+          <span class="en">"The best infrastructure disappears — you stop thinking about it because it just works."</span>
+          <span class="zh">"最好的基础设施永远是透明不可见的——因为它就是管用，以至于你忘记了它的存在。"</span>
+        </div>
+
+        <p class="en">OpenClaw is a scheduling hub (Gateway) that lives on your own machine. On startup it initialises 10 subsystems in fixed sequence: read config, create SQLite database, start Event Bus, restore sessions, load skills, connect to chat platforms, open WebSocket server, open HTTP server, start cron scheduler, mark ready.</p>
+        <p class="zh">OpenClaw 是一个住在你自己机器上的调度中心（Gateway）。它启动时按固定顺序初始化10个子系统：读配置、建数据库（SQLite）、开事件总线、恢复会话、加载技能、连接各聊天平台、开 WebSocket 服务器、开 HTTP 服务、启定时任务、就绪。</p>
+
+        <p class="en">Every inbound message passes through these gates: Channel Adapter normalises the raw platform data → allowlist check (SQLite) → route to the right Session → Pi Agent assembles a Chat Completions request → LLM streams a reply → if the AI calls tools, run the ReAct loop → translate SSE stream into WebSocket <code>stream.chunk</code> events → Channel Adapter formats and sends the reply out.</p>
+        <p class="zh">每条进来的消息，都经过这几个关卡：Channel 适配器把平台原始数据标准化 → 白名单检查（SQLite）→ 路由到对应 Session → Pi Agent 拼出 Chat Completions 请求 → LLM 流式生成回复 → 如果 AI 调工具就跑 ReAct 循环 → 最终把 SSE 流翻译成 WebSocket stream.chunk 推给客户端 → Channel 适配器把回复格式化后发出去。</p>
+
+        <p class="en">Device nodes (phone, computer) connect to the Gateway via WebSocket, register capabilities with <code>node.hello</code>, and get invoked remotely with <code>node.invoke</code>. Skills are defined in YAML, loaded at startup, and extend the AI's capabilities at any time. The model layer abstracts all LLM providers behind a unified interface, with failover and key rotation for high availability.</p>
+        <p class="zh">设备节点（手机、电脑）通过 WebSocket 连到 Gateway，用 <code>node.hello</code> 注册能力清单，Gateway 需要时发 <code>node.invoke</code> 远程调用。技能（Skill）用 YAML 定义工具和提示词，Gateway 启动时加载，让 AI 的能力随时可扩展。模型层用统一接口抽象所有 LLM 提供商，支持故障转移和 Key 轮换，保证可用性。</p>
+
+        <p class="en">OpenClaw's design rests on a few explicit principles: <strong>Single control plane</strong> — one Gateway, one config, one database; no distributed state, no cluster. <strong>Interface-driven decoupling</strong> — the Gateway never imports WhatsApp directly; it imports a <code>ChannelAdapter</code>. Replacing any component is a local change. <strong>Streaming first</strong> — every layer from LLM SSE output to WebSocket events is built around streaming. <strong>Local-first privacy</strong> — your conversation history lives in a SQLite file on your machine. Only the AI API you've explicitly chosen ever sees your messages.</p>
+        <p class="zh">OpenClaw 的设计坚持了几个准则。<strong>单一控制平面</strong>：没有纷繁复杂的微服务和分布式状态同步，一切数据本地保存，随时可重启和排查。<strong>面向接口解耦</strong>：网关层不用关心下面跑的是 Telegram 还是手机闹钟，替换组件时不会牵一发而动全身。<strong>流式优先</strong>：低延迟是最基本的尊严。<strong>本地优先的默认隐私护城河</strong>：所有数据默认存在你自己硬盘的 SQLite 文件，除了你指定的模型厂商，没有任何第三方看得到你的聊天记录。</p>
+
+        <p class="en">The entire data path never touches any third-party server. That feels worth understanding.</p>
+        <p class="zh">整条链路，数据不经过任何第三方服务器。这整套系统值得你的理解。</p>
+
+        <!-- ── DEPLOYMENT GUIDE ── -->
+        <div class="section-divider"><span>appendix a — deployment guide</span></div>
+
+        <h2 class="en">Appendix A: Try It Yourself (Local Deployment Guide)</h2>
+        <h2 class="zh">附录 A：如何在自己的电脑或 Ubuntu 服务器上部署</h2>
+
+        <div class="en">
+          <p>Ready to run OpenClaw? The easiest way is via npm as a global package. You need Node.js 22 installed.</p>
+          <pre>npm install -g openclaw@latest
+openclaw onboard --install-daemon</pre>
+          <p>The <code>onboard</code> command provides an interactive setup for linking your chat platforms, configuring API keys, and setting up the background service.</p>
+
+          <h3>Deploying on an Ubuntu VPS (Systemd)</h3>
+          <p>If you prefer hosting OpenClaw on an always-on Ubuntu machine, configure it to run as a <code>systemd</code> service:</p>
+
+          <pre><span class="cm"># 1. Install Node.js 22 and npm</span>
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+<span class="cm"># 2. Install OpenClaw globally</span>
+sudo npm install -g openclaw@latest
+
+<span class="cm"># 3. Create a systemd service file (run as your current user, do not run as root)</span>
+mkdir -p ~/.config/systemd/user
+cat &lt;&lt; 'EOF' &gt; ~/.config/systemd/user/openclaw-gateway.service
+[Unit]
+Description=OpenClaw Gateway
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env openclaw gateway --port 18789
+Restart=on-failure
+RestartSec=5s
+StandardOutput=append:%h/.openclaw/logs/gateway.log
+StandardError=append:%h/.openclaw/logs/gateway.err
+MemoryMax=1G
+
+[Install]
+WantedBy=default.target
+EOF
+
+<span class="cm"># 4. Enable and start the service</span>
+systemctl --user daemon-reload
+systemctl --user enable openclaw-gateway
+systemctl --user start openclaw-gateway
+
+<span class="cm"># 5. Check status</span>
+systemctl --user status openclaw-gateway</pre>
+          <p>You can then use <code>tailscale serve</code> or SSH port forwarding to access your remote Gateway from your local machine.</p>
+        </div>
+
+        <div class="zh">
+          <p>想自己跑起来试试？最简单的方式是使用 npm 全局安装。注意：目前需要 Node.js 22（LTS）版本以上。</p>
+          <pre>npm install -g openclaw@latest
+openclaw onboard --install-daemon</pre>
+          <p>运行 <code>onboard</code> 会弹出一个交互式向导，一步步问你要连接哪些平台、用哪个 AI 模型、要不要装守护进程等，配置全部自动化。</p>
+
+          <h3>在 Ubuntu 服务器上部署（Systemd）</h3>
+          <p>如果你不想把它装在个人电脑上，可以把它部署在一台一直开机的 Linux/Ubuntu 服务器上，并使用 <code>systemd</code> 将其配置为后台常驻的守护进程服务。</p>
+
+          <pre><span class="cm"># 1. 安装 Node.js 22</span>
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+<span class="cm"># 2. 全局安装 OpenClaw</span>
+sudo npm install -g openclaw@latest
+
+<span class="cm"># 3. 创建 systemd 服务配置文件（建议用普通用户运行，不要用 root）</span>
+mkdir -p ~/.config/systemd/user
+cat &lt;&lt; 'EOF' &gt; ~/.config/systemd/user/openclaw-gateway.service
+[Unit]
+Description=OpenClaw Gateway
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env openclaw gateway --port 18789
+Restart=on-failure    <span class="cm"># 崩溃就重启</span>
+RestartSec=5s         <span class="cm"># 等5秒再重启，避免疯狂重启</span>
+StandardOutput=append:%h/.openclaw/logs/gateway.log
+StandardError=append:%h/.openclaw/logs/gateway.err
+MemoryMax=1G          <span class="cm"># 限制最大使用 1GB 内存</span>
+
+[Install]
+WantedBy=default.target
+EOF
+
+<span class="cm"># 4. 重新加载 daemon 并启动服务</span>
+systemctl --user daemon-reload
+systemctl --user enable openclaw-gateway   <span class="cm"># 开机自启</span>
+systemctl --user start openclaw-gateway    <span class="cm"># 现在就启动</span>
+
+<span class="cm"># 5. 查看运行状态</span>
+systemctl --user status openclaw-gateway</pre>
+          <p>部署完成后，如果要在外网随处访问这台内网服务器的 OpenClaw 控制台，建议使用 <code>tailscale funnel</code> 暴露 18789 端口（需要配置密码），或者使用 <code>ssh -L</code> 将远端 18789 端口映射到本地。</p>
+        </div>
+
+        <!-- ── APPENDIX B: FULL CONFIG ── -->
+        <div class="section-divider"><span>appendix b — full config reference</span></div>
+
+        <h2 class="en">Appendix B: Full Configuration File Reference</h2>
+        <h2 class="zh">附录 B：完整配置文件速查</h2>
+
+        <pre><span class="cm"># ~/.openclaw/config.yaml</span>
+
+gateway:
+  bind: loopback          <span class="cm"># loopback=只有本机 | all=局域网也行</span>
+  port: 18789
+  auth:
+    mode: none            <span class="cm"># none=不验证 | password=密码 | tailscale=用身份头</span>
+    password: <span class="str">""</span>
+  tailscale:
+    mode: off             <span class="cm"># off | serve（内网）| funnel（公网，必须配密码）</span>
+    resetOnExit: false    <span class="cm"># 关闭时自动撤销 tailscale 配置</span>
+
+workspace:
+  name: personal
+  model: gpt-4o
+  systemPrompt: |
+    你是我的私人助理…
+
+models:
+  profiles:
+    - name: gpt4o
+      provider: openai
+      model: gpt-4o
+      apiKey: <span class="str">"${OPENAI_API_KEY}"</span>     <span class="cm"># 支持读环境变量 / supports env vars</span>
+    - name: claude
+      provider: anthropic
+      model: claude-sonnet-4-5
+      apiKey: <span class="str">"${ANTHROPIC_API_KEY}"</span>
+  failover: [gpt4o, claude]           <span class="cm"># 故障转移顺序 / failover order</span>
+
+channels:
+  telegram:
+    token: <span class="str">"${TELEGRAM_BOT_TOKEN}"</span>
+    dmPolicy: pairing                 <span class="cm"># pairing | open</span>
+    allowFrom: [<span class="str">"你的Telegram用户ID"</span>]
+  discord:
+    token: <span class="str">"${DISCORD_BOT_TOKEN}"</span>
+    dmPolicy: pairing
+    allowFrom: [<span class="str">"你的Discord用户ID"</span>]
+    guildIds: [<span class="str">"服务器ID"</span>]            <span class="cm"># 限制哪些服务器的机器人消息</span>
+
+skills:
+  enabled: true
+  clawhub: true                       <span class="cm"># 允许 AI 自动从 ClawHub 安装技能</span>
+  workspace: ~/.openclaw/skills/      <span class="cm"># 你自己写的技能放这里</span></pre>
+
+        <!-- ── APPENDIX C: DEBUG COMMANDS ── -->
+        <div class="section-divider"><span>appendix c — debug commands</span></div>
+
+        <h2 class="en">Appendix C: Common Debug Commands</h2>
+        <h2 class="zh">附录 C：常用调试命令</h2>
+
+        <pre><span class="cm"># 实时看 Gateway 日志 / watch Gateway logs live</span>
+tail -f ~/.openclaw/logs/gateway.log
+
+<span class="cm"># 扫描配置，找安全漏洞和配置问题 / scan config for issues</span>
+openclaw doctor
+
+<span class="cm"># 列出所有活跃对话 / list all active sessions</span>
+openclaw sessions list
+
+<span class="cm"># 看某个对话最近10条历史 / show last 10 messages in a session</span>
+openclaw sessions history --session main --last 10
+
+<span class="cm"># 直接从命令行向 AI 发消息（调试用）/ send message from CLI</span>
+openclaw agent --message <span class="str">"你好"</span> --session main
+
+<span class="cm"># 列出已安装的技能 / list installed skills</span>
+openclaw skills list
+
+<span class="cm"># 重启 Gateway（不影响正在进行的对话，会话状态在 SQLite 里）/ restart Gateway</span>
+openclaw gateway restart
+
+<span class="cm"># 看 Gateway 是否在跑 / check if Gateway is running</span>
+openclaw gateway status
+
+<span class="cm"># 看当前有哪些 WebSocket 客户端连着 / list connected WebSocket clients</span>
+openclaw gateway clients
+
+<span class="cm"># 升级到最新稳定版 / upgrade to latest stable</span>
+openclaw update --channel stable
+
+<span class="cm"># 查版本号 / check version</span>
+openclaw --version</pre>
+
+        <!-- ── GLOSSARY ── -->
+        <div class="section-divider"><span>appendix d — glossary</span></div>
+
+        <h2 class="en">Appendix D: Glossary</h2>
+        <h2 class="zh">附录 D：术语一览</h2>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th><span class="en">Term</span><span class="zh">术语</span></th>
+              <th><span class="en">Plain English</span><span class="zh">你可以这样理解它</span></th>
+              <th><span class="en">Technically</span><span class="zh">技术上它是</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gateway</td>
+              <td><span class="en">The always-on central dispatcher</span><span class="zh">整个系统的总调度员</span></td>
+              <td>JSON-RPC over WebSocket server</td>
+            </tr>
+            <tr>
+              <td>Channel</td>
+              <td><span class="en">The plug connecting one chat platform</span><span class="zh">连接某个聊天平台的插头</span></td>
+              <td><span class="en">Adapter implementing <code>ChannelAdapter</code></span><span class="zh">实现 ChannelAdapter 接口的适配器模块</span></td>
+            </tr>
+            <tr>
+              <td>Session</td>
+              <td><span class="en">The full record of one conversation</span><span class="zh">一段对话的全部记录</span></td>
+              <td><span class="en">SQLite sessions + messages rows</span><span class="zh">SQLite 里的 sessions + messages 行集合</span></td>
+            </tr>
+            <tr>
+              <td>Agent</td>
+              <td><span class="en">The AI instance that thinks and acts for you</span><span class="zh">代表你思考和行动的 AI 实例</span></td>
+              <td><span class="en">Pi Agent Runtime, manages ReAct Loop</span><span class="zh">Pi Agent Runtime，管理 ReAct Loop</span></td>
+            </tr>
+            <tr>
+              <td>Node</td>
+              <td><span class="en">A connected device</span><span class="zh">一台已接入的设备</span></td>
+              <td><span class="en">Process that registers capabilities and accepts <code>node.invoke</code></span><span class="zh">通过 WebSocket 注册能力、接受 invoke 的进程</span></td>
+            </tr>
+            <tr>
+              <td>Skill</td>
+              <td><span class="en">A plugin for the AI</span><span class="zh">AI 的功能插件</span></td>
+              <td><span class="en">YAML-defined tool set + systemPrompt fragment</span><span class="zh">YAML 定义的工具集 + systemPrompt 片段</span></td>
+            </tr>
+            <tr>
+              <td>Tool</td>
+              <td><span class="en">A specific capability the AI can call</span><span class="zh">AI 可以调用的一个具体能力</span></td>
+              <td><span class="en"><code>ToolDefinition</code> implementation, triggered by function call</span><span class="zh">ToolDefinition 接口的实现，被 function call 触发</span></td>
+            </tr>
+            <tr>
+              <td>WebSocket</td>
+              <td><span class="en">An always-open bidirectional pipe</span><span class="zh">一直开着的双向通信管道</span></td>
+              <td><span class="en">Full-duplex TCP connection carrying JSON-RPC</span><span class="zh">全双工 TCP 连接，承载 JSON-RPC 协议</span></td>
+            </tr>
+            <tr>
+              <td>Daemon</td>
+              <td><span class="en">A program that always runs in the background</span><span class="zh">在后台一直跑着的守护程序</span></td>
+              <td><span class="en">Service process managed by launchd (macOS) / systemd (Linux)</span><span class="zh">launchd(macOS) / systemd(Linux) 管理的服务进程</span></td>
+            </tr>
+            <tr>
+              <td>TCC</td>
+              <td><span class="en">macOS's permission gatekeeper</span><span class="zh">macOS 的权限管家</span></td>
+              <td>Transparency, Consent, and Control</td>
+            </tr>
+            <tr>
+              <td>Pairing</td>
+              <td><span class="en">Issuing a pass to a stranger</span><span class="zh">给陌生人发通行证</span></td>
+              <td><span class="en">SQLite allowlist-based message source whitelist</span><span class="zh">基于 SQLite allowlist 的消息来源白名单机制</span></td>
+            </tr>
+            <tr>
+              <td>ClawHub</td>
+              <td><span class="en">The app store for Skills</span><span class="zh">技能的应用商店</span></td>
+              <td><span class="en">npm-like Skill registry with search and hot-install</span><span class="zh">Skill 的 npm-like 注册表，支持搜索和热安装</span></td>
+            </tr>
+            <tr>
+              <td>Tailscale</td>
+              <td><span class="en">A tool that links your devices into a private network</span><span class="zh">把你的设备连成一个私人网络的工具</span></td>
+              <td>WireGuard-based mesh VPN</td>
+            </tr>
+            <tr>
+              <td>ReAct Loop</td>
+              <td><span class="en">The AI's "think-one-step-do-one-step" working mode</span><span class="zh">AI"想一步做一步"的工作方式</span></td>
+              <td><span class="en">Core tool-calling execution loop (Reasoning + Acting)</span><span class="zh">工具调用的核心执行循环（Reasoning + Acting）</span></td>
+            </tr>
+            <tr>
+              <td>SSE</td>
+              <td><span class="en">The transfer format for the AI's typing effect</span><span class="zh">AI 打字效果的传输格式</span></td>
+              <td>Server-Sent Events, streaming protocol for LLM output</td>
+            </tr>
+            <tr>
+              <td>CDP</td>
+              <td><span class="en">The interface for remotely controlling a browser</span><span class="zh">远程控制浏览器的接口</span></td>
+              <td>Chrome DevTools Protocol, WebSocket-based</td>
+            </tr>
+            <tr>
+              <td>VAD</td>
+              <td><span class="en">The algorithm that detects speech vs silence</span><span class="zh">分辨"有人说话"和"安静"的算法</span></td>
+              <td>Voice Activity Detection</td>
+            </tr>
+            <tr>
+              <td>CalVer</td>
+              <td><span class="en">Using dates as version numbers</span><span class="zh">用日期当版本号</span></td>
+              <td><code>vYYYY.M.D</code> format</td>
+            </tr>
+            <tr>
+              <td>Failover</td>
+              <td><span class="en">Backup plan</span><span class="zh">备用方案</span></td>
+              <td><span class="en">Auto-switch to next Provider when primary fails</span><span class="zh">主模型失败时自动切换到下一个 Provider</span></td>
+            </tr>
+            <tr>
+              <td>Prompt Injection</td>
+              <td><span class="en">Trying to hijack the AI through message content</span><span class="zh">试图通过消息内容劫持 AI 的攻击</span></td>
+              <td><span class="en">Security exploit using user input to pollute the system prompt</span><span class="zh">利用用户输入污染 system prompt 的安全漏洞</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div><!-- /article-content -->
+    </article>
+
+    <div class="share-section">
+      <h3>Share this Post</h3>
+      <div class="share-buttons">
+        <button class="share-button twitter-share"
+          onclick="window.open('https://twitter.com/intent/tweet?text=How OpenClaw actually works — a self-hosted AI deep dive&url=' + encodeURIComponent(window.location.href))">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5 0-.28-.03-.56-.08-.83A7.72 7.72 0 0 0 23 3z" />
+          </svg>
+          Twitter
+        </button>
+        <button class="share-button facebook-share"
+          onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href))">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+          </svg>
+          Facebook
+        </button>
+        <button class="share-button linkedin-share"
+          onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(window.location.href))">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" />
+            <rect x="2" y="9" width="4" height="12" />
+            <circle cx="4" cy="4" r="2" />
+          </svg>
+          LinkedIn
+        </button>
+      </div>
+    </div>
+
+    <div class="related-posts">
+      <h3>You Might Also Enjoy</h3>
+      <div class="related-grid">
+        <a href="https://cs721127.github.io/blog/my_own_story" class="related-card">
+          <span class="card-tag">Personal</span>
+          <h4>My Own Story: On the Way</h4>
+          <p>College application essays written in 2024, with a preface written a year later looking back.</p>
+        </a>
+        <a href="https://cs721127.github.io/blog/jixi-culture" class="related-card">
+          <span class="card-tag">Culture</span>
+          <h4>Introduction to My Hometown: Jixi Culture and Cuisine</h4>
+          <p>The introduction to my hometown Jixi (鸡西) with its great culture and food...</p>
+        </a>
+        <a href="https://cs721127.github.io/blog/tcm-diet-intro" class="related-card">
+          <span class="card-tag">Health</span>
+          <h4>Traditional Chinese Medicine: What it Suggests about Food and Diet</h4>
+          <p>The first introduction to TCM on its basic theories...</p>
+        </a>
+      </div>
+    </div>
+  </div><!-- /container -->
+
+  <footer>
+    <p>© 2026 Cen Sun's Website. All rights reserved. &nbsp;·&nbsp; <a href="https://cs721127.github.io/">cs721127.github.io</a></p>
+  </footer>
+
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+
+  <script>
+    document.getElementById('nav-toggle').addEventListener('click', () =>
+      document.getElementById('main-nav').classList.toggle('open'));
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const preTags = document.querySelectorAll('pre');
+      preTags.forEach(pre => {
+        if (pre.classList.contains('flow-diagram')) return;
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.textContent = 'Copy';
+        btn.addEventListener('click', () => {
+          let clone = pre.cloneNode(true);
+          let btns = clone.querySelectorAll('button');
+          btns.forEach(b => b.remove());
+          navigator.clipboard.writeText(clone.innerText.trim()).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          });
+        });
+        pre.style.position = 'relative';
+        pre.appendChild(btn);
+      });
+    });
+
+    function setLang(lang) {
+      if (lang === 'zh') {
+        document.body.classList.add('zh-mode');
+        document.getElementById('lang-zh').classList.add('active');
+        document.getElementById('lang-en').classList.remove('active');
+      } else {
+        document.body.classList.remove('zh-mode');
+        document.getElementById('lang-en').classList.add('active');
+        document.getElementById('lang-zh').classList.remove('active');
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -1,507 +1,462 @@
-<html><head><base href="https://cs721127.github.io/blog">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog | Cen Sun's Website</title>
-<style>
-  :root {
-    --primary-color: #2196F3;
-    --secondary-color: #000000;
-    --text-color: #333;
-    --background-color: #f0f0f0;
-  }
+<!DOCTYPE html>
+<html lang="en">
 
-  body {
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.6;
-    color: var(--text-color);
-    background-color: var(--background-color);
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — Cen Sun</title>
+  <meta name="description" content="Essays and reflections by Cen Sun on personal growth, culture, books, and more.">
+  <link rel="stylesheet" href="../asset/css/theme.css">
+  <link rel="stylesheet" href="../asset/css/pages.css">
+  <style>
+    /* ── Blog-index specific layout ── */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.8rem;
+      margin-top: 0.5rem;
+    }
 
-  header {
-    background-color: var(--primary-color);
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-  }
-
-  header h1 {
-    margin: 0;
-  }
-
-  nav {
-    background-color: var(--secondary-color);
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  nav ul li {
-    margin: 0 1rem;
-  }
-
-  nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-  }
-
-  nav ul li a:hover {
-    color: #FFD700;
-  }
-
-  main {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    flex-grow: 1;
-  }
-
-  .blog-post {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-  }
-
-  .blog-post:hover {
-    transform: translateY(-5px);
-  }
-
-  .blog-post img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-  }
-
-  .blog-post-content {
-    padding: 1.5rem;
-  }
-
-  .blog-post h2 {
-    margin-top: 0;
-    color: var(--primary-color);
-  }
-
-  .blog-post-meta {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-  }
-
-  .blog-post-excerpt {
-    margin-bottom: 1rem;
-  }
-
-  .read-more {
-    display: inline-block;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-
-  .read-more:hover {
-    background-color: #1976D2;
-  }
-
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
-  }
-
-  .pagination a {
-    color: var(--primary-color);
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    border: 1px solid var(--primary-color);
-    margin: 0 0.25rem;
-    border-radius: 3px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .pagination a:hover {
-    background-color: var(--primary-color);
-    color: white;
-  }
-
-  footer {
-    background-color: var(--secondary-color);
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: auto;
-  }
-
-  .tag {
-    display: inline-block;
-    background-color: #e0e0e0;
-    color: #333;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-    font-size: 0.8rem;
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .filter-box {
-    background-color: white;
-    padding: 1rem;
-    border-radius: 5px;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .filter-box h3 {
-    margin-top: 0;
-  }
-
-  .filter-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .filter-option {
-    background-color: #e0e0e0;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .filter-option:hover,
-  .filter-option.active {
-    background-color: var(--primary-color);
-    color: white;
-  }
-
-  .search-box {
-    display: flex;
-    margin-bottom: 1rem;
-  }
-
-  .search-box input {
-    flex-grow: 1;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 3px 0 0 3px;
-  }
-
-  .search-box button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0 3px 3px 0;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .search-box button:hover {
-    background-color: #1976D2;
-  }
-
-  @media (max-width: 600px) {
-    nav ul {
+    /* Card */
+    .blog-card {
+      background: var(--warm-white);
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 12px var(--shadow);
+      overflow: hidden;
+      display: flex;
       flex-direction: column;
+      opacity: 0;
+      animation: cardUp 0.5s ease forwards;
+      transition: transform 0.28s, box-shadow 0.28s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .blog-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px var(--shadow);
+    }
+
+    /* Square thumbnail */
+    .blog-card-thumb {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+      filter: sepia(6%) contrast(1.02);
+      transition: filter 0.35s;
+      flex-shrink: 0;
+    }
+
+    .blog-card:hover .blog-card-thumb {
+      filter: sepia(0%) contrast(1.06);
+    }
+
+    /* Gold top-border accent on hover — from example.html pattern */
+    .blog-card::before {
+      content: '';
+      display: block;
+      height: 3px;
+      background: linear-gradient(90deg, var(--ocean), var(--gold-light));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .blog-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    /* Card body */
+    .blog-card-body {
+      padding: 1.3rem 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blog-card-category {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-mid);
+      margin-bottom: 0.5rem;
+    }
+
+    .blog-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: 1.2rem;
+      color: var(--ocean);
+      line-height: 1.3;
+      margin-bottom: 0.55rem;
+    }
+
+    .blog-card-date {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .blog-card p {
+      font-size: 0.93rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+
+    .blog-card-footer {
+      display: flex;
       align-items: center;
+      justify-content: space-between;
+      padding-top: 0.7rem;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
     }
 
-    nav ul li {
-      margin: 0.5rem 0;
+    .blog-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
     }
 
-    nav {
-      position: relative;
+    .blog-card .read-more {
+      font-size: 0.77rem;
+      padding: 0.3rem 0.9rem;
+      background: var(--ocean);
+      color: var(--parchment);
+      border-radius: 2px;
+      text-decoration: none;
+      font-family: 'Fira Code', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
     }
-  }
-</style>
-<style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+
+    .blog-card .read-more:hover {
+      background: var(--gold);
+      transform: translateY(-1px);
+    }
+
+    /* Staggered animation delays */
+    .blog-card:nth-child(1) {
+      animation-delay: 0.00s;
+    }
+
+    .blog-card:nth-child(2) {
+      animation-delay: 0.05s;
+    }
+
+    .blog-card:nth-child(3) {
+      animation-delay: 0.10s;
+    }
+
+    .blog-card:nth-child(4) {
+      animation-delay: 0.15s;
+    }
+
+    .blog-card:nth-child(5) {
+      animation-delay: 0.20s;
+    }
+
+    .blog-card:nth-child(6) {
+      animation-delay: 0.25s;
+    }
+
+    .blog-card:nth-child(7) {
+      animation-delay: 0.30s;
+    }
+
+    .blog-card:nth-child(8) {
+      animation-delay: 0.35s;
+    }
+
+    .blog-card:nth-child(9) {
+      animation-delay: 0.40s;
+    }
+
+    /* Hidden cards (filtered out) */
+    .blog-card.hidden {
+      display: none;
+    }
+
+    /* Post count badge */
+    .results-count {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .blog-grid {
+        grid-template-columns: 1fr;
       }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style></head>
+    }
+  </style>
+</head>
+
 <body>
   <header>
-    <h1>Blog</h1>
+    <h1>Cen Sun &nbsp;·&nbsp; Blog</h1>
+    <p class="sub">Essays on growth, culture, literature, and technology</p>
   </header>
 
-  <nav>
+  <nav id="main-nav">
     <ul>
       <li><a href="https://cs721127.github.io/">Home</a></li>
       <li><a href="https://cs721127.github.io/about">About</a></li>
-      <li><a href="https://cs721127.github.io/blog">Blog</a></li>
+      <li><a href="https://cs721127.github.io/blog" class="active">Blog</a></li>
       <li><a href="https://cs721127.github.io/projects">Projects</a></li>
       <li><a href="https://cs721127.github.io/contact">Contact</a></li>
     </ul>
   </nav>
 
   <main>
-    <div class="filter-box">
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
       <h3>Filter Posts</h3>
-      <div class="search-box">
-        <input type="text" id="search-input" placeholder="Search posts by keyword...">
+      <div class="search-row">
+        <input type="text" id="search-input" placeholder="Search posts…">
         <button id="search-button">Search</button>
       </div>
       <div class="filter-options">
         <button class="filter-option active" data-tag="all">All</button>
         <button class="filter-option" data-tag="personal-growth">Personal Growth</button>
-        <button class="filter-option" data-tag="academic-ideas">Academic Ideas</button><button class="filter-option" data-tag="daily-activity-share">Daily Activity Share</button>
+        <button class="filter-option" data-tag="academic-ideas">Academic Ideas</button>
+        <button class="filter-option" data-tag="daily-activity-share">Activities</button>
         <button class="filter-option" data-tag="book-reviews">Book Reviews</button>
-      <button class="filter-option" data-tag="culture-share">Culture Share</button></div>
+        <button class="filter-option" data-tag="culture-share">Culture</button>
+        <button class="filter-option" data-tag="systems-design">Systems Design</button>
+        <button class="filter-option" data-tag="ai">AI</button>
+        <button class="filter-option" data-tag="finance">Finance</button>
+      </div>
     </div>
 
-    
+    <div class="results-count" id="results-count">9 posts</div>
 
-    <article class="blog-post" data-tags="personal-growth" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/cen_cartoon.jpg" alt="cen" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>My Own Story: On the Way</h2>
-        <div class="blog-post-meta">Posted on Oct 17, 2025 | Category: Personal Growth</div>
-        <div class="blog-post-excerpt">
-          <p>My current reflection on Oct 17 2025 after went to study at Australia. This was written at the flexi week of term 3 2025 in Blockhouse. Contains my old college application essays</p>
-        </div>
-        <div class="tags">
-          <span class="tag">Personal Growth</span>
-        </div>
-        <a href="https://cs721127.github.io/blog/my_own_story" class="read-more">Read More</a>
-      </div>
-    </article>
-<article class="blog-post" data-tags="culture-share" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/tcm.jpg" alt="TCM" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>Traditional Chinese Medicine: What it Suggests about Food and Diet</h2>
-        <div class="blog-post-meta">Posted on Jan 7, 2024 | Category: Culture Share</div>
-        <div class="blog-post-excerpt">
-          <p>The first introduction to Traditional Chinese Medicine (TCM) on its suggestions for food diet and basic theories. I will delve into the content in later blogs.</p>
-        </div>
-        <div class="tags">
-          <span class="tag">Culture Share</span>
-        </div>
-        <a href="https://cs721127.github.io/blog/tcm-diet-intro" class="read-more">Read More</a>
-      </div>
-    </article><article class="blog-post" data-tags="book-reviews" style="animation: 0.5s ease-out 0.2s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/doll-house-review.jpg" alt="Doll-House" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>A Doll's House: Discussion on the Feasibility of Nora's Leave</h2>
-        <div class="blog-post-meta">Posted on Nov 5, 2024 | Category: Book Reviews</div>
-        <div class="blog-post-excerpt">
-          <p>A brief book review about Ibsen "A Doll's House," discussing ideas of Feminism and Gender Equality. </p>
-        </div>
-        <div class="tags">
-          <span class="tag">Book Reviews</span>
-        </div>
-        <a href="https://cs721127.github.io/blog/doll-house-review.html" class="read-more">Read More</a>
-      </div>
-    </article><article class="blog-post" data-tags="culture-share" style="animation: 0.5s ease-out 0.4s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/jixi-city.jpg" alt="Jixi" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>My Hometown: Jixi Culture and Cuisine</h2>
-        <div class="blog-post-meta">Posted on Oct 30, 2024 | Category: Culture Share</div>
-        <div class="blog-post-excerpt">
-          <p>The first introduction to my hometwon Jixi (鸡西) with its great combined culture from different areas and its unique food supply.</p>
-        </div>
-        <div class="tags">
-          <span class="tag">Culture Share</span>
-        </div>
-        <a href="https://cs721127.github.io/blog/jixi-culture" class="read-more">Read More</a>
-      </div>
-    </article><article class="blog-post" data-tags="book-reviews" style="animation: 0.5s ease-out 0.6s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/daffodil-review.jpg" alt="Daffodils" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>Daffodils: Analyzing Wordsworth's Poem and His Nature Enjoyment</h2>
-        <div class="blog-post-meta">Posted on Oct 23, 2024 | Category: Book Reviews</div>
-        <div class="blog-post-excerpt">
-          <p>A brief book review about Wordsworth's notion of nature in his poem "I wandered lonely as a cloud." </p>
-        </div>
-        <div class="tags">
-          <span class="tag">Book Reviews</span>
-        </div>
-        <a href="https://cs721127.github.io/blog/daffodil-review.html" class="read-more">Read More</a>
-      </div>
-    </article><article class="blog-post" data-tags="book-reviews" style="animation: 0.5s ease-out 0.8s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/tempest-review.jpg" alt="tempest" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>The Tempest: The Notion of "Self" and "Others" under Caliban</h2>
-        <div class="blog-post-meta">Posted on Sep 29, 2024 | Category: Book Reviews</div>
-        <div class="blog-post-excerpt">
-          <p>A brief book review about Shakespeare "The Tempest," discussing ideeas of "Self" and "Others." </p>
-        </div>
-        <div class="tags">
-          <span class="tag">Book Reviews</span>
-        </div>
-        <a href="https://cs721127.github.io/blog/tempest-review.html" class="read-more">Read More</a>
-      </div>
-    </article><article class="blog-post" data-tags="daily-activity-share" style="animation: 0.5s ease-out 1s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/upenn-cover.jpg" alt="Upenn" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>Experience in University of Pennsylvania Pre-Law Summer Program</h2>
-        <div class="blog-post-meta">Posted on July 27, 2024 | Category: Activities</div>
-        <div class="blog-post-excerpt">
-          <p>I have participated in a summer program hold by University of Pennsylvania Carey Law School, and had an accelerated first year law school course. I had fun during the period between July 6th to July 27th. It was a fantastic experience and I made a lot of friends and learned a lot!</p>
-        </div>
-        <div class="tags">
-          <span class="tag">Daily Activity Share</span>
-        </div>
-        <a href="https://cs721127.github.io/blog/upenn-summer" class="read-more">Read More</a>
-      </div>
-    </article><article class="blog-post" data-tags="academic-ideas" style="animation: 0.5s ease-out 1.2s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/Reflection.jpg" alt="lit review" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>Reflections on “Post Modernism: What AI Alignment Teaches Us About Education”</h2>
-        <div class="blog-post-meta">Posted on June 26, 2024 | Category: Academics</div>
-        <div class="blog-post-excerpt">
-          <p>A Brief reflection about an online article called "Post Modernism: What AI Alignment Teaches Us About Education," including such inspirations and some innovative ideas that came from the article as a hih school student. This little essay also cooperates with some of my idea from my last essay, which also combined with something new that about how to look at education when there should be a standard measurement and how could we improve it.</p>
-        </div>
-        <div class="tags">
-          <span class="tag">Academic Ideas</span>
-        </div>
-        <a href="https://webofcen.github.io/works/ideas/reflect-AI-postmodernism.html" class="read-more">Read More</a>
-      </div>
-    </article>
+    <!-- BLOG CARD GRID -->
+    <div class="blog-grid" id="blog-grid">
 
-    <article class="blog-post" data-tags="academic-ideas" style="animation: 0.5s ease-out 1.4s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/Reflection.jpg" alt="lit review" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>Reflections on the Economics of Life: What I learned from my economics class</h2>
-        <div class="blog-post-meta">Posted on June 24, 2024 | Category: Academics</div>
-        <div class="blog-post-excerpt">
-          <p>At the time of year while I finished my study on AP Micro/Macroeconomics courses, I have a lot of reflections on what my teacher taught me during the class. This little essay is my current understanding about economics and how to think like an economist.</p>
+      <!-- OpenClaw -->
+      <article class="blog-card" data-tags="systems-design ai">
+        <img class="blog-card-thumb" src="../asset/images/openclaw.jpg" alt="OpenClaw">
+        <div class="blog-card-body">
+          <div class="blog-card-category">Systems Design · AI</div>
+          <div class="blog-card-date">Mar 11, 2026</div>
+          <h2>OpenClaw: How a Self-Hosted AI Assistant Actually Works</h2>
+          <p>A deep-dive into OpenClaw's architecture — Ollama, Open WebUI, and how to deploy your own private AI on
+            local hardware. Includes bilingual guide.</p>
+          <div class="blog-card-footer">
+            <div class="blog-tag-row">
+              <span class="tag-pill">Systems Design</span>
+              <span class="tag-pill">AI</span>
+            </div>
+            <a href="https://cs721127.github.io/blog/openclaw" class="read-more">Read →</a>
+          </div>
         </div>
-        <div class="tags">
-          <span class="tag">Academic Ideas</span>
-        </div>
-        <a href="https://webofcen.github.io/works/ideas/reflect-economics-learned.html" class="read-more">Read More</a>
-      </div>
-    </article>
+      </article>
 
+      <!-- My Own Story -->
+      <article class="blog-card" data-tags="personal-growth">
+        <img class="blog-card-thumb" src="https://cs721127.github.io/asset/images/cen_cartoon.jpg" alt="My Own Story">
+        <div class="blog-card-body">
+          <div class="blog-card-category">Personal Growth</div>
+          <div class="blog-card-date">Oct 17, 2025</div>
+          <h2>My Own Story: On the Way</h2>
+          <p>My reflection after going to study in Australia. Contains college application essays written in 2024, plus
+            a 2025 preface.</p>
+          <div class="blog-card-footer">
+            <div class="blog-tag-row">
+              <span class="tag-pill">Personal Growth</span>
+            </div>
+            <a href="https://cs721127.github.io/blog/my_own_story" class="read-more">Read →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- TCM -->
+      <article class="blog-card" data-tags="culture-share">
+        <img class="blog-card-thumb" src="https://cs721127.github.io/asset/images/tcm.jpg" alt="TCM">
+        <div class="blog-card-body">
+          <div class="blog-card-category">Culture Share</div>
+          <div class="blog-card-date">Jan 7, 2024</div>
+          <h2>Traditional Chinese Medicine: What It Suggests about Food and Diet</h2>
+          <p>The first introduction to Traditional Chinese Medicine on its suggestions for food, diet, and basic
+            theories.</p>
+          <div class="blog-card-footer">
+            <div class="blog-tag-row">
+              <span class="tag-pill">Culture Share</span>
+            </div>
+            <a href="https://cs721127.github.io/blog/tcm-diet-intro" class="read-more">Read →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- A Doll's House -->
+      <article class="blog-card" data-tags="book-reviews">
+        <img class="blog-card-thumb" src="https://cs721127.github.io/asset/images/doll-house-review.jpg"
+          alt="A Doll's House">
+        <div class="blog-card-body">
+          <div class="blog-card-category">Book Reviews</div>
+          <div class="blog-card-date">Nov 5, 2024</div>
+          <h2>A Doll's House: Discussion on the Feasibility of Nora's Leave</h2>
+          <p>A brief review of Ibsen's "A Doll's House," discussing ideas of feminism and gender equality.</p>
+          <div class="blog-card-footer">
+            <div class="blog-tag-row">
+              <span class="tag-pill">Book Reviews</span>
+            </div>
+            <a href="https://cs721127.github.io/blog/doll-house-review" class="read-more">Read →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Jixi Culture -->
+      <article class="blog-card" data-tags="culture-share">
+        <img class="blog-card-thumb" src="https://cs721127.github.io/asset/images/jixi-city.jpg" alt="Jixi">
+        <div class="blog-card-body">
+          <div class="blog-card-category">Culture Share</div>
+          <div class="blog-card-date">Oct 30, 2024</div>
+          <h2>My Hometown: Jixi Culture and Cuisine</h2>
+          <p>Introduction to my hometown Jixi (鸡西) with its combined culture from different areas and unique food
+            traditions.</p>
+          <div class="blog-card-footer">
+            <div class="blog-tag-row">
+              <span class="tag-pill">Culture Share</span>
+            </div>
+            <a href="https://cs721127.github.io/blog/jixi-culture" class="read-more">Read →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Daffodil -->
+      <article class="blog-card" data-tags="book-reviews">
+        <img class="blog-card-thumb" src="https://cs721127.github.io/asset/images/daffodil-review.jpg" alt="Daffodils">
+        <div class="blog-card-body">
+          <div class="blog-card-category">Book Reviews</div>
+          <div class="blog-card-date">Oct 23, 2024</div>
+          <h2>Daffodils: Analyzing Wordsworth's Poem and His Nature Enjoyment</h2>
+          <p>A close reading of Wordsworth's "I Wandered Lonely as a Cloud" and the Romantic view of nature.</p>
+          <div class="blog-card-footer">
+            <div class="blog-tag-row">
+              <span class="tag-pill">Book Reviews</span>
+            </div>
+            <a href="https://cs721127.github.io/blog/daffodil-review" class="read-more">Read →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Tempest -->
+      <article class="blog-card" data-tags="book-reviews">
+        <img class="blog-card-thumb" src="https://cs721127.github.io/asset/images/tempest-review.jpg" alt="The Tempest">
+        <div class="blog-card-body">
+          <div class="blog-card-category">Book Reviews</div>
+          <div class="blog-card-date">Sep 29, 2024</div>
+          <h2>The Tempest: The Notion of "Self" and "Others" under Caliban</h2>
+          <p>Shakespeare's The Tempest through the lens of colonialism, power, and the "Self" vs "Other" dynamic.</p>
+          <div class="blog-card-footer">
+            <div class="blog-tag-row">
+              <span class="tag-pill">Book Reviews</span>
+            </div>
+            <a href="https://cs721127.github.io/blog/tempest-review" class="read-more">Read →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- AI Reflection -->
+      <article class="blog-card" data-tags="academic-ideas">
+        <img class="blog-card-thumb" src="https://cs721127.github.io/asset/images/Reflection.jpg" alt="AI Reflection">
+        <div class="blog-card-body">
+          <div class="blog-card-category">Academic Ideas</div>
+          <div class="blog-card-date">Jun 26, 2024</div>
+          <h2>Reflections on "What AI Alignment Teaches Us About Education"</h2>
+          <p>Insights on education, measurement, and intrinsic motivation — sparked by an article on AI alignment.</p>
+          <div class="blog-card-footer">
+            <div class="blog-tag-row">
+              <span class="tag-pill">Academic Ideas</span>
+            </div>
+            <a href="https://cs721127.github.io/blog/ai-article-reflection" class="read-more">Read →</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Econ Reflection -->
+      <article class="blog-card" data-tags="academic-ideas">
+        <img class="blog-card-thumb" src="https://cs721127.github.io/asset/images/Reflection.jpg" alt="Econ Reflection">
+        <div class="blog-card-body">
+          <div class="blog-card-category">Academic Ideas</div>
+          <div class="blog-card-date">Jun 24, 2024</div>
+          <h2>Reflections on the Economics of Life</h2>
+          <p>What Cen actually learned from AP Micro/Macroeconomics — beyond the formulas, the economist's mindset.</p>
+          <div class="blog-card-footer">
+            <div class="blog-tag-row">
+              <span class="tag-pill">Academic Ideas</span>
+            </div>
+            <a href="https://cs721127.github.io/blog/econ-class-reflection" class="read-more">Read →</a>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- /blog-grid -->
   </main>
 
   <footer>
-    <p>© 2024 Cen Sun's Website. All rights reserved.</p>
+    <p>© 2026 Cen Sun's Website. All rights reserved. &nbsp;·&nbsp; <a
+        href="https://cs721127.github.io/">cs721127.github.io</a></p>
   </footer>
 
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+
   <script>
-    // Add a simple animation to the blog posts
-    const blogPosts = document.querySelectorAll('.blog-post');
-    blogPosts.forEach((post, index) => {
-      post.style.animation = `fadeIn 0.5s ease-out ${index * 0.2}s forwards`;
-    });
+    document.getElementById('nav-toggle').addEventListener('click', () =>
+      document.getElementById('main-nav').classList.toggle('open'));
 
-    // Define the fadeIn animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
-
-    // Filter functionality
+    const cards = Array.from(document.querySelectorAll('.blog-card'));
     const filterOptions = document.querySelectorAll('.filter-option');
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
-    const paginationLinks = document.querySelectorAll('.pagination a');
+    const countEl = document.getElementById('results-count');
 
-    let currentPage = 1;
-
-    function filterPosts(page = 1) {
+    function filterPosts() {
       const activeTag = document.querySelector('.filter-option.active').dataset.tag;
-      const searchTerm = searchInput.value.toLowerCase();
-
-      blogPosts.forEach((post, index) => {
-        const postTags = post.dataset.tags.split(' ');
-        const postContent = post.textContent.toLowerCase();
-        const matchesTag = activeTag === 'all' || postTags.includes(activeTag);
-        const matchesSearch = postContent.includes(searchTerm);
-
-        if (matchesTag && matchesSearch) {
-          post.style.display = 'block';
+      const term = searchInput.value.toLowerCase().trim();
+      let visible = 0;
+      cards.forEach(card => {
+        const tags = card.dataset.tags || '';
+        const text = card.textContent.toLowerCase();
+        const tagOk = activeTag === 'all' || tags.includes(activeTag);
+        const searchOk = !term || text.includes(term);
+        if (tagOk && searchOk) {
+          card.classList.remove('hidden');
+          visible++;
         } else {
-          post.style.display = 'none';
+          card.classList.add('hidden');
         }
       });
-
-      // Update pagination links
-      paginationLinks.forEach((link, index) => {
-        link.href = `https://cs721127.github.io/blog?page=${index + 1}`;
-        link.style.display = index === currentPage - 1 ? 'none' : 'inline-block';
-      });
-
-      currentPage = page;
+      countEl.textContent = visible === 1 ? '1 post' : `${visible} posts`;
     }
 
-    filterOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        document.querySelector('.filter-option.active').classList.remove('active');
-        option.classList.add('active');
-        filterPosts();
-      });
-    });
-
-    searchButton.addEventListener('click', () => {
+    filterOptions.forEach(opt => opt.addEventListener('click', () => {
+      document.querySelector('.filter-option.active').classList.remove('active');
+      opt.classList.add('active');
       filterPosts();
-    });
+    }));
 
-    paginationLinks.forEach(link => {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-        const page = parseInt(e.target.textContent);
-        filterPosts(page);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    });
+    searchButton.addEventListener('click', filterPosts);
+    searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') filterPosts(); });
+    searchInput.addEventListener('input', filterPosts);
 
-    // Initial filter
     filterPosts();
   </script>
+</body>
 
-
-
-</body></html>
+</html>

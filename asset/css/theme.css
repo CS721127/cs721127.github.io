@@ -1,0 +1,266 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CENS WEBSITE — SHARED THEME (Deep-Blue + Gold Literary)
+   Referenced by: ALL pages
+   CSS paths are relative — works both locally and on GitHub Pages.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── FONTS ─── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Fira+Code:wght@400;500&display=swap');
+
+/* ─── COLOR TOKENS — Deep Blue + Gold ─── */
+:root {
+    /* Core ink & backgrounds */
+    --ink: #0d1117;
+    --text: #1a2030;
+    --text-mid: #3d4a5e;
+    --text-light: #6a7d96;
+    --parchment: #f4f7fb;
+    --cream: #f9fbfd;
+    --warm-white: #ffffff;
+
+    /* Primary — deep ocean blue */
+    --ocean: #1a3a5c;
+    --ocean-mid: #2a5080;
+    --ocean-dark: #0f2438;
+    --blue-mist: #6a94bb;
+    --blue-light: #b0cde4;
+    --sky: #e8f2fb;
+
+    /* Gold accent — from example.html, harmonized with blue */
+    --gold: #8a6a28;
+    --gold-mid: #b08a3a;
+    --gold-light: #c8a85a;
+    --gold-pale: #f5ecd8;
+
+    /* Borders & shadow */
+    --border: rgba(26, 58, 92, 0.14);
+    --border-mid: rgba(26, 58, 92, 0.25);
+    --shadow: rgba(13, 17, 23, 0.08);
+}
+
+/* ─── RESET ─── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'EB Garamond', Georgia, serif;
+    line-height: 1.9;
+    color: var(--text);
+    background-color: var(--parchment);
+    background-image:
+        radial-gradient(ellipse at 0% 0%, rgba(26, 58, 92, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(138, 106, 40, 0.04) 0%, transparent 50%);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ─── HEADER ─── */
+header {
+    background-color: var(--ocean);
+    color: var(--parchment);
+    text-align: center;
+    padding: 2rem 1rem 1.6rem;
+    position: relative;
+    overflow: hidden;
+}
+
+header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(90deg,
+            transparent 0px,
+            transparent 79px,
+            rgba(255, 255, 255, 0.03) 79px,
+            rgba(255, 255, 255, 0.03) 80px);
+    pointer-events: none;
+}
+
+/* Gold shimmer line at bottom of header — from example.html */
+header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+}
+
+header h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: headerReveal 1.2s ease 0.2s forwards;
+}
+
+@keyframes headerReveal {
+    from {
+        opacity: 0;
+        letter-spacing: 0.35em;
+    }
+
+    to {
+        opacity: 1;
+        letter-spacing: 0.18em;
+    }
+}
+
+header .sub {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--gold-light);
+    /* gold subtitle from example.html */
+    margin-top: 0.3rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.8s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─── NAV ─── */
+nav {
+    background-color: var(--ocean-dark);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    border-bottom: 1px solid rgba(200, 168, 90, 0.28);
+    /* gold border */
+}
+
+nav ul {
+    list-style: none;
+    margin: 0 auto;
+    max-width: 860px;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li a {
+    display: block;
+    color: rgba(244, 247, 251, 0.65);
+    text-decoration: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.3rem;
+    transition: color 0.25s, background 0.25s, border-color 0.25s;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+    color: var(--gold-light);
+    /* gold hover — from example.html */
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom-color: var(--gold-light);
+}
+
+/* ─── NAV — MOBILE HAMBURGER ─── */
+.nav-toggle {
+    display: none;
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 300;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--ocean);
+    border: 1px solid var(--border-mid);
+    color: var(--parchment);
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 4px 16px var(--shadow);
+    transition: background 0.2s;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-toggle:hover {
+    background: var(--ocean-mid);
+}
+
+@media (max-width: 768px) {
+    .nav-toggle {
+        display: flex;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.35s ease;
+    }
+
+    nav.open ul {
+        max-height: 400px;
+    }
+
+    nav ul li a {
+        padding: 0.7rem 1rem;
+        font-size: 0.82rem;
+    }
+}
+
+/* ─── FOOTER ─── */
+footer {
+    background-color: var(--ocean);
+    color: rgba(244, 247, 251, 0.5);
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    margin-top: auto;
+}
+
+footer a {
+    color: var(--gold-light);
+    /* gold links in footer */
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: var(--gold-mid);
+}
+
+/* ─── UTILITY ─── */
+.ornament {
+    text-align: center;
+    margin: 2.5rem 0;
+    color: var(--gold-mid);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    opacity: 0.5;
+}

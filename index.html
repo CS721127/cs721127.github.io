@@ -1,289 +1,125 @@
-<html><head><base href="https://https://cs721127.github.io/">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cen Sun's Website</title>
-<style>
-  :root {
-    --primary-color: #2196F3;
-    --secondary-color: #000000;
-    --text-color: #333;
-    --background-color: #f0f0f0;
-  }
+<!DOCTYPE html>
+<html lang="en">
 
-  body {
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.6;
-    color: var(--text-color);
-    background-color: var(--background-color);
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  header {
-    background-color: var(--primary-color);
-    color: white;
-    text-align: center;
-    padding: 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .header-image-container {
-    width: 200px;
-    height: 200px;
-    margin: 2rem auto;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 5px solid white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .header-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .header-title {
-    padding: 1rem;
-  }
-
-  .header-title h1 {
-    margin: 0;
-    font-size: 2.5rem;
-  }
-
-  nav {
-    background-color: var(--secondary-color);
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  nav ul li {
-    margin: 0 1rem;
-  }
-
-  nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-  }
-
-  nav ul li a:hover {
-    color: #FFD700;
-  }
-
-  main {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    flex-grow: 1;
-  }
-
-  .hero {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .hero h2 {
-    font-size: 2rem;
-    color: var(--primary-color);
-  }
-
-  .hero p {
-    font-size: 1.2rem;
-    color: var(--text-color);
-  }
-
-  .cta-button {
-    display: inline-block;
-    background-color: var(--secondary-color);
-    color: white;
-    padding: 0.8rem 1.5rem;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-
-  .cta-button:hover {
-    background-color: #333;
-  }
-
-  .featured-posts-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  .featured-posts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .post-card {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.3s ease;
-  }
-
-  .post-card:hover {
-    transform: translateY(-5px);
-  }
-
-  .post-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-  }
-
-  .post-card-content {
-    padding: 1rem;
-  }
-
-  .post-card h3 {
-    margin-top: 0;
-    color: var(--primary-color);
-  }
-
-  .post-card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 1rem 1rem;
-  }
-
-  .post-read-more {
-    display: inline-block;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-
-  .post-read-more:hover {
-    background-color: #1976D2;
-  }
-
-  .greeting {
-    text-align: center;
-    margin-top: 3rem;
-    font-style: italic;
-    color: var(--text-color);
-  }
-
-  .signature {
-    font-family: 'Brush Script MT', cursive;
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-top: 1rem;
-  }
-
-    .new-button {
-  display: inline-block;
-  background-color: white;
-  color: var(--primary-color);
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-  font-weight: bold;
-  text-decoration: none;
-  margin-bottom: 1rem;
-  border: 2px solid var(--primary-color);
-  transition: all 0.3s ease;
-}
-
-.new-button:hover {
-  background-color: #FFD700; /* Gold */
-  color: black;
-  border-color: #FFD700;
-}
-
-
-  footer {
-    background-color: var(--secondary-color);
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: auto;
-  }
-
-  @media (max-width: 600px) {
-    nav ul {
-      flex-direction: column;
-      align-items: center;
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cen Sun's Website</title>
+  <meta name="description"
+    content="Personal website of Cen Sun — essays, projects, and reflections on learning, culture, and technology.">
+  <link rel="stylesheet" href="asset/css/theme.css">
+  <link rel="stylesheet" href="asset/css/pages.css">
+  <style>
+    /* ── HORIZONTAL SCROLL FOR FEATURED POSTS ── */
+    .card-grid {
+      display: flex;
+      flex-wrap: nowrap;
+      /* Forces cards to stay on one line */
+      overflow-x: auto;
+      /* Enables horizontal scrolling */
+      gap: 1.5rem;
+      /* Adds space between the cards */
+      padding-bottom: 1.5rem;
+      /* Adds space at the bottom for the scrollbar */
+      scroll-snap-type: x mandatory;
+      /* Creates a smooth snap-to-card effect */
+      -webkit-overflow-scrolling: touch;
+      /* Ensures smooth momentum scrolling on iOS */
     }
 
-    nav ul li {
-      margin: 0.5rem 0;
+    /* Targets the individual cards inside the scrolling container */
+    .card-grid .post-card {
+      flex: 0 0 auto;
+      /* Prevents cards from squishing to fit the screen */
+      width: 320px;
+      /* Sets a fixed width (adjust as needed) */
+      scroll-snap-align: start;
+      /* Snaps the card to the left edge when scrolling stops */
     }
-    nav {
-    position: relative;
-  }
-  }
-</style>
-<style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style></head>
+
+    /* ── INDEX-SPECIFIC ── */
+    .featured-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1rem;
+    }
+
+    .greeting-section {
+      background: var(--warm-white);
+      border-radius: 3px;
+      box-shadow: 0 2px 10px var(--shadow), 0 0 0 1px var(--border);
+      padding: 2.5rem 2rem;
+      margin-top: 2.5rem;
+      text-align: center;
+    }
+
+    .greeting-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1.5rem;
+      color: var(--ocean);
+      margin-bottom: 1rem;
+      letter-spacing: 0.04em;
+    }
+
+    .greeting-section p {
+      font-size: 1.02rem;
+      color: var(--text-mid);
+      line-height: 1.85;
+      max-width: 680px;
+      margin: 0 auto 0.8rem;
+    }
+
+    .signature {
+      font-family: 'Crimson Pro', serif;
+      font-style: italic;
+      font-size: 1.6rem;
+      color: var(--ocean-mid);
+      margin-top: 1.2rem;
+    }
+
+    .written-date {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--text-light);
+      margin-top: 0.3rem;
+    }
+
+    .professional-banner {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid var(--border-mid);
+      color: var(--ocean-mid);
+      padding: 0.45rem 1.2rem;
+      border-radius: 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      margin-top: 1rem;
+    }
+
+    .professional-banner:hover {
+      background: var(--ocean);
+      color: var(--parchment);
+      border-color: var(--ocean);
+    }
+  </style>
+</head>
+
 <body>
   <header>
-  <div class="header-image-container">
-    <img src="https://cs721127.github.io/asset/images/profile123.jpg" alt="Sam's Pfp" class="header-image" width="200" height="200">
-  </div>
-  <div class="header-title">
-    <h1>Cen Sun's Website</h1>
-  </div>
-      <a href="https://cs721127.github.io/professional" class="new-button">Visit My Professional Page</a>
-</header>
+    <h1>Cen Sun &nbsp;·&nbsp; Personal Website</h1>
+    <p class="sub">Essays · Projects · Reflections</p>
+  </header>
 
-
-  <nav>
+  <nav id="main-nav">
     <ul>
-      <li><a href="https://cs721127.github.io">Home</a></li>
+      <li><a href="https://cs721127.github.io/" class="active">Home</a></li>
       <li><a href="https://cs721127.github.io/about">About</a></li>
       <li><a href="https://cs721127.github.io/blog">Blog</a></li>
       <li><a href="https://cs721127.github.io/projects">Projects</a></li>
@@ -292,98 +128,97 @@
   </nav>
 
   <main>
+    <!-- HERO -->
     <section class="hero">
-      <h2>Welcome to My World!</h2>
-      <p>Hey there! I'm Cen Sun, you can also call me Sam. I am a high school student with a passion for learning, creating, and sharing. I love finance and Chinese traditional cultures! Join me as I navigate the ups and downs of my life and ideas, discover new interests, and prepare for the future.</p>
+      <img src="https://cs721127.github.io/asset/images/profile123.jpg" alt="Cen Sun" class="hero-profile">
+      <h2>Welcome to My World</h2>
+      <p>Hey there! I'm Cen Sun — you can call me Sam. I'm a student with a passion for learning, creating, and sharing.
+        I love finance, Chinese traditional culture, and now computer science. Join me as I navigate my life and ideas.
+      </p>
       <a href="https://cs721127.github.io/about" class="cta-button">Learn More About Me</a>
+      <br>
+      <a href="https://cs721127.github.io/professional" class="professional-banner">Visit My Professional Page</a>
     </section>
 
+    <!-- FEATURED POSTS -->
     <section>
-      <div class="featured-posts-header">
-        <h2>Featured Posts</h2>
-        <a href="https://cs721127.github.io/blog" class="cta-button">View All Posts</a>
+      <div class="featured-header">
+        <h2 class="section-title">Featured Posts</h2>
+        <a href="https://cs721127.github.io/blog" class="read-more" style="font-size:0.8rem;">View All →</a>
       </div>
-      <div class="featured-posts">
-        
-        <div class="post-card" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn;">
-          <img src="https://cs721127.github.io/asset/images/cen_cartoon.jpg" alt="cen" width="250" height="150">
+      <div class="card-grid">
+        <div class="post-card" style="animation-delay:0s">
+          <img src="https://cs721127.github.io/asset/images/cen_cartoon.jpg" alt="My Own Story">
           <div class="post-card-content">
             <h3>My Own Story: On the Way</h3>
-            <p>My personal reflection on my way to study overseas. This was written at the flexi week of term 3 2025 in Blockhouse. Contains my old college application essays</p>
+            <p>My personal reflection after going to study in Australia. Contains my college application essays written
+              in 2024.</p>
           </div>
           <div class="post-card-footer">
-            <a href="https://cs721127.github.io/blog/my_own_story" class="post-read-more">Read More</a>
+            <span class="post-card-meta">Oct 2025 · Personal</span>
+            <a href="https://cs721127.github.io/blog/my_own_story" class="read-more">Read</a>
           </div>
         </div>
-    <div class="post-card" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn;">
-          <img src="https://cs721127.github.io/asset/images/tcm.jpg" alt="reflection page" width="250" height="150">
+        <div class="post-card" style="animation-delay:0.1s">
+          <img src="https://cs721127.github.io/asset/images/tcm.jpg" alt="TCM">
           <div class="post-card-content">
-            <h3>Traditional Chinese Medicine: About Food and Diet</h3>
-            <p>Introduction to Traditional Chinese Medicine on its suggestions for food diet and basic theories. I will post more regarding TCM to you :) </p>
+            <h3>Traditional Chinese Medicine: Food & Diet</h3>
+            <p>Introduction to TCM's suggestions for food, diet, and its basic foundational theories.</p>
           </div>
           <div class="post-card-footer">
-            <a href="https://cs721127.github.io/blog/tcm-diet-intro" class="post-read-more">Read More</a>
-          </div>
-        </div><div class="post-card" style="animation: 0.5s ease-out 0.2s 1 normal forwards running fadeIn;">
-          <img src="https://cs721127.github.io/asset/images/bingdiao.jpg" alt="reflection page" width="250" height="150">
-          <div class="post-card-content">
-            <h3>Jixi: A Culinary Journey Through Time and Culture</h3>
-            <p>The first introduction to my hometwon Jixi (鸡西) with its great combined culture from different areas and its unique food supply.</p>
-          </div>
-          <div class="post-card-footer">
-            <a href="https://cs721127.github.io/blog/jixi-culture" class="post-read-more">Read More</a>
+            <span class="post-card-meta">Jan 2024 · Culture</span>
+            <a href="https://cs721127.github.io/blog/tcm-diet-intro" class="read-more">Read</a>
           </div>
         </div>
-        
+        <div class="post-card" style="animation-delay:0.2s">
+          <img src="https://cs721127.github.io/asset/images/bingdiao.jpg" alt="Jixi">
+          <div class="post-card-content">
+            <h3>Jixi: A Culinary Journey Through Time</h3>
+            <p>My hometown Jixi (鸡西) — its great combined culture and its unique food traditions.</p>
+          </div>
+          <div class="post-card-footer">
+            <span class="post-card-meta">Oct 2024 · Culture</span>
+            <a href="https://cs721127.github.io/blog/jixi-culture" class="read-more">Read</a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="greeting">
-      <h2>Why I made this website</h2>
-<p>As a high school student, I have a lot of fun in my life. However, there are too many things to remember all of them. I am a person who misses past memories and will often go through my past times to refresh my mind with those pure, lovely memories, as well as the importance of learning from the past. Therefore, this website is a collection of my activities that are valuable to my memory and that I will look back on again. It will always remind me of something important, either lessons or greetings. Hopefully, some pieces of my activities will remind you of your past memories and will help you feel young and energetic in the not-so-great world.
-<br><br>
-Take care, and wish you the best brighter future!
-<br></p>
-      <div class="signature" style="color: black;">Cen Sun</div>
-   <p> Written at June, 2024</p>
+    <!-- GREETING -->
+    <section class="greeting-section">
+      <h2>Why I Made This Website</h2>
+      <p>As a student, I have a lot of fun in my life. However, there are too many things to remember all of them. I am
+        a person who misses past memories and will often go through my past times to refresh my mind with those pure,
+        lovely memories, as well as the importance of learning from the past.</p>
+      <p>Therefore, this website is a collection of my activities — valuable to my memory and that I will look back on
+        again. It will always remind me of something important, either lessons or greetings. Hopefully, some pieces of
+        my activities will remind you of your past memories too.</p>
+      <p>Take care, and wish you the best brighter future!</p>
+      <div class="signature">Cen Sun</div>
+      <div class="written-date">Written June 2024</div>
     </section>
   </main>
 
   <footer>
-    <p>© 2024 Cen Sun's Website. All rights reserved.</p>
+    <p>© 2026 Cen Sun's Website. All rights reserved. &nbsp;·&nbsp; <a
+        href="https://cs721127.github.io/">cs721127.github.io</a></p>
   </footer>
 
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+
   <script>
-    // Add a simple animation to the post cards
-    const postCards = document.querySelectorAll('.post-card');
-    postCards.forEach((card, index) => {
-      card.style.animation = `fadeIn 0.5s ease-out ${index * 0.2}s forwards`;
-    });
+    // Mobile nav toggle
+    const toggle = document.getElementById('nav-toggle');
+    const nav = document.getElementById('main-nav');
+    toggle.addEventListener('click', () => nav.classList.toggle('open'));
 
-    // Define the fadeIn animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
+    // Back to top
+    const btt = document.querySelector('.back-to-top');
+    if (btt) {
+      window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 300));
+      btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
   </script>
+</body>
 
-
-
-<iframe id="x0bzdNyT" frameborder="0" src="chrome-extension://ekhagklcjbdpajgpjgmbionohlpdbjgc/translateSandbox/translateSandbox.html" style="width: 0px; height: 0px; display: none;"></iframe>
-
-</body></html>
+</html>
