@@ -1,216 +1,322 @@
-<html><head><base href="https://cs721127.github.io/">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact Me | Cen Sun's Website</title>
-<style>
-  :root {
-    --primary-color: #2196F3;
-    --secondary-color: #000000;
-    --text-color: #333;
-    --background-color: #f0f0f0;
-  }
+<!DOCTYPE html>
+<html lang="en">
 
-  body {
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.6;
-    color: var(--text-color);
-    background-color: var(--background-color);
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Cen Sun</title>
+  <meta name="description" content="Get in touch with Cen Sun — email, social media, and friend links.">
+  <link rel="stylesheet" href="../asset/css/theme.css">
+  <style>
+    /* ── Contact-page specific styles (kept minimal — no theme duplication) ── */
+    .contact-section {
+      max-width: 680px;
+      margin: 2.5rem auto;
+      animation: pageUp 0.7s ease 0.3s both;
+    }
 
-  header {
-    background-color: var(--primary-color);
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-  }
+    @keyframes pageUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
 
-  nav {
-    background-color: var(--secondary-color);
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-  nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+    .contact-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      box-shadow: 0 2px 12px var(--shadow);
+      padding: 2.2rem 2.5rem;
+      margin-bottom: 1.5rem;
+    }
 
-  nav ul li {
-    margin: 0 1rem;
-  }
+    .contact-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: 1.35rem;
+      color: var(--ocean);
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
 
-  nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-  }
-
-  nav ul li a:hover {
-    color: #FFD700;
-  }
-
-  main {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    flex-grow: 1;
-  }
-
-  .contact-container {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-  }
-
-  .contact-info {
-    margin-bottom: 2rem;
-  }
-
-  .contact-info p {
-    margin-bottom: 0.5rem;
-  }
-
-  .social-links {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .social-links a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    transition: all 0.3s ease;
-  }
-
-  .social-links a:hover {
-    background-color: #1976D2;
-    transform: scale(1.1);
-  }
-
-  footer {
-    background-color: var(--secondary-color);
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: auto;
-  }
-
-  @media (max-width: 600px) {
-    nav ul {
-      flex-direction: column;
+    /* Email row */
+    .contact-row {
+      display: flex;
       align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.75rem;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.05rem;
+      color: var(--text-mid);
     }
 
-    nav ul li {
-      margin: 0.5rem 0;
+    .contact-row .label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ocean-mid);
+      min-width: 56px;
     }
 
-    nav {
-      position: relative;
+    .contact-row a {
+      color: var(--ocean-mid);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
     }
-  }
-</style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-<style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+
+    .contact-row a:hover {
+      color: var(--blue-mist);
+    }
+
+    /* Social icons */
+    .social-grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.1rem;
+      border: 1px solid var(--border-mid);
+      border-radius: 2px;
+      background: var(--sky);
+      color: var(--ocean);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+
+    .social-btn:hover {
+      background: var(--ocean);
+      color: var(--parchment);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--shadow);
+    }
+
+    .social-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* Friend links */
+    .friend-link {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .friend-link:last-child {
+      border-bottom: none;
+    }
+
+    .friend-link .fl-name {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ocean-mid);
+      min-width: 160px;
+      padding-top: 0.15rem;
+    }
+
+    .friend-link a {
+      color: var(--ocean-mid);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-size: 0.95rem;
+      word-break: break-all;
+      transition: color 0.2s;
+    }
+
+    .friend-link a:hover {
+      color: var(--blue-mist);
+    }
+
+    @media (max-width: 680px) {
+      .contact-section {
+        margin: 1rem;
       }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+
+      .contact-card {
+        padding: 1.4rem 1.2rem;
       }
-    </style></head>
+
+      .friend-link {
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+
+      .friend-link .fl-name {
+        min-width: 0;
+      }
+    }
+
+    /* Back-to-top */
+    .back-to-top {
+      position: fixed;
+      bottom: 5.5rem;
+      right: 1.5rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--ocean);
+      border: 1px solid var(--border-mid);
+      color: var(--parchment);
+      font-size: 1rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: background 0.2s;
+      z-index: 250;
+    }
+
+    .back-to-top.visible {
+      display: flex;
+    }
+
+    .back-to-top:hover {
+      background: var(--ocean-mid);
+    }
+  </style>
+</head>
+
 <body>
   <header>
-    <h1>Contact Me</h1>
+    <h1>Cen Sun &nbsp;·&nbsp; Contact</h1>
+    <p class="sub">Say hello, collaborate, or just share an idea</p>
   </header>
 
-  <nav>
+  <nav id="main-nav">
     <ul>
       <li><a href="https://cs721127.github.io/">Home</a></li>
       <li><a href="https://cs721127.github.io/about">About</a></li>
       <li><a href="https://cs721127.github.io/blog">Blog</a></li>
       <li><a href="https://cs721127.github.io/projects">Projects</a></li>
-      <li><a href="https://cs721127.github.io/contact">Contact</a></li>
+      <li><a href="https://cs721127.github.io/contact" class="active">Contact</a></li>
     </ul>
   </nav>
 
   <main>
-    <div class="contact-container" style="opacity: 0; animation: 0.5s ease-out 0s 1 normal forwards running fadeIn;">
-      <h2>Get in Touch</h2>
-      <p>Have a question, comment, or just want to say hi? Feel free to reach out using the contact information below or connect with me on social media!</p>
-      
-      <div class="contact-info">
-        <p><strong>Email:</strong> suncen07@gmail.com</p>
+    <div class="contact-section">
+
+      <!-- Get in Touch -->
+      <div class="contact-card">
+        <h2>Get in Touch</h2>
+        <p style="font-family:'EB Garamond',serif;color:var(--text-mid);margin-bottom:1.2rem;line-height:1.75;">
+          Have a question, comment, or just want to say hi? Feel free to reach out via email or connect on any of the
+          platforms below.
+        </p>
+        <div class="contact-row">
+          <span class="label">Email</span>
+          <a href="mailto:suncen07@gmail.com">suncen07@gmail.com</a>
+        </div>
       </div>
 
-      <h3>Connect with me on social media:</h3>
-      <div class="social-links">
-  <a href="https://www.instagram.com/suncen07" target="_blank" rel="noopener noreferrer" title="Instagram" style="text-decoration: none;"><i class="fab fa-instagram"></i></a>
-  <a href="https://github.com/cs721127" target="_blank" rel="noopener noreferrer" title="GitHub" style="text-decoration: none;"><i class="fab fa-github"></i></a>
-  <a href="https://studio.youtube.com/channel/UCUSJ7PvrTxFqvzhzRUg8Utg" target="_blank" rel="noopener noreferrer" title="YouTube" style="text-decoration: none;"><i class="fab fa-youtube"></i></a>
-  <a href="https://www.linkedin.com/in/cen-sun-885ab8281" target="_blank" rel="noopener noreferrer" title="LinkedIn" style="text-decoration: none;"><i class="fab fa-linkedin"></i></a>
-  <a href="https://space.bilibili.com/513927197" target="_blank" rel="noopener noreferrer" title="Bilibili" style="text-decoration: none;"><i class="fab fa-bilibili"></i></a>
-</div>
-    </div>
-    <br>
-  <div class="contact-container" style="opacity: 0; animation: 0.5s ease-out 0s 1 normal forwards running fadeIn;">
-      <h2>Friend Link</h2>
-      
-      
-      <div class="contact-info">
-        <p><strong>BNDS Investment Club:</strong> <a href="https://bndsinvest.webflow.io">https://bndsinvest.webflow.io</a></p>
-        <p><strong>Healthandwellness Organization:</strong> <a href="https://www.healthandwellness.com.cn">https://www.healthandwellness.com.cn</a></p>
-        <p><strong>AI Health Agent:</strong> <a href="https://www.healthlink360ai.com">https://www.healthlink360ai.com</a></p>
+      <!-- Social Media -->
+      <div class="contact-card">
+        <h2>Social Profiles</h2>
+        <div class="social-grid">
+          <a class="social-btn" href="https://github.com/cs721127" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+            </svg>
+            GitHub
+          </a>
+          <a class="social-btn" href="https://www.linkedin.com/in/cen-sun-885ab8281" target="_blank"
+            rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+            LinkedIn
+          </a>
+          <a class="social-btn" href="https://www.instagram.com/suncen07" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+            </svg>
+            Instagram
+          </a>
+          <!-- <a class="social-btn" href="https://studio.youtube.com/channel/UCUSJ7PvrTxFqvzhzRUg8Utg" target="_blank"
+            rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
+            YouTube
+          </a> -->
+          <!-- <a class="social-btn" href="https://space.bilibili.com/513927197" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.37c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.905 0 17.393v-7.37c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.898 0 .356-.124.658-.373.907zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.377c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893V9.907c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z" />
+            </svg>
+            Bilibili
+          </a> -->
+        </div>
       </div>
 
-      
-      
-    </div></main>
+      <!-- Friend Links -->
+      <div class="contact-card">
+        <h2>Friend Links</h2>
+        <div class="friend-link">
+          <span class="fl-name">BNDS Investment Club</span>
+          <a href="https://bndsinvest.webflow.io" target="_blank" rel="noopener noreferrer">bndsinvest.webflow.io</a>
+        </div>
+        <div class="friend-link">
+          <span class="fl-name">Health &amp; Wellness Org</span>
+          <a href="https://www.healthandwellness.com.cn" target="_blank"
+            rel="noopener noreferrer">healthandwellness.com.cn</a>
+        </div>
+        <div class="friend-link">
+          <span class="fl-name">AI Health Agent</span>
+          <a href="https://www.healthlink360ai.com" target="_blank" rel="noopener noreferrer">healthlink360ai.com</a>
+        </div>
+      </div>
+
+    </div><!-- /contact-section -->
+  </main>
 
   <footer>
-    <p>© 2024 Cen Sun's Website. All rights reserved.</p>
+    <p>© 2026 Cen Sun's Website. All rights reserved. &nbsp;·&nbsp; <a
+        href="https://cs721127.github.io/">cs721127.github.io</a></p>
   </footer>
 
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+  <button class="back-to-top" id="btt">↑</button>
+
   <script>
-    // Add a simple fade-in animation to the contact container
-    const contactContainer = document.querySelector('.contact-container');
-    contactContainer.style.opacity = '0';
-    contactContainer.style.animation = 'fadeIn 0.5s ease-out forwards';
+    document.getElementById('nav-toggle').addEventListener('click', () =>
+      document.getElementById('main-nav').classList.toggle('open'));
 
-    // Define the fadeIn animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    `;
-    document.head.appendChild(style);
+    const btt = document.getElementById('btt');
+    window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 200));
+    btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   </script>
+</body>
 
-
-</body></html>
+</html>

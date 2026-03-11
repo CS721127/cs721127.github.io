@@ -1,0 +1,785 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CENS WEBSITE — ARTICLE / BLOG POST STYLES
+   Referenced by: all blog post & project detail pages
+   Requires: theme.css to be loaded first
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── MAIN CONTAINER ─── */
+.container {
+    max-width: 800px;
+    margin: 2.5rem auto 3rem;
+    padding: 3rem 3.5rem;
+    background-color: var(--warm-white);
+    box-shadow:
+        0 1px 3px var(--shadow),
+        0 4px 20px rgba(13, 17, 23, 0.05),
+        0 0 0 1px var(--border);
+    border-radius: 2px;
+    opacity: 0;
+    animation: pageUp 0.7s ease 0.3s forwards;
+    flex: 1;
+}
+
+@keyframes pageUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─── ARTICLE HEADER ─── */
+.article-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    position: relative;
+}
+
+.article-header::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: var(--border-mid);
+    margin: 0 auto 1.8rem;
+}
+
+.article-header::after {
+    content: '◆';
+    display: block;
+    color: var(--gold-mid);
+    font-size: 0.6rem;
+    margin-top: 1.8rem;
+    opacity: 0.55;
+}
+
+.article-header h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 1.15;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+    margin-bottom: 0.3rem;
+}
+
+.article-header h1 em {
+    font-style: italic;
+    color: var(--ocean);
+    font-weight: 300;
+}
+
+.article-header .subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-top: 0.4rem;
+    letter-spacing: 0.02em;
+}
+
+.article-meta {
+    color: var(--text-light);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 1.1rem;
+}
+
+.article-meta .sep {
+    margin: 0 0.6rem;
+    opacity: 0.4;
+}
+
+.article-meta .tag {
+    color: var(--ocean-mid);
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0.02em;
+}
+
+/* ─── IMAGES ─── */
+.article-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 2px;
+    margin: 1.5rem 0;
+}
+
+.image-pair {
+    display: flex;
+    gap: 1rem;
+    margin: 2rem 0 2.5rem;
+}
+
+.image-pair img {
+    width: calc(50% - 0.5rem);
+    height: 280px;
+    object-fit: cover;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    filter: sepia(5%) contrast(1.02);
+    transition: filter 0.4s;
+}
+
+.image-pair img:hover {
+    filter: sepia(0%) contrast(1.05);
+}
+
+/* ─── ARTICLE CONTENT ─── */
+.article-content {
+    font-size: 1.06rem;
+    font-weight: 400;
+    line-height: 1.92;
+}
+
+.article-content h2 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 500;
+    font-size: 1.55rem;
+    color: var(--ocean);
+    margin-top: 3rem;
+    margin-bottom: 1.1rem;
+    letter-spacing: 0.02em;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    position: relative;
+}
+
+.article-content h2::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 40px;
+    height: 1px;
+    background: var(--gold-mid);
+    /* gold accent — matches example.html */
+}
+
+.article-content h3 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--ocean-mid);
+    margin-top: 2rem;
+    margin-bottom: 0.7rem;
+}
+
+.article-content p {
+    margin-bottom: 1.3rem;
+    color: var(--text);
+    font-size: 1.05rem;
+}
+
+.article-content a {
+    color: var(--ocean-mid);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+}
+
+.article-content a:hover {
+    color: var(--blue-mist);
+}
+
+/* Drop cap on first paragraph */
+.article-content>p:first-of-type::first-letter,
+.article-content .drop-cap::first-letter {
+    float: left;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.8rem;
+    font-weight: 300;
+    line-height: 0.72;
+    color: var(--ocean);
+    margin: 0.08em 0.08em 0 0;
+    padding-bottom: 0.05em;
+}
+
+/* Suppress drop cap after quotes/images */
+.quote-block+p::first-letter,
+.image-pair+p::first-letter {
+    float: none;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+    margin: 0;
+}
+
+/* ─── QUOTE BLOCK ─── */
+.quote-block {
+    margin: 2.2rem 0;
+    padding: 1.5rem 1.8rem 1.5rem 2rem;
+    background-color: var(--gold-pale, #f5ecd8);
+    /* warm gold tint */
+    border-left: 3px solid var(--gold-mid);
+    font-style: italic;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.12rem;
+    line-height: 1.75;
+    color: var(--text-mid);
+    position: relative;
+    border-radius: 0 2px 2px 0;
+}
+
+.quote-block::before {
+    content: '\201C';
+    position: absolute;
+    top: 0.4rem;
+    left: 0.9rem;
+    font-size: 3.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--gold-mid);
+    opacity: 0.28;
+    line-height: 1;
+}
+
+/* Chinese centered quote variant */
+.quote-chinese {
+    text-align: center;
+    border-left: none;
+    border-top: 1px solid var(--border-mid);
+    border-bottom: 1px solid var(--border-mid);
+    background: linear-gradient(135deg, var(--sky), #edf3fa);
+    padding: 2rem 2.5rem;
+    margin: 2.5rem 0;
+}
+
+.quote-chinese::before {
+    display: none;
+}
+
+.quote-chinese .chinese-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: normal;
+    font-size: 1.3rem;
+    color: var(--ocean);
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.quote-chinese .chinese-trans {
+    font-size: 1rem;
+    color: var(--text-light);
+    font-style: italic;
+    letter-spacing: 0.04em;
+}
+
+/* ─── CALLOUT BOXES ─── */
+.callout {
+    margin: 1.8rem 0;
+    padding: 1.1rem 1.4rem;
+    border-radius: 3px;
+    border-left: 4px solid;
+    font-size: 0.93rem;
+    line-height: 1.65;
+}
+
+.callout.tip {
+    background: #edf5ff;
+    border-color: var(--ocean-mid);
+    color: var(--ocean-dark);
+}
+
+.callout.warning {
+    background: #fef9ec;
+    border-color: #c89020;
+    color: #3a2e08;
+}
+
+.callout.danger {
+    background: #fef1f1;
+    border-color: #c03030;
+    color: #5a1010;
+}
+
+.callout-label {
+    display: block;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+    opacity: 0.7;
+    font-style: normal;
+}
+
+/* ─── CODE BLOCKS ─── */
+.code-wrapper,
+.code-block-wrapper {
+    position: relative;
+    margin: 1.6rem 0;
+}
+
+pre {
+    background: #0d1829;
+    color: #c9d9e8;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.79rem;
+    line-height: 1.75;
+    padding: 1.4rem 1.5rem;
+    border-radius: 3px;
+    overflow-x: auto;
+    margin: 0;
+    border-left: 3px solid var(--ocean-mid);
+}
+
+/* Syntax highlight classes */
+pre .cm {
+    color: #5a7090;
+    font-style: italic;
+}
+
+/* comment */
+pre .kw {
+    color: #7eb8e0;
+}
+
+/* keyword */
+pre .str {
+    color: #90c890;
+}
+
+/* string */
+pre .fn {
+    color: #a0c8f0;
+}
+
+/* function */
+pre .tp {
+    color: #d4a860;
+}
+
+/* type */
+pre .num {
+    color: #c0a8d0;
+}
+
+/* number */
+
+code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.83em;
+    background: var(--sky);
+    color: var(--ocean-mid);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+}
+
+/* Copy button */
+.copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(42, 80, 128, 0.8);
+    border: 1px solid rgba(176, 205, 228, 0.3);
+    color: var(--blue-light);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    padding: 0.22rem 0.6rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.copy-btn:hover {
+    background: var(--ocean-mid);
+    color: #fff;
+}
+
+.copy-btn.copied {
+    background: var(--gold);
+    color: #fff;
+}
+
+/* ─── TABLE ─── */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.6rem 0;
+    font-size: 0.88rem;
+}
+
+.data-table th {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    background: var(--sky);
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+}
+
+.data-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tr:hover td {
+    background: rgba(26, 58, 92, 0.03);
+}
+
+/* ─── FLOW DIAGRAM ─── */
+.flow-diagram {
+    background: #0d1829;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.76rem;
+    line-height: 1.85;
+    color: #6a94bb;
+    padding: 1.5rem;
+    border-radius: 3px;
+    overflow-x: auto;
+    margin: 1.6rem 0;
+    border-left: 3px solid var(--accent);
+    position: relative;
+}
+
+.flow-diagram::before {
+    content: 'SYSTEM DIAGRAM';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.9rem;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    opacity: 0.5;
+}
+
+.flow-diagram .nd {
+    color: #88b0d4;
+}
+
+.flow-diagram .ar {
+    color: #a0c0e0;
+}
+
+.flow-diagram .lb {
+    color: #c09060;
+}
+
+.flow-diagram .dm {
+    color: #4a5565;
+}
+
+/* ─── TIMELINE ─── */
+ul.timeline {
+    list-style: none;
+    margin: 1.8rem 0;
+    padding: 0;
+}
+
+ul.timeline li {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0 1rem;
+    margin-bottom: 0.9rem;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px dashed var(--border);
+}
+
+ul.timeline li:last-child {
+    border-bottom: none;
+}
+
+ul.timeline .ts {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--ocean-mid);
+    padding-top: 0.15rem;
+    font-weight: 500;
+}
+
+/* ─── SECTION DIVIDER ─── */
+.section-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0;
+}
+
+.section-divider::before,
+.section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.section-divider span {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    color: var(--text-light);
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* ─── SHARE SECTION ─── */
+.share-section {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border);
+    text-align: center;
+}
+
+.share-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 1.3rem;
+    color: var(--ocean);
+    letter-spacing: 0.06em;
+    margin-bottom: 1.2rem;
+}
+
+.share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.share-button {
+    padding: 0.5rem 1.3rem;
+    border: none;
+    border-radius: 2px;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.92rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.share-button:hover {
+    opacity: 0.88;
+    transform: translateY(-2px);
+}
+
+.twitter-share {
+    background-color: #1DA1F2;
+}
+
+.facebook-share {
+    background-color: #1877F2;
+}
+
+.linkedin-share {
+    background-color: #0A66C2;
+}
+
+/* ─── RELATED POSTS ─── */
+.related-posts {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border);
+}
+
+.related-posts h3 {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 1.3rem;
+    color: var(--ocean);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+}
+
+.related-card {
+    background: var(--sky);
+    padding: 1.3rem 1.4rem;
+    border-radius: 2px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s, box-shadow 0.25s;
+    border: 1px solid var(--border);
+    display: block;
+    position: relative;
+}
+
+.related-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--gold-mid);
+    /* gold hover bar */
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.25s ease;
+}
+
+.related-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px var(--shadow);
+}
+
+.related-card:hover::before {
+    transform: scaleY(1);
+}
+
+.related-card .card-tag {
+    display: inline-block;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ocean-mid);
+    margin-bottom: 0.5rem;
+}
+
+.related-card h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    line-height: 1.35;
+}
+
+.related-card p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.55;
+    font-style: italic;
+}
+
+/* ─── LANGUAGE TOGGLE BAR (inline in article flow) ─── */
+.lang-toggle-bar {
+    text-align: center;
+    margin: 1rem 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(to bottom, var(--parchment), transparent);
+    padding: 0.6rem 0;
+}
+
+.lang-toggle-bar .lang-toggle {
+    position: static;
+    transform: none;
+    display: inline-flex;
+    flex-direction: row;
+    border-radius: 3px;
+    padding: 0.35rem 1rem;
+    gap: 0;
+    background: var(--ocean);
+    border: 1px solid var(--border-mid);
+    color: var(--blue-light);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.lang-toggle-bar .lang-toggle:hover {
+    background: var(--ocean-mid);
+    transform: translateY(-1px);
+}
+
+/* ─── LANGUAGE TOGGLE (fixed sidebar variant) ─── */
+.lang-toggle {
+    position: fixed;
+    top: 50%;
+    right: 1.2rem;
+    transform: translateY(-50%);
+    z-index: 250;
+    background: var(--ocean);
+    border: 1px solid var(--border-mid);
+    border-radius: 24px;
+    padding: 0.3rem 0.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    box-shadow: 0 4px 16px var(--shadow);
+}
+
+.lang-btn {
+    background: none;
+    border: none;
+    color: rgba(244, 247, 251, 0.5);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    padding: 0.3rem 0.55rem;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.lang-btn.active {
+    background: var(--ocean-mid);
+    color: var(--blue-light);
+}
+
+/* ─── RESPONSIVE — ARTICLE ─── */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem 1.2rem;
+        margin: 1rem;
+    }
+
+    .image-pair {
+        flex-direction: column;
+    }
+
+    .image-pair img {
+        width: 100%;
+        height: 220px;
+    }
+
+    .article-header h1 {
+        font-size: 2rem;
+    }
+
+    .article-content h2 {
+        font-size: 1.3rem;
+    }
+
+    pre,
+    .flow-diagram {
+        font-size: 0.7rem;
+    }
+
+    .lang-toggle {
+        right: 0.6rem;
+    }
+}

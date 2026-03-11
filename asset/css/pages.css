@@ -1,0 +1,566 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CENS WEBSITE — PAGE / LISTING STYLES
+   Referenced by: index.html, blog/index.html, projects/index.html,
+                  about/index.html, professional/index.html
+   Requires: theme.css to be loaded first
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── MAIN CONTENT AREA ─── */
+main {
+    max-width: 860px;
+    margin: 2rem auto;
+    padding: 0 1.2rem;
+    flex: 1;
+}
+
+/* ─── SECTION HEADINGS ─── */
+.section-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    color: var(--ocean);
+    letter-spacing: 0.06em;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.6rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 1px;
+    background: var(--gold-mid);
+}
+
+/* ─── CARD GRID ─── */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+/* ─── POST / PROJECT CARD ─── */
+.post-card {
+    background: var(--warm-white);
+    border-radius: 3px;
+    box-shadow: 0 2px 10px var(--shadow), 0 0 0 1px var(--border);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    animation: cardUp 0.5s ease forwards;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 28px var(--shadow);
+}
+
+@keyframes cardUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.post-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    filter: sepia(8%) contrast(1.02);
+    transition: filter 0.4s;
+}
+
+.post-card:hover img {
+    filter: sepia(0%) contrast(1.06);
+}
+
+.post-card-content {
+    padding: 1.2rem 1.4rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.post-card p {
+    font-size: 0.93rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+    flex: 1;
+}
+
+.post-card-footer {
+    padding: 0.8rem 1.4rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.post-card-meta {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+    text-transform: uppercase;
+}
+
+/* ─── READ MORE BUTTON ─── */
+.read-more,
+.btn-primary {
+    display: inline-block;
+    background: var(--ocean);
+    color: var(--parchment);
+    padding: 0.45rem 1.1rem;
+    text-decoration: none;
+    border-radius: 2px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+
+.read-more:hover,
+.btn-primary:hover {
+    background: var(--ocean-mid);
+    transform: translateY(-2px);
+}
+
+/* ─── BLOG LISTING (full-width entries) ─── */
+.blog-entry {
+    background: var(--warm-white);
+    border-radius: 3px;
+    box-shadow: 0 2px 10px var(--shadow), 0 0 0 1px var(--border);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+    opacity: 0;
+    animation: cardUp 0.5s ease forwards;
+}
+
+.blog-entry:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px var(--shadow);
+}
+
+.blog-entry img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    filter: sepia(6%) contrast(1.02);
+    transition: filter 0.4s;
+}
+
+.blog-entry:hover img {
+    filter: sepia(0%) contrast(1.05);
+}
+
+.blog-entry-content {
+    padding: 1.5rem 1.8rem;
+}
+
+.blog-entry h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 1.55rem;
+    color: var(--ocean);
+    margin: 0 0 0.4rem;
+    line-height: 1.2;
+}
+
+.blog-entry-meta {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+}
+
+.blog-entry p {
+    font-size: 0.97rem;
+    color: var(--text-mid);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+/* ─── TAGS ─── */
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.6rem 0;
+}
+
+.tag-pill {
+    display: inline-block;
+    background: var(--sky);
+    color: var(--ocean-mid);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-family: 'Fira Code', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* ─── FILTER BAR ─── */
+.filter-bar {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.filter-bar h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--ocean);
+    margin-bottom: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.search-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0.8rem;
+}
+
+.search-row input {
+    flex: 1;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--border-mid);
+    border-right: none;
+    border-radius: 2px 0 0 2px;
+    font-family: 'EB Garamond', serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--cream);
+    outline: none;
+}
+
+.search-row input:focus {
+    border-color: var(--blue-mist);
+    background: #fff;
+}
+
+.search-row button {
+    background: var(--ocean);
+    color: var(--parchment);
+    border: 1px solid var(--ocean);
+    padding: 0.5rem 1rem;
+    border-radius: 0 2px 2px 0;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-row button:hover {
+    background: var(--ocean-mid);
+}
+
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-option {
+    background: var(--sky);
+    border: 1px solid var(--border);
+    color: var(--text-mid);
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.filter-option:hover,
+.filter-option.active {
+    background: var(--ocean);
+    color: var(--parchment);
+    border-color: var(--gold-mid);
+    box-shadow: 0 0 0 1px var(--gold-mid);
+}
+
+/* ─── HERO (homepage) ─── */
+.hero {
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+}
+
+.hero h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: var(--ocean);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.8rem;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    color: var(--text-mid);
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.8;
+}
+
+.hero-profile {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--warm-white);
+    box-shadow: 0 4px 20px var(--shadow), 0 0 0 6px rgba(26, 58, 92, 0.15);
+    margin-bottom: 1.5rem;
+    animation: fadeIn 1s ease 0.5s both;
+}
+
+/* ─── ABOUT: PROFILE ─── */
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: var(--warm-white);
+    border-radius: 3px;
+    box-shadow: 0 2px 10px var(--shadow), 0 0 0 1px var(--border);
+}
+
+.profile-image {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border-mid);
+    flex-shrink: 0;
+}
+
+.profile-info h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 1.8rem;
+    color: var(--ocean);
+    margin-bottom: 0.5rem;
+}
+
+.interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+}
+
+.interest-tag {
+    background: var(--sky);
+    color: var(--ocean-mid);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.7rem;
+    border-radius: 15px;
+    font-size: 0.82rem;
+}
+
+/* ─── ABOUT: TIMELINE ─── */
+.section-card {
+    background: var(--warm-white);
+    border-radius: 3px;
+    box-shadow: 0 2px 10px var(--shadow), 0 0 0 1px var(--border);
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 1.3rem;
+    color: var(--ocean);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.04em;
+}
+
+.timeline-list {
+    list-style: none;
+    padding-left: 1.5rem;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding-left: 0.5rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.5rem;
+    top: 0.45rem;
+    width: 10px;
+    height: 10px;
+    background: var(--ocean-mid);
+    border-radius: 50%;
+}
+
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    left: -1.1rem;
+    top: 1rem;
+    bottom: -1.5rem;
+    width: 2px;
+    background: var(--border-mid);
+}
+
+.timeline-item:last-child::after {
+    display: none;
+}
+
+.timeline-date {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--ocean-mid);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.timeline-item h4 {
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+}
+
+.timeline-item p {
+    color: var(--text-mid);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* ─── ABOUT: SKILLS GRID ─── */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.8rem;
+}
+
+.skill-item {
+    background: var(--sky);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.7rem;
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.skill-item:hover {
+    background: var(--ocean);
+    color: var(--parchment);
+    border-color: var(--gold-mid);
+    transform: translateY(-3px);
+}
+
+/* ─── CTA BUTTON ─── */
+.cta-button,
+.fun-intro-btn {
+    display: inline-block;
+    background: var(--ocean);
+    color: var(--parchment);
+    padding: 0.7rem 1.6rem;
+    border-radius: 2px;
+    text-decoration: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.cta-button:hover,
+.fun-intro-btn:hover {
+    background: var(--ocean-mid);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(26, 58, 92, 0.2);
+}
+
+/* ─── BACK TO TOP ─── */
+.back-to-top {
+    position: fixed;
+    bottom: 4.5rem;
+    right: 1.5rem;
+    z-index: 150;
+    background: var(--ocean);
+    color: var(--parchment);
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px var(--shadow);
+    transition: background 0.2s, transform 0.2s, opacity 0.3s;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-to-top.visible {
+    display: flex;
+}
+
+.back-to-top:hover {
+    background: var(--ocean-mid);
+    transform: scale(1.1);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+    .profile-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-image {
+        width: 130px;
+        height: 130px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}

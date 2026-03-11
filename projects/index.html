@@ -1,437 +1,90 @@
-<html><head><base href="https://cs721127.github.io/projects">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projects | Cen Sun's Website</title>
-<style>
-  :root {
-    --primary-color: #2196F3;
-    --secondary-color: #000000;
-    --text-color: #333;
-    --background-color: #f0f0f0;
-  }
+<!DOCTYPE html>
+<html lang="en">
 
-  body {
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.6;
-    color: var(--text-color);
-    background-color: var(--background-color);
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects — Cen Sun</title>
+  <meta name="description" content="Projects by Cen Sun — research, software, and creative work.">
+  <link rel="stylesheet" href="../asset/css/theme.css">
+  <link rel="stylesheet" href="../asset/css/pages.css">
+</head>
 
-  header {
-    background-color: var(--primary-color);
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-  }
-
-  header h1 {
-    margin: 0;
-  }
-
-  nav {
-    background-color: var(--secondary-color);
-    padding: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  nav ul li {
-    margin: 0 1rem;
-  }
-
-  nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-  }
-
-  nav ul li a:hover {
-    color: #FFD700;
-  }
-
-  main {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    flex-grow: 1;
-  }
-
-  .blog-post {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-  }
-
-  .blog-post:hover {
-    transform: translateY(-5px);
-  }
-
-  .blog-post img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-  }
-
-  .blog-post-content {
-    padding: 1.5rem;
-  }
-
-  .blog-post h2 {
-    margin-top: 0;
-    color: var(--primary-color);
-  }
-
-  .blog-post-meta {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-  }
-
-  .blog-post-excerpt {
-    margin-bottom: 1rem;
-  }
-
-  .read-more {
-    display: inline-block;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-
-  .read-more:hover {
-    background-color: #1976D2;
-  }
-
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
-  }
-
-  .pagination a {
-    color: var(--primary-color);
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    border: 1px solid var(--primary-color);
-    margin: 0 0.25rem;
-    border-radius: 3px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .pagination a:hover {
-    background-color: var(--primary-color);
-    color: white;
-  }
-
-  footer {
-    background-color: var(--secondary-color);
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: auto;
-  }
-
-  .tag {
-    display: inline-block;
-    background-color: #e0e0e0;
-    color: #333;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-    font-size: 0.8rem;
-    margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .filter-box {
-    background-color: white;
-    padding: 1rem;
-    border-radius: 5px;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .filter-box h3 {
-    margin-top: 0;
-  }
-
-  .filter-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .filter-option {
-    background-color: #e0e0e0;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .filter-option:hover,
-  .filter-option.active {
-    background-color: var(--primary-color);
-    color: white;
-  }
-
-  .search-box {
-    display: flex;
-    margin-bottom: 1rem;
-  }
-
-  .search-box input {
-    flex-grow: 1;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 3px 0 0 3px;
-  }
-
-  .search-box button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0 3px 3px 0;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .search-box button:hover {
-    background-color: #1976D2;
-  }
-
-  @media (max-width: 600px) {
-    nav ul {
-      flex-direction: column;
-      align-items: center;
-    }
-
-    nav ul li {
-      margin: 0.5rem 0;
-    }
-
-    nav {
-      position: relative;
-    }
-  }
-</style>
-<style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style><style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style></head>
 <body>
   <header>
-    <h1>Projects</h1>
+    <h1>Cen Sun &nbsp;·&nbsp; Projects</h1>
+    <p class="sub">Research · Software · Creative Work</p>
   </header>
 
-  <nav>
+  <nav id="main-nav">
     <ul>
       <li><a href="https://cs721127.github.io/">Home</a></li>
       <li><a href="https://cs721127.github.io/about">About</a></li>
       <li><a href="https://cs721127.github.io/blog">Blog</a></li>
-      <li><a href="https://cs721127.github.io/projects">Projects</a></li>
+      <li><a href="https://cs721127.github.io/projects" class="active">Projects</a></li>
       <li><a href="https://cs721127.github.io/contact">Contact</a></li>
     </ul>
   </nav>
 
   <main>
-    
+    <h2 class="section-title">My Work</h2>
 
-    <article class="blog-post" data-tags="daily-activity-share" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/econ-web.jpg" alt="Econ Icon" width="800" height="300">
-      <div class="blog-post-content">
+    <article class="blog-entry" data-tags="economics computer-science" style="animation-delay:0s">
+      <img src="https://cs721127.github.io/asset/images/econ-web.jpg" alt="BNDS EconNexus">
+      <div class="blog-entry-content">
         <h2>Economic Website: BNDS EconNexus</h2>
-        <div class="blog-post-meta">Posted on Nov 19, 2024 | Category: Economics &amp; Computer Science</div>
-        <div class="blog-post-excerpt">
-          <p>The current official website of the school lacks comprehensive content in the field of economics, specifically in terms of course information, extracurricular resources, and alumni profiles, which prevents students from accessing relevant information directly. The main objectives of this project are to establish an official economic platform similar to a university economics department website to achieve:<br><br>
-
-1. Provide high-quality learning resources for current students, such as in-school economic course materials, extracurricular study materials, and various economic content sharing (e.g., book reviews, interdisciplinary research, economics for fun blogs).<br>
-2. Build a communication bridge between alumni and students, offering opportunities for interaction and career development support.<br>
-3. Provide alumni with a convenient channel to stay updated on school news and access resources within the alumni network.<br>
-4. Address the current issues of outdated information and disorganized resource management on the school's website.
-<br><br>
-I am still working on this project with my classmates, and will notice more details later.
-</p>
-        </div>
+        <div class="blog-entry-meta">Nov 2024 &nbsp;·&nbsp; Economics & Computer Science</div>
+        <p>The current official website of the school lacks comprehensive content in the field of economics. This
+          project establishes an official economic platform similar to a university economics department website to
+          provide high-quality learning resources, connect alumni with students, and address outdated information on the
+          school's website. I am still working on this project with my classmates.</p>
         <div class="tags">
-          <span class="tag">Economics</span>
-        <span class="tag">Computer Science</span></div>
-        <a href="https://cs721127.github.io/projects/" class="read-more">In Progress...</a>
+          <span class="tag-pill">Economics</span>
+          <span class="tag-pill">Computer Science</span>
+        </div>
+        <a href="https://cs721127.github.io/projects/" class="read-more">In Progress…</a>
       </div>
     </article>
 
-    
-
-    
-
-  <article class="blog-post" data-tags="daily-activity-share" style="animation: 0.5s ease-out 0s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/pioneer-aus.jpg" alt="Upenn" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>Pioneer Research: Economic Growth study in Australia </h2>
-        <div class="blog-post-meta">Posted on Oct 14, 2024 | Category: Research</div>
-        <div class="blog-post-excerpt">
-          <p>This paper explores the suitability of the Solow Growth Model in interpreting Australia's
-economic growth over the past 46 years, with a specific emphasis on total factor productivity
-(TFP). By leveraging data from April 1978 to January 2024, this research conducts an
-empirical analysis to estimate TFP and evaluate its relationship with Australia's economic
-conditions. The results indicate that the Solow Growth Model effectively explains the reallife economic growth in Australia, thus confirming the applicability of established
-fundamental theories of economic growth in this rapidly developing world. This also
-highlights the significance of technological progress and efficiency enhancements in fostering
-economic development (the factors of TFP).</p>
-        </div>
-        <div class="tags">
-          <span class="tag">Research</span>
-        </div>
+    <article class="blog-entry" data-tags="research" style="animation-delay:0.1s">
+      <img src="https://cs721127.github.io/asset/images/pioneer-aus.jpg" alt="Pioneer Research">
+      <div class="blog-entry-content">
+        <h2>Pioneer Research: Economic Growth Study in Australia</h2>
+        <div class="blog-entry-meta">Oct 2024 &nbsp;·&nbsp; Research</div>
+        <p>This paper explores the suitability of the Solow Growth Model in interpreting Australia's economic growth
+          over the past 46 years, with a specific emphasis on total factor productivity (TFP). By leveraging data from
+          April 1978 to January 2024, this research conducts an empirical analysis to estimate TFP and evaluate its
+          relationship with Australia's economic conditions.</p>
+        <div class="tags"><span class="tag-pill">Research</span><span class="tag-pill">Economics</span></div>
         <a href="https://cs721127.github.io/projects/pioneer-aus" class="read-more">Read More</a>
       </div>
-    </article><article class="blog-post" data-tags="daily-activity-share" style="animation: 0.5s ease-out 0.2s 1 normal forwards running fadeIn; display: block;">
-      <img src="https://cs721127.github.io/asset/images/csa-vocab.jpg" alt="CSA Vocab" width="800" height="300">
-      <div class="blog-post-content">
-        <h2>Computer Science Project: Java Program For Vocabulary Collection and Memorization</h2>
-        <div class="blog-post-meta">Posted on Sep 1, 2024 | Category: Computer Science</div>
-        <div class="blog-post-excerpt">
-          <p>This project has a profound meaning in my study on TOEFL and SAT, helping me be clearer about categorizing the vocabulary. I am eager to share this with more people who are struggling with remembering vocabulary, and hope this can help. If you are not familiar with Java, you can simply download BlueJ from their website, which provides all you need to use this program (just paste the code into its class). I am also working on transferring this coding program into applications for laptops and phones. Hopefully it can be finished soon. You can download the code zip file below.</p>
-        </div>
-        <div class="tags">
-          <span class="tag">Computer Science</span>
-        </div>
+    </article>
+
+    <article class="blog-entry" data-tags="computer-science" style="animation-delay:0.2s">
+      <img src="https://cs721127.github.io/asset/images/csa-vocab.jpg" alt="Java Vocab Program">
+      <div class="blog-entry-content">
+        <h2>Computer Science Project: Java Program for Vocabulary Collection and Memorization</h2>
+        <div class="blog-entry-meta">Sep 2024 &nbsp;·&nbsp; Computer Science</div>
+        <p>This project has a profound meaning in my study on TOEFL and SAT, helping me be clearer about categorizing
+          vocabulary. I am eager to share this with more people who are struggling with remembering vocabulary. You can
+          simply download BlueJ from their website to use this program — just paste the code into its class.</p>
+        <div class="tags"><span class="tag-pill">Computer Science</span><span class="tag-pill">Java</span></div>
         <a href="https://cs721127.github.io/asset/pdf/csa.zip" class="read-more">Download Code</a>
       </div>
-    </article></main>
+    </article>
+  </main>
 
   <footer>
-    <p>© 2024 Cen Sun's Website. All rights reserved.</p>
+    <p>© 2026 Cen Sun's Website. All rights reserved. &nbsp;·&nbsp; <a
+        href="https://cs721127.github.io/">cs721127.github.io</a></p>
   </footer>
 
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+
   <script>
-    // Add a simple animation to the blog posts
-    const blogPosts = document.querySelectorAll('.blog-post');
-    blogPosts.forEach((post, index) => {
-      post.style.animation = `fadeIn 0.5s ease-out ${index * 0.2}s forwards`;
-    });
-
-    // Define the fadeIn animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
-
-    // Filter functionality
-    const filterOptions = document.querySelectorAll('.filter-option');
-    const searchInput = document.getElementById('search-input');
-    const searchButton = document.getElementById('search-button');
-    const paginationLinks = document.querySelectorAll('.pagination a');
-
-    let currentPage = 1;
-
-    function filterPosts(page = 1) {
-      const activeTag = document.querySelector('.filter-option.active').dataset.tag;
-      const searchTerm = searchInput.value.toLowerCase();
-
-      blogPosts.forEach((post, index) => {
-        const postTags = post.dataset.tags.split(' ');
-        const postContent = post.textContent.toLowerCase();
-        const matchesTag = activeTag === 'all' || postTags.includes(activeTag);
-        const matchesSearch = postContent.includes(searchTerm);
-
-        if (matchesTag && matchesSearch) {
-          post.style.display = 'block';
-        } else {
-          post.style.display = 'none';
-        }
-      });
-
-      // Update pagination links
-      paginationLinks.forEach((link, index) => {
-        link.href = `https://cs721127.github.io/projects?page=${index + 1}`;
-        link.style.display = index === currentPage - 1 ? 'none' : 'inline-block';
-      });
-
-      currentPage = page;
-    }
-
-    filterOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        document.querySelector('.filter-option.active').classList.remove('active');
-        option.classList.add('active');
-        filterPosts();
-      });
-    });
-
-    searchButton.addEventListener('click', () => {
-      filterPosts();
-    });
-
-    paginationLinks.forEach(link => {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-        const page = parseInt(e.target.textContent);
-        filterPosts(page);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    });
-
-    // Initial filter
-    filterPosts();
+    document.getElementById('nav-toggle').addEventListener('click', () =>
+      document.getElementById('main-nav').classList.toggle('open'));
   </script>
+</body>
 
-
-
-
-</body></html>
+</html>
