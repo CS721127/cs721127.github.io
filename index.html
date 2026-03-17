@@ -1,296 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cen Sun's Website</title>
-  <meta name="description"
-    content="Personal website of Cen Sun — essays, projects, and reflections on learning, culture, and technology.">
+  <meta name="description" content="Personal website of Cen Sun — essays, projects, and reflections on learning, culture, and technology.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Crimson+Pro:ital@0;1&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="asset/css/theme.css">
-  <link rel="stylesheet" href="asset/css/pages.css">
+
   <style>
-    /* ── HORIZONTAL SCROLL FOR FEATURED POSTS ── */
-    .card-grid {
-      display: flex;
-      flex-wrap: nowrap;
-      /* Forces cards to stay on one line */
-      overflow-x: auto;
-      /* Enables horizontal scrolling */
-      gap: 1.5rem;
-      /* Adds space between the cards */
-      padding-bottom: 1.5rem;
-      /* Adds space at the bottom for the scrollbar */
-      scroll-snap-type: x mandatory;
-      /* Creates a smooth snap-to-card effect */
-      -webkit-overflow-scrolling: touch;
-      /* Ensures smooth momentum scrolling on iOS */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ocean:      #005f8e;
+      --ocean-mid:  #0077b6;
+      --ocean-lt:   #0096c7;
+      --parchment:  #faf8f4;
+      --warm-white: #ffffff;
+      --border:     rgba(0,80,130,0.12);
+      --border-mid: rgba(0,80,130,0.25);
+      --shadow:     rgba(0,60,120,0.10);
+      --text-dark:  #1a2e3a;
+      --text-mid:   #3d5a6a;
+      --text-light: #7a9aaa;
     }
 
-    /* Targets the individual cards inside the scrolling container */
-    .card-grid .post-card {
-      flex: 0 0 auto;
-      /* Prevents cards from squishing to fit the screen */
-      width: 320px;
-      /* Sets a fixed width (adjust as needed) */
-      scroll-snap-align: start;
-      /* Snaps the card to the left edge when scrolling stops */
-    }
+    html, body { height: 100%; overflow: hidden; background: var(--parchment); font-family: 'Crimson Pro', Georgia, serif; color: var(--text-dark); }
 
-    /* ── INDEX-SPECIFIC ── */
-    .featured-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 1rem;
-    }
+    #shell { display: flex; flex-direction: column; height: 100dvh; width: 100vw; }
 
-    .greeting-section {
-      background: var(--warm-white);
-      border-radius: 3px;
-      box-shadow: 0 2px 10px var(--shadow), 0 0 0 1px var(--border);
-      padding: 2.5rem 2rem;
-      margin-top: 2.5rem;
-      text-align: center;
-    }
+    /* ── HEADER & NAV — hidden, pages provide their own ── */
+    #shell-header,
+    #shell-nav { display: none; }
 
-    .greeting-section h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 400;
-      font-size: 1.5rem;
-      color: var(--ocean);
-      margin-bottom: 1rem;
-      letter-spacing: 0.04em;
-    }
+    /* ── IFRAME ── */
+    #content-frame { flex: 1; width: 100%; border: none; display: block; background: var(--parchment); }
 
-    .greeting-section p {
-      font-size: 1.02rem;
-      color: var(--text-mid);
-      line-height: 1.85;
-      max-width: 680px;
-      margin: 0 auto 0.8rem;
+    /* ══════════════════════════════════════════
+       MUSIC PLAYER
+    ══════════════════════════════════════════ */
+    #music-player {
+      position: fixed;
+      /* JS will set left/top on load; these are fallback only */
+      bottom: 2rem; right: 2rem;
+      z-index: 9999;
+      display: flex; align-items: center; gap: 0.65rem;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(0,95,142,0.16);
+      border-radius: 50px;
+      padding: 0.48rem 0.95rem 0.48rem 0.48rem;
+      box-shadow: 0 8px 30px rgba(0,60,120,0.13), 0 2px 6px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.85);
+      transition: box-shadow 0.22s ease, border-radius 0.22s ease, padding 0.22s ease;
+      user-select: none; touch-action: none;
+      cursor: grab;
     }
+    #music-player:hover { box-shadow: 0 12px 38px rgba(0,60,120,0.17), 0 3px 8px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.85); }
+    #music-player.dragging { box-shadow: 0 18px 48px rgba(0,60,120,0.22), 0 4px 12px rgba(0,0,0,0.1); cursor: grabbing !important; transition: none; }
+    #music-player button, #music-player input { cursor: pointer; }
 
-    .signature {
-      font-family: 'Crimson Pro', serif;
-      font-style: italic;
-      font-size: 1.6rem;
-      color: var(--ocean-mid);
-      margin-top: 1.2rem;
-    }
+    /* Collapsed */
+    #music-player.collapsed { border-radius: 50%; padding: 0.48rem; gap: 0; }
+    #music-player.collapsed .mp-expandable { width: 0; opacity: 0; overflow: hidden; pointer-events: none; flex: 0 0 0; margin: 0; padding: 0; }
+    #music-player.collapsed #mp-collapse-btn { width: 0; overflow: hidden; padding: 0; opacity: 0; pointer-events: none; }
+    #music-player.collapsed .mp-wave { width: 0; overflow: hidden; opacity: 0; }
 
-    .written-date {
-      font-family: 'Fira Code', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      color: var(--text-light);
-      margin-top: 0.3rem;
+    /* Play button */
+    #mp-play-btn {
+      flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: none;
+      background: linear-gradient(145deg, #0096c7, #005f8e); color: white;
+      font-size: 0.88rem; display: flex; align-items: center; justify-content: center;
+      transition: filter 0.15s, transform 0.12s;
+      box-shadow: 0 3px 10px rgba(0,119,182,0.38); position: relative; z-index: 1;
     }
+    #mp-play-btn:hover  { filter: brightness(1.12); transform: scale(1.06); }
+    #mp-play-btn:active { transform: scale(0.94); }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 3px 10px rgba(0,119,182,0.38), 0 0 0 0   rgba(0,150,199,0.5); }
+      70%  { box-shadow: 0 3px 10px rgba(0,119,182,0.38), 0 0 0 9px rgba(0,150,199,0);   }
+      100% { box-shadow: 0 3px 10px rgba(0,119,182,0.38), 0 0 0 0   rgba(0,150,199,0);   }
+    }
+    #mp-play-btn.playing { animation: pulse-ring 2s ease-out infinite; }
 
-    .professional-banner {
-      display: inline-block;
-      background: transparent;
-      border: 1px solid var(--border-mid);
-      color: var(--ocean-mid);
-      padding: 0.45rem 1.2rem;
-      border-radius: 20px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.85rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      text-decoration: none;
-      transition: background 0.2s, color 0.2s;
-      margin-top: 1rem;
-    }
+    /* Waveform */
+    .mp-wave { display: flex; align-items: flex-end; gap: 2px; height: 14px; flex-shrink: 0; transition: opacity 0.22s, width 0.22s; }
+    .mp-wave span { display: block; width: 2.5px; border-radius: 1.5px; background: linear-gradient(to top, #0077b6, #48cae4); animation: wave-bar 0.9s ease-in-out infinite; }
+    .mp-wave span:nth-child(1) { height: 35%; animation-delay: 0s;    }
+    .mp-wave span:nth-child(2) { height: 75%; animation-delay: 0.12s; }
+    .mp-wave span:nth-child(3) { height: 55%; animation-delay: 0.25s; }
+    .mp-wave span:nth-child(4) { height: 90%; animation-delay: 0.37s; }
+    .mp-wave span:nth-child(5) { height: 45%; animation-delay: 0.08s; }
+    @keyframes wave-bar { 0%,100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+    .mp-wave.paused span { animation-play-state: paused; }
 
-    .professional-banner:hover {
-      background: var(--ocean);
-      color: var(--parchment);
-      border-color: var(--ocean);
-    }
-@media (max-width: 768px) {
-      html, body {
-        overflow-x: hidden;
-        width: 100%;
-      }
-    main {
-        width: 100% !important;
-        max-width: 100vw !important;
-        padding: 0 1rem !important;
-        margin: 0 auto !important;
-        overflow: hidden;
-    }
-    .hero {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important; 
-        justify-content: center !important;
-        text-align: center !important;
-        width: 100% !important;
-        padding: 2.5rem 0.5rem !important;
-        box-sizing: border-box;
-    }
-    .hero-profile {
-        width: 120px !important;
-        height: 120px !important;
-        margin: 0 auto 1.2rem auto !important;
-        display: block !important;
-    }
-    .hero h2 {
-        width: 100% !important;
-        font-size: 1.6rem !important;
-        margin: 0 0 1rem 0 !important;
-        word-wrap: break-word;
-    }
-    .hero p {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 0.8rem;
-        font-size: 0.95rem !important;
-        line-height: 1.7 !important;
-    }
-    .cta-button, 
-    .professional-banner {
-        display: block !important;
-        width: 85% !important;
-        max-width: 280px !important;
-        margin: 0.8rem auto !important; 
-        text-align: center !important;
-        box-sizing: border-box;
-    }
-    .card-grid {
-        display: flex !important;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-        gap: 1rem;
-    }
-    .card-grid .post-card {
-        width: 85vw !important; 
-        min-width: 260px;
-    }
+    /* Expandable */
+    .mp-expandable { display: flex; flex-direction: column; gap: 0.26rem; min-width: 0; flex: 1; transition: opacity 0.2s, flex 0.22s; overflow: hidden; }
+    .mp-title  { font-family: 'Cormorant Garamond', serif; font-size: 0.84rem; font-weight: 600; color: #1a3a4a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mp-artist { font-family: 'Fira Code', monospace; font-size: 0.58rem; color: #7a9aaa; letter-spacing: 0.07em; text-transform: uppercase; white-space: nowrap; }
+    .mp-row { display: flex; align-items: center; gap: 0.45rem; }
 
-    .greeting-section {
-        padding: 1.8rem 1.2rem !important;
-        margin: 2rem 0 !important;
-        width: 100% !important;
+    .mp-progress {
+      -webkit-appearance: none; appearance: none; flex: 1; height: 3px; min-width: 80px;
+      background: #d4e8f4; border-radius: 2px; cursor: pointer; outline: none;
     }
-}
-@media (max-width: 380px) {
-    .hero h2 { font-size: 1.4rem !important; }
-    .hero-profile { width: 100px !important; height: 100px !important; }
-}
+    .mp-progress::-webkit-slider-thumb { -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%; background: #0077b6; cursor: pointer; box-shadow: 0 1px 4px rgba(0,119,182,0.45); transition: transform 0.1s; }
+    .mp-progress:hover::-webkit-slider-thumb { transform: scale(1.3); }
+    .mp-progress::-moz-range-thumb { width: 11px; height: 11px; border-radius: 50%; background: #0077b6; border: none; }
+    .mp-time { font-family: 'Fira Code', monospace; font-size: 0.57rem; color: #7a9aaa; white-space: nowrap; flex-shrink: 0; }
 
+    .mp-vol-icon { font-size: 0.7rem; cursor: pointer; color: #7a9aaa; flex-shrink: 0; transition: color 0.15s; line-height: 1; }
+    .mp-vol-icon:hover { color: var(--ocean-mid); }
+    .mp-volume { -webkit-appearance: none; appearance: none; width: 50px; height: 3px; background: #d4e8f4; border-radius: 2px; cursor: pointer; outline: none; }
+    .mp-volume::-webkit-slider-thumb { -webkit-appearance: none; width: 9px; height: 9px; border-radius: 50%; background: #0096c7; cursor: pointer; }
+    .mp-volume::-moz-range-thumb { width: 9px; height: 9px; border-radius: 50%; background: #0096c7; border: none; }
+
+    #mp-collapse-btn { background: none; border: none; color: #b0cdd9; font-size: 0.65rem; cursor: pointer; flex-shrink: 0; padding: 0 0 0 0.15rem; line-height: 1; transition: color 0.15s; }
+    #mp-collapse-btn:hover { color: var(--ocean-mid); }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      #shell-header { padding: 0.7rem 1rem 0.5rem; }
+      #shell-header h1 { font-size: 1.05rem; }
+      #shell-nav ul { padding: 0 0.25rem; overflow-x: auto; }
+      #shell-nav ul li a { padding: 0.5rem 0.65rem; font-size: 0.78rem; }
+      #music-player { bottom: 1rem; right: 1rem; }
+      .mp-progress { min-width: 60px; }
+      .mp-volume { width: 36px; }
+    }
   </style>
 </head>
-
 <body>
-  <header>
+<div id="shell">
+
+  <header id="shell-header">
     <h1>Cen Sun &nbsp;·&nbsp; Personal Website</h1>
     <p class="sub">Essays · Projects · Reflections</p>
   </header>
 
-  <nav id="main-nav">
-    <ul>
-      <li><a href="https://cs721127.github.io/" class="active">Home</a></li>
-      <li><a href="https://cs721127.github.io/about">About</a></li>
-      <li><a href="https://cs721127.github.io/blog">Blog</a></li>
-      <li><a href="https://cs721127.github.io/projects">Projects</a></li>
-      <li><a href="https://cs721127.github.io/contact">Contact</a></li>
+  <nav id="shell-nav">
+    <ul id="nav-list">
+      <li><a class="nav-link active" data-section="home"     href="/home.html">Home</a></li>
+      <li><a class="nav-link"        data-section="about"    href="/about">About</a></li>
+      <li><a class="nav-link"        data-section="blog"     href="/blog">Blog</a></li>
+      <li><a class="nav-link"        data-section="projects" href="/projects">Projects</a></li>
+      <li><a class="nav-link"        data-section="contact"  href="/contact">Contact</a></li>
     </ul>
   </nav>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <img src="https://cs721127.github.io/asset/images/profile123.jpg" alt="Cen Sun" class="hero-profile">
-      <h2>Welcome to My World</h2>
-      <p>Hey there! I'm Cen Sun — you can call me Sam. I'm a student with a passion for learning, creating, and sharing.
-        I love finance, Chinese traditional culture, and now computer science. Join me as I navigate my life and ideas.
-      </p>
-      <a href="https://cs721127.github.io/about" class="cta-button">Learn More About Me</a>
-      <br>
-      <a href="https://cs721127.github.io/professional" class="professional-banner">Visit My Professional Page</a>
-    </section>
+  <!-- Only this iframe changes. The shell (and its audio) never reloads. -->
+  <iframe id="content-frame"
+          src="/home.html"
+          title="Page content"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox">
+  </iframe>
 
-    <!-- FEATURED POSTS -->
-    <section>
-      <div class="featured-header">
-        <h2 class="section-title">Featured Posts</h2>
-        <a href="https://cs721127.github.io/blog" class="read-more" style="font-size:0.8rem;">View All →</a>
-      </div>
-      <div class="card-grid">
-        <div class="post-card" style="animation-delay:0s">
-          <img src="https://cs721127.github.io/asset/images/cen_cartoon.jpg" alt="My Own Story">
-          <div class="post-card-content">
-            <h3>My Own Story: On the Way</h3>
-            <p>My personal reflection after going to study in Australia. Contains my college application essays written
-              in 2024.</p>
-          </div>
-          <div class="post-card-footer">
-            <span class="post-card-meta">Oct 2025 · Personal</span>
-            <a href="https://cs721127.github.io/blog/my_own_story" class="read-more">Read</a>
-          </div>
-        </div>
-        <div class="post-card" style="animation-delay:0.1s">
-          <img src="https://cs721127.github.io/asset/images/tcm.jpg" alt="TCM">
-          <div class="post-card-content">
-            <h3>Traditional Chinese Medicine: Food & Diet</h3>
-            <p>Introduction to TCM's suggestions for food, diet, and its basic foundational theories.</p>
-          </div>
-          <div class="post-card-footer">
-            <span class="post-card-meta">Jan 2024 · Culture</span>
-            <a href="https://cs721127.github.io/blog/tcm-diet-intro" class="read-more">Read</a>
-          </div>
-        </div>
-        <div class="post-card" style="animation-delay:0.2s">
-          <img src="https://cs721127.github.io/asset/images/bingdiao.jpg" alt="Jixi">
-          <div class="post-card-content">
-            <h3>Jixi: A Culinary Journey Through Time</h3>
-            <p>My hometown Jixi (鸡西) — its great combined culture and its unique food traditions.</p>
-          </div>
-          <div class="post-card-footer">
-            <span class="post-card-meta">Oct 2024 · Culture</span>
-            <a href="https://cs721127.github.io/blog/jixi-culture" class="read-more">Read</a>
-          </div>
-        </div>
-      </div>
-    </section>
+</div>
 
-    <!-- GREETING -->
-    <section class="greeting-section">
-      <h2>Why I Made This Website</h2>
-      <p>As a student, I have a lot of fun in my life. However, there are too many things to remember all of them. I am
-        a person who misses past memories and will often go through my past times to refresh my mind with those pure,
-        lovely memories, as well as the importance of learning from the past.</p>
-      <p>Therefore, this website is a collection of my activities — valuable to my memory and that I will look back on
-        again. It will always remind me of something important, either lessons or greetings. Hopefully, some pieces of
-        my activities will remind you of your past memories too.</p>
-      <p>Take care, and wish you the best brighter future!</p>
-      <div class="signature">Cen Sun</div>
-      <div class="written-date">Written June 2024</div>
-    </section>
-  </main>
+<!-- ═══════════════ MUSIC PLAYER — lives here forever ═══════════════ -->
+<div id="music-player">
+  <audio id="mp-audio" preload="auto"></audio>
+  <button id="mp-play-btn" aria-label="Play / Pause">▶</button>
+  <div class="mp-wave paused" id="mp-wave">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="mp-expandable">
+    <div>
+      <div class="mp-title"  id="mp-title">My Music</div>
+      <div class="mp-artist" id="mp-artist">Cen Sun</div>
+    </div>
+    <div class="mp-row">
+      <input type="range" class="mp-progress" id="mp-progress" min="0" max="100" step="0.1" value="0" aria-label="Seek">
+      <span class="mp-time" id="mp-time">0:00</span>
+    </div>
+    <div class="mp-row">
+      <span class="mp-vol-icon" id="mp-vol-icon" title="Mute / unmute">🔊</span>
+      <input type="range" class="mp-volume" id="mp-volume" min="0" max="1" step="0.02" value="0.7" aria-label="Volume">
+    </div>
+  </div>
+  <button id="mp-collapse-btn" aria-label="Collapse player">✕</button>
+</div>
 
-  <footer>
-    <p>© 2026 Cen Sun's Website. All rights reserved. &nbsp;·&nbsp; <a
-        href="https://cs721127.github.io/">cs721127.github.io</a></p>
-  </footer>
+<script>
+'use strict';
 
-  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
+/* ══════════════════════════════════════════════════════════
+   TRACKS CONFIG — fill in your music files here
+══════════════════════════════════════════════════════════ */
+const TRACKS = [
+  {
+    title:  'On the Way',           // ← 修改为你的曲名
+    artist: 'Cen Sun',
+    src:    '/asset/music/story.mp3'   // ← 修改为你的音频文件路径
+  },
+  {
+    title:  'Story',           // ← 修改为你的曲名
+    artist: 'Cen Sun',
+    src:    '/asset/music/own-story.mp3'   // ← 修改为你的音频文件路径
+  },
+  // 多首歌曲时继续添加：
+  // { title: 'Second Song', artist: 'Cen Sun', src: '/asset/music/track2.mp3' },
+];
 
-  <script>
-    // Mobile nav toggle
-    const toggle = document.getElementById('nav-toggle');
-    const nav = document.getElementById('main-nav');
-    toggle.addEventListener('click', () => nav.classList.toggle('open'));
+const ORIGIN = window.location.origin; // e.g. https://cs721127.github.io
 
-    // Back to top
-    const btt = document.querySelector('.back-to-top');
-    if (btt) {
-      window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 300));
-      btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+/* ══════════════════════════════════════════════════════════
+   NAV — maps any URL path to a top-level section
+══════════════════════════════════════════════════════════ */
+function pathToSection(url) {
+  try {
+    const first = new URL(url, ORIGIN).pathname.split('/').filter(Boolean)[0];
+    return first || 'home';
+  } catch { return 'home'; }
+}
+
+function setActiveNav(section) {
+  document.querySelectorAll('#nav-list .nav-link').forEach(a =>
+    a.classList.toggle('active', a.dataset.section === section));
+}
+
+/* ══════════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════════ */
+const frame = document.getElementById('content-frame');
+
+function navigateTo(url, pushState) {
+  if (pushState === undefined) pushState = true;
+  const abs = new URL(url, ORIGIN).href;
+  if (frame.src === abs) return;
+  frame.src = abs;
+  setActiveNav(pathToSection(abs));
+  if (pushState) {
+    history.pushState({ url: abs }, '', abs.replace(ORIGIN, '') || '/');
+  }
+}
+
+// Top-level nav clicks
+document.querySelectorAll('#nav-list .nav-link').forEach(link =>
+  link.addEventListener('click', e => { e.preventDefault(); navigateTo(link.href); })
+);
+
+// Browser back/forward
+window.addEventListener('popstate', e => {
+  if (e.state && e.state.url) navigateTo(e.state.url, false);
+});
+
+// Record initial state
+history.replaceState({ url: window.location.href }, '', window.location.pathname || '/');
+
+// Messages from child pages (via iframe-guest.js)
+window.addEventListener('message', e => {
+  if (e.origin !== ORIGIN) return;
+  if (e.data && e.data.type === 'navigate' && e.data.src) {
+    navigateTo(e.data.src);
+  }
+});
+
+// Sync active nav when iframe navigates internally (e.g. user clicks link inside blog post)
+frame.addEventListener('load', function () {
+  try {
+    setActiveNav(pathToSection(frame.contentWindow.location.href));
+  } catch (err) { /* cross-origin guard */ }
+});
+
+/* ══════════════════════════════════════════════════════════
+   MUSIC PLAYER
+══════════════════════════════════════════════════════════ */
+(function () {
+  if (!TRACKS.length) return;
+
+  var audio       = document.getElementById('mp-audio');
+  var playBtn     = document.getElementById('mp-play-btn');
+  var progressEl  = document.getElementById('mp-progress');
+  var timeEl      = document.getElementById('mp-time');
+  var titleEl     = document.getElementById('mp-title');
+  var artistEl    = document.getElementById('mp-artist');
+  var volumeEl    = document.getElementById('mp-volume');
+  var volIcon     = document.getElementById('mp-vol-icon');
+  var collapseBtn = document.getElementById('mp-collapse-btn');
+  var player      = document.getElementById('music-player');
+  var waveEl      = document.getElementById('mp-wave');
+
+  var trackIndex  = 0;
+  var userSeeking = false;
+
+  function loadTrack(idx, seekTo) {
+    var t = TRACKS[idx];
+    audio.src = t.src;
+    titleEl.textContent  = t.title;
+    artistEl.textContent = t.artist;
+    audio.load();
+    if (seekTo > 0) {
+      audio.addEventListener('canplay', function once() {
+        audio.removeEventListener('canplay', once);
+        audio.currentTime = seekTo;
+      });
     }
-  </script>
-</body>
+  }
 
+  loadTrack(0, 0);
+  audio.volume = 0.7;
+
+  function setPlaying(on) {
+    playBtn.textContent = on ? '⏸' : '▶';
+    playBtn.classList.toggle('playing', on);
+    waveEl.classList.toggle('paused', !on);
+  }
+
+  playBtn.addEventListener('click', function () {
+    if (audio.paused) audio.play().catch(function () {});
+    else              audio.pause();
+  });
+
+  audio.addEventListener('play',  function () { setPlaying(true);  });
+  audio.addEventListener('pause', function () { setPlaying(false); });
+
+  function fmt(s) {
+    if (!isFinite(s) || s < 0) return '0:00';
+    return Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+  }
+
+  audio.addEventListener('timeupdate', function () {
+    if (userSeeking || !isFinite(audio.duration) || audio.duration === 0) return;
+    var pct = (audio.currentTime / audio.duration) * 100;
+    progressEl.value = pct;
+    progressEl.style.background = 'linear-gradient(to right, #0096c7 ' + pct + '%, #d4e8f4 ' + pct + '%)';
+    timeEl.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+  });
+
+  // stopPropagation prevents the player's drag handler from stealing pointer events
+  progressEl.addEventListener('pointerdown', function (e) {
+    e.stopPropagation();
+    userSeeking = true;
+  });
+  progressEl.addEventListener('input', function () {
+    if (!isFinite(audio.duration)) return;
+    // Update display while scrubbing, but don't seek yet (avoids jumpy audio)
+    var pct = parseFloat(progressEl.value);
+    timeEl.textContent = fmt((pct / 100) * audio.duration) + ' / ' + fmt(audio.duration);
+    progressEl.style.background = 'linear-gradient(to right, #0096c7 ' + pct + '%, #d4e8f4 ' + pct + '%)';
+  });
+  progressEl.addEventListener('pointerup', function (e) {
+    e.stopPropagation();
+    if (isFinite(audio.duration)) {
+      audio.currentTime = (parseFloat(progressEl.value) / 100) * audio.duration;
+    }
+    userSeeking = false;
+  });
+
+  volumeEl.addEventListener('input', function () {
+    audio.volume = +volumeEl.value;
+    volIcon.textContent = audio.volume < 0.01 ? '🔇' : audio.volume < 0.45 ? '🔉' : '🔊';
+  });
+  volIcon.addEventListener('click', function () {
+    if (audio.volume > 0) {
+      volIcon._saved = audio.volume;
+      audio.volume = 0; volumeEl.value = 0; volIcon.textContent = '🔇';
+    } else {
+      audio.volume = volIcon._saved || 0.7;
+      volumeEl.value = audio.volume; volIcon.textContent = '🔊';
+    }
+  });
+
+  audio.addEventListener('ended', function () {
+    trackIndex = (trackIndex + 1) % TRACKS.length;
+    loadTrack(trackIndex, 0);
+    audio.play().catch(function () {});
+  });
+
+  collapseBtn.addEventListener('click', function () { player.classList.add('collapsed'); });
+  playBtn.addEventListener('click',     function () { player.classList.remove('collapsed'); });
+
+  /* ── DRAG (Pointer Events — left/top based, no direction confusion) ── */
+  (function () {
+    var LS_POS = 'cen_player_pos';
+    var dragging = false;
+    var startPX, startPY, startL, startT;
+
+    function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
+
+    // Always position with left+top, clear right+bottom to avoid CSS conflicts
+    function applyPos(l, t) {
+      var maxL = window.innerWidth  - player.offsetWidth  - 8;
+      var maxT = window.innerHeight - player.offsetHeight - 8;
+      player.style.left   = clamp(l, 8, maxL) + 'px';
+      player.style.top    = clamp(t, 8, maxT) + 'px';
+      player.style.right  = 'auto';
+      player.style.bottom = 'auto';
+    }
+
+    // Restore saved position (stored as left/top), default to bottom-right
+    try {
+      var saved = JSON.parse(localStorage.getItem(LS_POS));
+      if (saved && saved.left != null) {
+        applyPos(saved.left, saved.top);
+      } else {
+        // Default: bottom-right corner (mirror of original right:2rem bottom:2rem)
+        applyPos(window.innerWidth - 360, window.innerHeight - 120);
+      }
+    } catch (err) {
+      applyPos(window.innerWidth - 360, window.innerHeight - 120);
+    }
+
+    function savePos() {
+      try {
+        localStorage.setItem(LS_POS, JSON.stringify({
+          left: parseFloat(player.style.left),
+          top:  parseFloat(player.style.top)
+        }));
+      } catch (err) {}
+    }
+
+    function isControl(el) { return !!el.closest('button, input'); }
+
+    player.addEventListener('pointerdown', function (e) {
+      if (isControl(e.target)) return;
+      e.preventDefault();
+      dragging = true;
+      // Record pointer start + player's current left/top
+      startPX = e.clientX;
+      startPY = e.clientY;
+      startL  = parseFloat(player.style.left) || 0;
+      startT  = parseFloat(player.style.top)  || 0;
+      player.setPointerCapture(e.pointerId);
+      player.classList.add('dragging');
+    });
+
+    player.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      e.preventDefault();
+      // left/top move in the same direction as the pointer — no sign confusion
+      applyPos(startL + (e.clientX - startPX), startT + (e.clientY - startPY));
+    });
+
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      player.classList.remove('dragging');
+      savePos();
+    }
+    player.addEventListener('pointerup',     endDrag);
+    player.addEventListener('pointercancel', endDrag);
+  })();
+
+})();
+</script>
+</body>
 </html>
