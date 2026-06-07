@@ -45,32 +45,6 @@
       margin-bottom: 1rem;
     }
 
-    .greeting-section {
-      background: var(--warm-white);
-      border-radius: 3px;
-      box-shadow: 0 2px 10px var(--shadow), 0 0 0 1px var(--border);
-      padding: 2.5rem 2rem;
-      margin-top: 2.5rem;
-      text-align: center;
-    }
-
-    .greeting-section h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 400;
-      font-size: 1.5rem;
-      color: var(--ocean);
-      margin-bottom: 1rem;
-      letter-spacing: 0.04em;
-    }
-
-    .greeting-section p {
-      font-size: 1.02rem;
-      color: var(--text-mid);
-      line-height: 1.85;
-      max-width: 680px;
-      margin: 0 auto 0.8rem;
-    }
-
     .signature {
       font-family: 'Crimson Pro', serif;
       font-style: italic;
@@ -108,6 +82,281 @@
       color: var(--parchment);
       border-color: var(--ocean);
     }
+
+    /* ── INTERACTIVE LETTER ── */
+    .letter-section {
+      margin-top: 2.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .letter-envelope {
+      width: 100%;
+      max-width: 560px;
+      position: relative;
+    }
+
+    .letter-toggle {
+      appearance: none;
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
+      color: inherit;
+      text-align: center;
+      transition: opacity 0.4s ease, transform 0.4s ease, max-height 0.5s ease;
+    }
+
+    .letter-envelope.is-open .letter-toggle {
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-12px) scale(0.96);
+      max-height: 0;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .letter-toggle:focus-visible {
+      outline: 2px solid var(--ocean-mid);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+
+    .letter-envelope-front {
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 28%),
+        linear-gradient(165deg, #f3e8cc 0%, #e9dcc0 45%, #e2d4b4 100%);
+      border: 1px solid rgba(138, 106, 40, 0.28);
+      border-radius: 2px;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.6) inset,
+        0 8px 28px rgba(13, 17, 23, 0.14);
+      padding: 2.8rem 2rem 2rem;
+      overflow: hidden;
+    }
+
+    .letter-envelope-front::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: min(280px, 46vw) solid transparent;
+      border-right: min(280px, 46vw) solid transparent;
+      border-top: 72px solid #d9ccb0;
+      filter: drop-shadow(0 2px 2px rgba(13, 17, 23, 0.08));
+      pointer-events: none;
+    }
+
+    .letter-envelope-front::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 27px,
+        rgba(138, 106, 40, 0.06) 27px,
+        rgba(138, 106, 40, 0.06) 28px
+      );
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    .letter-wax-seal {
+      position: relative;
+      z-index: 1;
+      width: 3.4rem;
+      height: 3.4rem;
+      margin: 0.5rem auto 1.2rem;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #c45a4a, #8b2e22 70%, #6b2218 100%);
+      box-shadow:
+        0 3px 8px rgba(107, 34, 24, 0.45),
+        0 0 0 3px rgba(139, 46, 34, 0.25),
+        0 0 0 5px rgba(196, 90, 74, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s ease;
+    }
+
+    .letter-toggle:hover .letter-wax-seal {
+      transform: scale(1.06);
+    }
+
+    .letter-wax-seal span {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      color: rgba(255, 240, 220, 0.92);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    }
+
+    .letter-address-to {
+      position: relative;
+      z-index: 1;
+      font-family: 'Crimson Pro', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      margin-bottom: 0.5rem;
+    }
+
+    .letter-subject {
+      position: relative;
+      z-index: 1;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: 1.45rem;
+      color: var(--ocean);
+      line-height: 1.3;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(138, 106, 40, 0.2);
+    }
+
+    .letter-address-from {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.95rem;
+      color: var(--text-mid);
+    }
+
+    .letter-address-from span:last-child {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+    }
+
+    .letter-hint {
+      position: relative;
+      z-index: 1;
+      display: block;
+      margin-top: 1.1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold-mid);
+    }
+
+    .letter-paper {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition:
+        grid-template-rows 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.45s ease;
+    }
+
+    .letter-envelope.is-open .letter-paper,
+    .letter-envelope.is-settled .letter-paper {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .letter-paper-inner.is-flying {
+      z-index: 600;
+      box-shadow: 0 24px 60px rgba(13, 17, 23, 0.28);
+      will-change: left, top, width, transform;
+      box-sizing: border-box;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+
+    .letter-focus-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 550;
+      background: rgba(13, 17, 23, 0.52);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s ease;
+    }
+
+    .letter-focus-backdrop.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .letter-section.is-holding-slot {
+      min-height: var(--letter-slot-height, auto);
+    }
+
+    .letter-paper-inner {
+      position: relative;
+      overflow: hidden;
+      background: #fffef8;
+      border: 1px solid rgba(138, 106, 40, 0.22);
+      border-radius: 2px;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.8) inset,
+        0 12px 36px rgba(13, 17, 23, 0.12);
+      padding: 2.5rem 2.2rem 2rem;
+      text-align: center;
+      background-image: repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 31px,
+        rgba(26, 58, 92, 0.07) 31px,
+        rgba(26, 58, 92, 0.07) 32px
+      );
+    }
+
+    .letter-paper-inner::before {
+      content: '';
+      position: absolute;
+      left: 2.6rem;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: rgba(196, 90, 74, 0.25);
+      pointer-events: none;
+    }
+
+    .letter-paper-header {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 0.35rem;
+    }
+
+    .letter-paper-inner h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 1.5rem;
+      color: var(--ocean);
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.04em;
+    }
+
+    .letter-paper-inner p {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+      max-width: 520px;
+      margin: 0 auto 0.85rem;
+      text-align: left;
+      padding-left: 0.5rem;
+    }
+
 @media (max-width: 768px) {
       html, body {
         overflow-x: hidden;
@@ -169,10 +418,16 @@
         min-width: 260px;
     }
 
-    .greeting-section {
-        padding: 1.8rem 1.2rem !important;
-        margin: 2rem 0 !important;
-        width: 100% !important;
+    .letter-paper-inner {
+        padding: 2rem 1.25rem 1.75rem !important;
+    }
+
+    .letter-paper-inner p {
+        font-size: 0.97rem !important;
+    }
+
+    .letter-envelope-front {
+        padding: 2.4rem 1.25rem 1.75rem !important;
     }
 }
 @media (max-width: 380px) {
@@ -256,20 +511,42 @@
       </div>
     </section>
 
-    <!-- GREETING -->
-    <section class="greeting-section">
-      <h2>Why I Made This Website</h2>
-      <p>As a student, I have a lot of fun in my life. However, there are too many things to remember all of them. I am
-        a person who misses past memories and will often go through my past times to refresh my mind with those pure,
-        lovely memories, as well as the importance of learning from the past.</p>
-      <p>Therefore, this website is a collection of my activities — valuable to my memory and that I will look back on
-        again. It will always remind me of something important, either lessons or greetings. Hopefully, some pieces of
-        my activities will remind you of your past memories too.</p>
-      <p>Take care, and wish you the best brighter future!</p>
-      <div class="signature">Cen Sun</div>
-      <div class="written-date">Written June 2024</div>
+    <!-- GREETING LETTER -->
+    <section class="letter-section">
+      <article class="letter-envelope" id="letter-envelope">
+        <button class="letter-toggle" id="letter-toggle" type="button" aria-expanded="false"
+          aria-controls="letter-paper">
+          <div class="letter-envelope-front">
+            <div class="letter-wax-seal" aria-hidden="true"><span>CS</span></div>
+            <p class="letter-address-to">Dear visitor,</p>
+            <h2 class="letter-subject">Why I Made This Website</h2>
+            <div class="letter-address-from">
+              <span>From: Cen Sun</span>
+              <span>June 2024</span>
+            </div>
+            <span class="letter-hint">Open letter</span>
+          </div>
+        </button>
+        <div class="letter-paper" id="letter-paper" aria-hidden="true">
+          <div class="letter-paper-inner">
+            <div class="letter-paper-header">Personal letter · June 2024</div>
+            <h2>Why I Made This Website</h2>
+            <p>As a student, I have a lot of fun in my life. However, there are too many things to remember all of them.
+              I am a person who misses past memories and will often go through my past times to refresh my mind with
+              those pure, lovely memories, as well as the importance of learning from the past.</p>
+            <p>Therefore, this website is a collection of my activities — valuable to my memory and that I will look
+              back on again. It will always remind me of something important, either lessons or greetings. Hopefully,
+              some pieces of my activities will remind you of your past memories too.</p>
+            <p>Take care, and wish you the best brighter future!</p>
+            <div class="signature">Cen Sun</div>
+            <div class="written-date">Written June 2024</div>
+          </div>
+        </div>
+      </article>
     </section>
   </main>
+
+  <div class="letter-focus-backdrop" id="letter-focus-backdrop" aria-hidden="true"></div>
 
   <footer>
     <p>© 2026 Cen Sun's Website. All rights reserved. &nbsp;·&nbsp; <a
@@ -290,6 +567,201 @@
       window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 300));
       btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
+
+    // Interactive letter — fly to center, then return and stay open
+    const letterEnvelope = document.getElementById('letter-envelope');
+    const letterToggle = document.getElementById('letter-toggle');
+    const letterPaper = document.getElementById('letter-paper');
+    const letterSection = document.querySelector('.letter-section');
+    const letterBackdrop = document.getElementById('letter-focus-backdrop');
+    const letterInner = letterPaper.querySelector('.letter-paper-inner');
+    const ANIM_MS = 650;
+    let letterFocusActive = false;
+    let letterAnimating = false;
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function getViewportBox() {
+      const vp = window.visualViewport;
+      return {
+        width: vp?.width ?? window.innerWidth,
+        height: vp?.height ?? window.innerHeight,
+        offsetTop: vp?.offsetTop ?? 0,
+        offsetLeft: vp?.offsetLeft ?? 0
+      };
+    }
+
+    function animateToRect(el, targetRect) {
+      return new Promise(resolve => {
+        let finished = false;
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          el.removeEventListener('transitionend', done);
+          resolve();
+        };
+        const done = (event) => {
+          if (event.target !== el || !['left', 'top', 'width', 'transform'].includes(event.propertyName)) return;
+          finish();
+        };
+        el.addEventListener('transitionend', done);
+        setTimeout(finish, ANIM_MS + 100);
+        el.style.transition = `left ${ANIM_MS}ms cubic-bezier(0.22, 1, 0.36, 1), top ${ANIM_MS}ms cubic-bezier(0.22, 1, 0.36, 1), width ${ANIM_MS}ms cubic-bezier(0.22, 1, 0.36, 1), transform ${ANIM_MS}ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow ${ANIM_MS}ms ease, opacity ${ANIM_MS}ms ease`;
+        requestAnimationFrame(() => {
+          el.style.left = `${targetRect.left}px`;
+          el.style.top = `${targetRect.top}px`;
+          el.style.width = `${targetRect.width}px`;
+          el.style.transform = targetRect.transform ?? 'none';
+        });
+      });
+    }
+
+    function pinFixed(el, rect) {
+      el.classList.add('is-flying');
+      el.style.position = 'fixed';
+      el.style.left = `${rect.left}px`;
+      el.style.top = `${rect.top}px`;
+      el.style.width = `${rect.width}px`;
+      el.style.margin = '0';
+      el.style.transform = rect.transform ?? 'none';
+      el.style.transition = 'none';
+    }
+
+    function clearFixed(el) {
+      el.classList.remove('is-flying');
+      el.style.position = '';
+      el.style.left = '';
+      el.style.top = '';
+      el.style.width = '';
+      el.style.margin = '';
+      el.style.transform = '';
+      el.style.transition = '';
+      el.style.zIndex = '';
+      el.style.maxHeight = '';
+      el.style.overflowY = '';
+    }
+
+    function rectFromElement(el) {
+      const box = el.getBoundingClientRect();
+      return { left: box.left, top: box.top, width: box.width, height: box.height };
+    }
+
+    function getOpenWidth() {
+      return Math.min(560, getViewportBox().width - 32);
+    }
+
+    function measureOpenPaper() {
+      const width = getOpenWidth();
+      letterPaper.style.visibility = 'hidden';
+      letterPaper.style.display = 'grid';
+      letterPaper.style.gridTemplateRows = '1fr';
+      letterPaper.style.opacity = '1';
+      letterInner.style.width = `${width}px`;
+      const rect = letterInner.getBoundingClientRect();
+      letterPaper.style.visibility = '';
+      letterInner.style.width = '';
+      return { ...rectFromElement(letterInner), width };
+    }
+
+    function getCenterRect(el, width) {
+      const vp = getViewportBox();
+      el.style.width = `${width}px`;
+      el.style.maxHeight = `${vp.height - 40}px`;
+      const height = el.getBoundingClientRect().height;
+      const left = vp.offsetLeft + (vp.width - width) / 2;
+      const top = vp.offsetTop + Math.max(20, (vp.height - height) / 2);
+      return { left, top, width, height };
+    }
+
+    function waitForFocusDismiss() {
+      return new Promise(resolve => {
+        const cleanup = () => {
+          document.removeEventListener('click', onDismiss, true);
+          document.removeEventListener('keydown', onDismiss, true);
+        };
+        const onDismiss = () => {
+          cleanup();
+          resolve();
+        };
+        setTimeout(() => {
+          document.addEventListener('click', onDismiss, true);
+          document.addEventListener('keydown', onDismiss, true);
+        }, 120);
+      });
+    }
+
+    async function returnLetterHome() {
+      if (!letterFocusActive) return;
+      letterFocusActive = false;
+
+      letterBackdrop.classList.remove('is-visible');
+      letterBackdrop.setAttribute('aria-hidden', 'true');
+      letterEnvelope.classList.remove('is-focused');
+
+      const centeredRect = rectFromElement(letterInner);
+
+      letterInner.style.visibility = 'hidden';
+      clearFixed(letterInner);
+      letterEnvelope.classList.add('is-settled');
+      const homeRect = rectFromElement(letterInner);
+      letterInner.style.visibility = '';
+
+      pinFixed(letterInner, centeredRect);
+      await animateToRect(letterInner, { ...homeRect, transform: 'none' });
+
+      clearFixed(letterInner);
+      letterInner.style.opacity = '';
+      letterSection.classList.remove('is-holding-slot');
+      letterSection.style.removeProperty('--letter-slot-height');
+      letterPaper.style.minHeight = '';
+      letterEnvelope.classList.remove('is-opening');
+      letterAnimating = false;
+    }
+
+    letterToggle.addEventListener('click', async () => {
+      if (letterEnvelope.classList.contains('is-open') || letterAnimating) return;
+      letterAnimating = true;
+
+      letterEnvelope.classList.add('is-open');
+      letterToggle.disabled = true;
+      letterToggle.setAttribute('aria-expanded', 'true');
+      letterPaper.setAttribute('aria-hidden', 'false');
+
+      const startRect = rectFromElement(letterToggle);
+      const openWidth = getOpenWidth();
+      const openRect = measureOpenPaper();
+
+      letterSection.classList.add('is-holding-slot');
+      letterSection.style.setProperty('--letter-slot-height', `${openRect.height}px`);
+      letterPaper.style.minHeight = `${openRect.height}px`;
+
+      letterEnvelope.classList.add('is-opening');
+      await sleep(80);
+
+      pinFixed(letterInner, {
+        ...startRect,
+        width: startRect.width,
+        transform: 'scale(0.92)'
+      });
+      letterInner.style.opacity = '0.85';
+      letterInner.style.width = `${startRect.width}px`;
+
+      await sleep(40);
+      letterInner.style.opacity = '1';
+
+      const centerRect = getCenterRect(letterInner, openWidth);
+
+      letterBackdrop.classList.add('is-visible');
+      letterBackdrop.setAttribute('aria-hidden', 'false');
+      await animateToRect(letterInner, { ...centerRect, transform: 'none' });
+
+      letterFocusActive = true;
+      letterEnvelope.classList.add('is-focused');
+      await waitForFocusDismiss();
+      await returnLetterHome();
+    });
   </script>
 </body>
 
