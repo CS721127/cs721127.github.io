@@ -64,7 +64,8 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--ocean-mid);
-      min-width: 56px;
+      width: 120px;
+      flex-shrink: 0;
     }
 
     .contact-row a {
@@ -77,6 +78,23 @@
 
     .contact-row a:hover {
       color: var(--blue-mist);
+    }
+
+    /* Email block container */
+    .contact-block {
+      background: var(--sky);
+      border: 1px solid var(--border-light);
+      border-radius: 2px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .contact-block .contact-row {
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-block .contact-row:last-child {
+      margin-bottom: 0;
     }
 
     /* Social icons */
@@ -230,9 +248,15 @@
           Have a question, comment, or just want to say hi? Feel free to reach out via email or connect on any of the
           platforms below.
         </p>
-        <div class="contact-row">
-          <span class="label">Email</span>
-          <a href="mailto:suncen07@gmail.com">suncen07@gmail.com</a>
+        <div class="contact-block">
+          <div class="contact-row">
+            <span class="label">Personal Email</span>
+            <a href="mailto:suncen07@gmail.com">suncen07@gmail.com</a>
+          </div>
+          <div class="contact-row">
+            <span class="label">Work Email</span>
+            <a href="mailto:cen.sun@unsw.edu.au">cen.sun@unsw.edu.au</a>
+          </div>
         </div>
       </div>
 
@@ -247,7 +271,7 @@
             </svg>
             GitHub
           </a>
-          <a class="social-btn" href="https://www.linkedin.com/in/cen-sun-885ab8281" target="_blank"
+          <a class="social-btn" href="https://www.linkedin.com/in/cen-sun" target="_blank"
             rel="noopener noreferrer">
             <svg viewBox="0 0 24 24">
               <path
@@ -262,6 +286,20 @@
             </svg>
             Instagram
           </a>
+          <!-- <a class="social-btn" href="https://x.com/suncen07" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.6l-5.165-6.75-5.913 6.75h-3.308l7.73-8.835L.424 2.25h6.7l4.671 6.181 5.719-6.181zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            X
+          </a> -->
+          <!-- <a class="social-btn" href="https://www.xiaohongshu.com/user/profile/suncen07" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 4h6v2H9V4zm9 16H6V4h1v3h8V4h2v16z" />
+            </svg>
+            RedNote
+          </a> -->
           <!-- <a class="social-btn" href="https://studio.youtube.com/channel/UCUSJ7PvrTxFqvzhzRUg8Utg" target="_blank"
             rel="noopener noreferrer">
             <svg viewBox="0 0 24 24">
@@ -287,22 +325,22 @@
           <span class="fl-name">BNDS Investment Club</span>
           <a href="https://bndsinvest.webflow.io" target="_blank" rel="noopener noreferrer">bndsinvest.webflow.io</a>
         </div>
-        <div class="friend-link">
+        <!-- <div class="friend-link">
           <span class="fl-name">Health &amp; Wellness Org</span>
           <a href="https://www.healthandwellness.com.cn" target="_blank"
             rel="noopener noreferrer">healthandwellness.com.cn</a>
-        </div>
-        <div class="friend-link">
+        </div> -->
+        <!-- <div class="friend-link">
           <span class="fl-name">AI Health Agent</span>
           <a href="https://www.healthlink360ai.com" target="_blank" rel="noopener noreferrer">healthlink360ai.com</a>
-        </div>
+        </div> -->
       </div>
 
     </div><!-- /contact-section -->
   </main>
 
   <footer>
-    <p>© 2026 Cen Sun's Website. All rights reserved. &nbsp;·&nbsp; <a
+    <p>© 2024-2026 Cen Sun's Website. All rights reserved. &nbsp;·&nbsp; <a
         href="/">cs721127.github.io</a></p>
   </footer>
 
